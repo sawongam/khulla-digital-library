@@ -42,6 +42,10 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
   late final TextEditingController _openingHours = textController();
   late final TextEditingController _barcodePrefix = textController();
   late final TextEditingController _barcodeNextValue = textController();
+  late final TextEditingController _memberBarcodePrefix = textController();
+  late final TextEditingController _memberBarcodeNextValue = textController();
+  late final TextEditingController _staffBarcodePrefix = textController();
+  late final TextEditingController _staffBarcodeNextValue = textController();
 
   AppCurrency _currency = AppCurrency.npr;
   LibraryProfile? _loadedProfile;
@@ -56,6 +60,10 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
     _openingHours.text = profile.openingHours ?? '';
     _barcodePrefix.text = profile.barcodePrefix;
     _barcodeNextValue.text = '${profile.barcodeNextValue}';
+    _memberBarcodePrefix.text = profile.memberBarcodePrefix;
+    _memberBarcodeNextValue.text = '${profile.memberBarcodeNextValue}';
+    _staffBarcodePrefix.text = profile.staffBarcodePrefix;
+    _staffBarcodeNextValue.text = '${profile.staffBarcodeNextValue}';
     _currency = profile.currency;
   }
 
@@ -110,10 +118,18 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
   Future<void> _save(BuildContext context) async {
     final l10n = context.l10n;
     final barcodeNextValue = _parseInt(_barcodeNextValue.text);
+    final memberBarcodeNextValue = _parseInt(_memberBarcodeNextValue.text);
+    final staffBarcodeNextValue = _parseInt(_staffBarcodeNextValue.text);
     if (_name.text.trim().isEmpty ||
         _barcodePrefix.text.trim().isEmpty ||
         barcodeNextValue == null ||
-        barcodeNextValue < 1) {
+        barcodeNextValue < 1 ||
+        _memberBarcodePrefix.text.trim().isEmpty ||
+        memberBarcodeNextValue == null ||
+        memberBarcodeNextValue < 1 ||
+        _staffBarcodePrefix.text.trim().isEmpty ||
+        staffBarcodeNextValue == null ||
+        staffBarcodeNextValue < 1) {
       AppToast.error(context, message: l10n.validationFieldRequired);
       return;
     }
@@ -124,6 +140,10 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
         currency: _currency,
         barcodePrefix: _barcodePrefix.text,
         barcodeNextValue: barcodeNextValue,
+        memberBarcodePrefix: _memberBarcodePrefix.text,
+        memberBarcodeNextValue: memberBarcodeNextValue,
+        staffBarcodePrefix: _staffBarcodePrefix.text,
+        staffBarcodeNextValue: staffBarcodeNextValue,
         email: _email.text,
         phone: _phone.text,
         address: _address.text,
@@ -294,6 +314,12 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                     title: l10n.settingsLibraryBarcodes,
                     description: l10n.settingsLibraryBarcodesDescription,
                     children: [
+                      Text(
+                        l10n.settingsLibraryBarcodesCopies,
+                        style: context.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       AppFormRow(
                         children: [
                           AppTextField(
@@ -306,6 +332,54 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                             label: l10n.fieldBarcodeNextValue,
                             required: true,
                             controller: _barcodeNextValue,
+                            keyboardType: numberInput,
+                            onChanged: (_) {},
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: spacing.md),
+                      Text(
+                        l10n.settingsLibraryBarcodesMembers,
+                        style: context.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      AppFormRow(
+                        children: [
+                          AppTextField(
+                            label: l10n.fieldBarcodePrefix,
+                            required: true,
+                            controller: _memberBarcodePrefix,
+                            onChanged: (_) {},
+                          ),
+                          AppTextField(
+                            label: l10n.fieldBarcodeNextValue,
+                            required: true,
+                            controller: _memberBarcodeNextValue,
+                            keyboardType: numberInput,
+                            onChanged: (_) {},
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: spacing.md),
+                      Text(
+                        l10n.settingsLibraryBarcodesStaff,
+                        style: context.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      AppFormRow(
+                        children: [
+                          AppTextField(
+                            label: l10n.fieldBarcodePrefix,
+                            required: true,
+                            controller: _staffBarcodePrefix,
+                            onChanged: (_) {},
+                          ),
+                          AppTextField(
+                            label: l10n.fieldBarcodeNextValue,
+                            required: true,
+                            controller: _staffBarcodeNextValue,
                             keyboardType: numberInput,
                             onChanged: (_) {},
                           ),

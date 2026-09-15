@@ -270,17 +270,26 @@ WHERE m.id = ?
       if (toInsert.barcode.trim().isEmpty) {
         final settings = await (_db.select(
           _db.librarySettings,
-        )..where((s) => s.id.equals(1))).getSingle();
-        final barcode = '${settings.barcodePrefix}${settings.barcodeNextValue}';
-        await (_db.update(
-          _db.librarySettings,
-        )..where((s) => s.id.equals(1))).write(
-          LibrarySettingsCompanion(
-            barcodeNextValue: Value(settings.barcodeNextValue + 1),
-            updatedAt: Value(DateTime.now()),
-          ),
-        );
-        toInsert = toInsert.copyWith(barcode: barcode);
+        )..where((s) => s.id.equals(1))).getSingleOrNull();
+        if (settings == null) {
+          toInsert = toInsert.copyWith(
+            barcode: 'MEM-${DateTime.now().millisecondsSinceEpoch}',
+          );
+        } else {
+          final barcode =
+              '${settings.memberBarcodePrefix}${settings.memberBarcodeNextValue}';
+          await (_db.update(
+            _db.librarySettings,
+          )..where((s) => s.id.equals(1))).write(
+            LibrarySettingsCompanion(
+              memberBarcodeNextValue: Value(
+                settings.memberBarcodeNextValue + 1,
+              ),
+              updatedAt: Value(DateTime.now()),
+            ),
+          );
+          toInsert = toInsert.copyWith(barcode: barcode);
+        }
       }
       await _db.into(_db.members).insert(toInsert.toCompanion());
       return (await findMemberById(toInsert.id))!;

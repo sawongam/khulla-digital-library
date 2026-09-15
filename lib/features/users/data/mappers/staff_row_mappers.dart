@@ -19,6 +19,7 @@ extension StaffRowX on StaffRow {
     role: role,
     status: status,
     createdAt: createdAt,
+    barcode: barcode,
   );
 
   /// The account together with the hash to verify a sign-in against.
@@ -38,6 +39,7 @@ extension StaffMemberX on StaffMember {
     passwordHash: Value(passwordHash),
     role: Value(role),
     status: Value(status),
+    barcode: Value(barcode),
     createdAt: Value(createdAt),
   );
 }

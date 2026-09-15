@@ -72,7 +72,7 @@ class AppDatabase extends _$AppDatabase {
   static const String _source = 'AppDatabase';
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -401,6 +401,50 @@ class AppDatabase extends _$AppDatabase {
           'INSERT INTO members_fts (rowid, full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian) '
           'SELECT rowid, full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian FROM members',
         );
+      },
+      from14To15: (m, schema) async {
+        await m.addColumn(
+          schema.librarySettings,
+          schema.librarySettings.memberBarcodePrefix,
+        );
+        await m.addColumn(
+          schema.librarySettings,
+          schema.librarySettings.memberBarcodeNextValue,
+        );
+        await m.addColumn(
+          schema.librarySettings,
+          schema.librarySettings.staffBarcodePrefix,
+        );
+        await m.addColumn(
+          schema.librarySettings,
+          schema.librarySettings.staffBarcodeNextValue,
+        );
+        await m.addColumn(schema.staff, schema.staff.barcode);
+        await m.createIndex(schema.staffBarcode);
+        // Backfill existing staff with generated barcodes.
+        final settingsRow = await customSelect(
+          'SELECT staff_barcode_prefix, staff_barcode_next_value FROM library_settings WHERE id = 1',
+        ).getSingleOrNull();
+        if (settingsRow != null) {
+          final prefix = settingsRow.read<String>('staff_barcode_prefix');
+          var next = settingsRow.read<int>('staff_barcode_next_value');
+          final staffRows = await customSelect(
+            'SELECT id FROM staff WHERE barcode IS NULL ORDER BY created_at',
+          ).get();
+          for (final row in staffRows) {
+            final id = row.read<String>('id');
+            final barcode = '$prefix$next';
+            await customStatement(
+              'UPDATE staff SET barcode = ? WHERE id = ?',
+              [barcode, id],
+            );
+            next++;
+          }
+          await customStatement(
+            'UPDATE library_settings SET staff_barcode_next_value = ? WHERE id = 1',
+            [next],
+          );
+        }
       },
     )(m, from, to);
   }

@@ -17,6 +17,7 @@ import 'package:khulla/features/users/domain/user_status.dart';
 /// operates the system; the two have different fields, different lifetimes,
 /// and only one of them signs in.
 @DataClassName('StaffRow')
+@TableIndex(name: 'staff_barcode', columns: {#barcode}, unique: true)
 class Staff extends Table {
   /// A UUID rather than a rowid, so an account keeps its identity across an
   /// export, a restore, or a catalogue merged from a second branch.
@@ -46,6 +47,9 @@ class Staff extends Table {
   /// Whether the account may sign in. Disabling is preferred to deleting: the
   /// record is referenced by everything the person did at the desk.
   TextColumn get status => textEnum<UserStatus>()();
+
+  /// Auto-generated staff barcode — unique, shown on detail and for scans.
+  TextColumn get barcode => text().nullable()();
 
   DateTimeColumn get createdAt => dateTime()();
 
