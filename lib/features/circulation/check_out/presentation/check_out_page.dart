@@ -84,7 +84,7 @@ class _CheckOutPageState extends State<CheckOutPage> with DisposeBag {
 
         final memberCard = CheckOutMemberCard(
           memberName: member?.fullName,
-          memberCard: member?.cardNumber,
+          memberCard: member?.barcode,
           memberCategory: member?.memberTypeName,
           initials: member?.initials,
           outstandingFines: member?.finesOwed ?? Money.zero,

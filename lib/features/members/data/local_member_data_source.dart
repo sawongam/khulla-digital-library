@@ -10,6 +10,8 @@ import 'package:khulla/core/money/money.dart';
 import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart';
 import 'package:khulla/features/members/data/mappers/member_row_mappers.dart';
 import 'package:khulla/features/members/data/member_local_data_source.dart';
+import 'package:khulla/features/members/domain/blood_group.dart';
+import 'package:khulla/features/members/domain/gender.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/domain/models/member_query.dart';
 
@@ -29,10 +31,15 @@ class LocalMemberDataSource implements MemberLocalDataSource {
   /// The `members_fts` columns a search looks in.
   static const List<String> _searchColumns = [
     'full_name',
-    'card_number',
+    'barcode',
     'email',
     'phone',
     'address',
+    'municipality',
+    'occupation',
+    'institution',
+    'id_verification',
+    'emergency_contact_name',
     'guardian',
   ];
 
@@ -151,7 +158,8 @@ LIMIT ? OFFSET ?
   String _orderClause(MemberQuery query) {
     final dir = query.sortAscending ? 'ASC' : 'DESC';
     return switch (query.sortColumn) {
-      'card' => 'm.card_number $dir',
+      'barcode' => 'm.barcode $dir',
+      'card' => 'm.barcode $dir',
       'loans' => 'loans_out $dir',
       'fines' => 'fines_owed $dir',
       'joined' => 'm.joined_at $dir',
@@ -164,7 +172,7 @@ LIMIT ? OFFSET ?
   Member _mapRow(QueryRow row) => Member(
     id: row.read<String>('id'),
     fullName: row.read<String>('full_name'),
-    cardNumber: row.read<String>('card_number'),
+    barcode: row.read<String>('barcode'),
     memberTypeId: row.read<String>('member_type_id'),
     memberTypeName: row.read<String>('member_type_name'),
     memberTypeCode: row.readNullable<String>('member_type_code'),
@@ -176,10 +184,22 @@ LIMIT ? OFFSET ?
     finesOwed: Money(row.read<int>('fines_owed')),
     borrowedAllTime: row.read<int>('borrowed_all_time'),
     sendNotices: row.read<bool>('send_notices'),
+    gender: row.readNullable<String>('gender') == null
+        ? null
+        : Gender.values.byName(row.read<String>('gender')),
     dateOfBirth: row.readNullable<DateTime>('date_of_birth'),
+    bloodGroup: row.readNullable<String>('blood_group') == null
+        ? null
+        : BloodGroup.values.byName(row.read<String>('blood_group')),
     email: row.readNullable<String>('email'),
     phone: row.readNullable<String>('phone'),
     address: row.readNullable<String>('address'),
+    municipality: row.readNullable<String>('municipality'),
+    occupation: row.readNullable<String>('occupation'),
+    institution: row.readNullable<String>('institution'),
+    idVerification: row.readNullable<String>('id_verification'),
+    emergencyContactName: row.readNullable<String>('emergency_contact_name'),
+    emergencyContactPhone: row.readNullable<String>('emergency_contact_phone'),
     guardian: row.readNullable<String>('guardian'),
     notes: row.readNullable<String>('notes'),
     expiresAt: row.readNullable<DateTime>('expires_at'),
@@ -194,9 +214,9 @@ LIMIT ? OFFSET ?
       '${value.day.toString().padLeft(2, '0')}';
 
   @override
-  Future<Member?> findMemberByCardNumber(String cardNumber) => guardDatabase(
+  Future<Member?> findMemberByBarcode(String barcode) => guardDatabase(
     () async {
-      final trimmed = cardNumber.trim();
+      final trimmed = barcode.trim();
       if (trimmed.isEmpty) return null;
 
       final today = dateOnly(DateTime.now());
@@ -206,7 +226,7 @@ LIMIT ? OFFSET ?
 SELECT $_selectColumns
 $_fromClause
 WHERE m.archived_at IS NULL
-  AND LOWER(m.card_number) = LOWER(?)
+  AND LOWER(m.barcode) = LOWER(?)
 ''',
             variables: [
               Variable<String>(_dateToSql(today)),
@@ -217,7 +237,7 @@ WHERE m.archived_at IS NULL
       if (rows.isEmpty) return null;
       return _mapRow(rows.first);
     },
-    source: '$_source.findMemberByCardNumber',
+    source: '$_source.findMemberByBarcode',
   );
 
   @override
@@ -245,10 +265,26 @@ WHERE m.id = ?
 
   @override
   Future<Member> insertMember(Member member) => guardDatabase(
-    () async {
-      await _db.into(_db.members).insert(member.toCompanion());
-      return (await findMemberById(member.id))!;
-    },
+    () => _db.transaction(() async {
+      var toInsert = member;
+      if (toInsert.barcode.trim().isEmpty) {
+        final settings = await (_db.select(
+          _db.librarySettings,
+        )..where((s) => s.id.equals(1))).getSingle();
+        final barcode = '${settings.barcodePrefix}${settings.barcodeNextValue}';
+        await (_db.update(
+          _db.librarySettings,
+        )..where((s) => s.id.equals(1))).write(
+          LibrarySettingsCompanion(
+            barcodeNextValue: Value(settings.barcodeNextValue + 1),
+            updatedAt: Value(DateTime.now()),
+          ),
+        );
+        toInsert = toInsert.copyWith(barcode: barcode);
+      }
+      await _db.into(_db.members).insert(toInsert.toCompanion());
+      return (await findMemberById(toInsert.id))!;
+    }),
     source: '$_source.insertMember',
   );
 

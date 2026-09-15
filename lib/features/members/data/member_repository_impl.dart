@@ -8,6 +8,8 @@ import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart'
 import 'package:khulla/features/circulation/shared/domain/resolve_loan_rules.dart';
 import 'package:khulla/features/members/data/member_local_data_source.dart';
 import 'package:khulla/features/members/data/member_type_local_data_source.dart';
+import 'package:khulla/features/members/domain/blood_group.dart';
+import 'package:khulla/features/members/domain/gender.dart';
 import 'package:khulla/features/members/domain/member_repository.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/domain/models/member_query.dart';
@@ -40,20 +42,28 @@ class MemberRepositoryImpl implements MemberRepository {
   Future<Member?> findMember(String id) => _dataSource.findMemberById(id);
 
   @override
-  Future<Member?> findMemberByCardNumber(String cardNumber) =>
-      _dataSource.findMemberByCardNumber(cardNumber);
+  Future<Member?> findMemberByBarcode(String barcode) =>
+      _dataSource.findMemberByBarcode(barcode);
 
   @override
   Future<Member> saveMember({
     required String fullName,
-    required String cardNumber,
     required String memberTypeId,
     String? id,
+    String? barcode,
     bool sendNotices = true,
+    Gender? gender,
     DateTime? dateOfBirth,
+    BloodGroup? bloodGroup,
     String? email,
     String? phone,
     String? address,
+    String? municipality,
+    String? occupation,
+    String? institution,
+    String? idVerification,
+    String? emergencyContactName,
+    String? emergencyContactPhone,
     String? guardian,
     String? notes,
   }) async {
@@ -79,10 +89,17 @@ class MemberRepositoryImpl implements MemberRepository {
       );
     }
 
+    final trimmedBarcode = barcode?.trim() ?? '';
+    final effectiveBarcode = trimmedBarcode.isNotEmpty
+        ? trimmedBarcode
+        : existing?.barcode.trim().isNotEmpty == true
+        ? existing!.barcode
+        : '';
+
     final draft = Member(
       id: recordId,
       fullName: fullName.trim(),
-      cardNumber: cardNumber.trim(),
+      barcode: effectiveBarcode,
       memberTypeId: memberTypeId,
       memberTypeName: memberType.name,
       memberTypeCode: memberType.code,
@@ -94,12 +111,32 @@ class MemberRepositoryImpl implements MemberRepository {
       finesOwed: existing?.finesOwed ?? Money.zero,
       borrowedAllTime: existing?.borrowedAllTime ?? 0,
       sendNotices: sendNotices,
+      gender: gender,
       dateOfBirth: dateOfBirth == null ? null : dateOnly(dateOfBirth),
-      email: email?.trim(),
-      phone: phone?.trim(),
-      address: address?.trim(),
-      guardian: guardian?.trim(),
-      notes: notes?.trim(),
+      bloodGroup: bloodGroup,
+      email: email?.trim().isEmpty == true ? null : email?.trim(),
+      phone: phone?.trim().isEmpty == true ? null : phone?.trim(),
+      address: address?.trim().isEmpty == true ? null : address?.trim(),
+      municipality: municipality?.trim().isEmpty == true
+          ? null
+          : municipality?.trim(),
+      occupation: occupation?.trim().isEmpty == true
+          ? null
+          : occupation?.trim(),
+      institution: institution?.trim().isEmpty == true
+          ? null
+          : institution?.trim(),
+      idVerification: idVerification?.trim().isEmpty == true
+          ? null
+          : idVerification?.trim(),
+      emergencyContactName: emergencyContactName?.trim().isEmpty == true
+          ? null
+          : emergencyContactName?.trim(),
+      emergencyContactPhone: emergencyContactPhone?.trim().isEmpty == true
+          ? null
+          : emergencyContactPhone?.trim(),
+      guardian: guardian?.trim().isEmpty == true ? null : guardian?.trim(),
+      notes: notes?.trim().isEmpty == true ? null : notes?.trim(),
       expiresAt: expiresAt,
       suspendedAt: existing?.suspendedAt,
       suspensionReason: existing?.suspensionReason,

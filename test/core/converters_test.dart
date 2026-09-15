@@ -71,7 +71,7 @@ void main() {
         final member = await seedMember(
           db,
           memberTypeId: reference.memberTypeId,
-          cardNumber: 'DATE-MEM',
+          barcode: 'DATE-MEM',
         );
         final expires = DateTime(2025, 1, 20);
 

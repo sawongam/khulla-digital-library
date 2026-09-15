@@ -1,8 +1,8 @@
 # Database schema
 
-> DO NOT HAND-EDIT. Generated from `drift_schemas/app_database/drift_schema_v13.json` by `tools/db_diagram.dart`. Regenerate with `make db-diagram`.
+> DO NOT HAND-EDIT. Generated from `drift_schemas/app_database/drift_schema_v14.json` by `tools/db_diagram.dart`. Regenerate with `make db-diagram`.
 
-## ER diagram — schema v13
+## ER diagram — schema v14
 
 Renders on GitHub and in VS Code Markdown preview.
 
@@ -105,13 +105,21 @@ erDiagram
   }
   members {
     TEXT id PK "required"
-    TEXT card_number UK "required"
+    TEXT barcode UK "required"
     TEXT full_name "required, max 160"
     TEXT member_type_id "required"
+    TEXT gender "nullable, Gender"
     TEXT date_of_birth "nullable, DateTime"
+    TEXT blood_group "nullable, BloodGroup"
     TEXT email "nullable"
     TEXT phone "nullable"
     TEXT address "nullable"
+    TEXT municipality "nullable, max 80"
+    TEXT occupation "nullable, max 80"
+    TEXT institution "nullable, max 120"
+    TEXT id_verification "nullable, max 80"
+    TEXT emergency_contact_name "nullable, max 80"
+    TEXT emergency_contact_phone "nullable, max 40"
     TEXT guardian "nullable"
     TEXT notes "nullable"
     DATETIME joined_at "required"
@@ -125,10 +133,15 @@ erDiagram
   }
   members_fts {
     TEXT full_name "required"
-    TEXT card_number "required"
+    TEXT barcode "required"
     TEXT email "required"
     TEXT phone "required"
     TEXT address "required"
+    TEXT municipality "required"
+    TEXT occupation "required"
+    TEXT institution "required"
+    TEXT id_verification "required"
+    TEXT emergency_contact_name "required"
     TEXT guardian "required"
   }
   reservations {

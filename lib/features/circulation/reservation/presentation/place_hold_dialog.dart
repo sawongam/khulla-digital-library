@@ -126,7 +126,7 @@ class _PlaceHoldBody extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          member.cardNumber,
+                          member.barcode,
                           style: context.textTheme.bodySmall?.copyWith(
                             color: context.colorScheme.onSurfaceVariant,
                           ),
@@ -245,7 +245,7 @@ class _MemberPickRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  member.cardNumber,
+                  member.barcode,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: context.textTheme.bodySmall?.copyWith(

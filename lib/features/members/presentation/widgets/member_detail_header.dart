@@ -31,7 +31,7 @@ class MemberDetailHeader extends StatelessWidget {
     return RecordHeader(
       title: member.name,
       initials: member.initials,
-      facts: [member.cardNumber, member.memberTypeName],
+      facts: [member.barcode, member.memberTypeName],
       badges: [
         AppStatusBadge(
           label: member.status.label(l10n),

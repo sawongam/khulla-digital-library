@@ -25,6 +25,8 @@ class MemberDetailsCard extends StatelessWidget {
     final dateOfBirth = member.dateOfBirth == null
         ? notSet
         : AppDateFormat.format(member.dateOfBirth!);
+    final gender = member.gender?.label(l10n) ?? notSet;
+    final bloodGroup = member.bloodGroup?.label ?? notSet;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -37,7 +39,7 @@ class MemberDetailsCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               for (final (index, row) in <(String, String)>[
-                (l10n.fieldCardNumber, member.cardNumber),
+                (l10n.fieldBarcode, member.barcode),
                 (l10n.fieldCategory, member.memberTypeName),
                 (l10n.commonStatus, member.status.label(l10n)),
                 (l10n.fieldJoined, member.joined),
@@ -45,7 +47,9 @@ class MemberDetailsCard extends StatelessWidget {
                   l10n.fieldExpires,
                   member.expires.isEmpty ? notSet : member.expires,
                 ),
+                (l10n.fieldGender, gender),
                 (l10n.fieldDateOfBirth, dateOfBirth),
+                (l10n.fieldBloodGroup, bloodGroup),
                 (l10n.fieldGuardian, member.guardian ?? notSet),
               ].indexed) ...[
                 if (index > 0) SizedBox(height: spacing.sm),
@@ -65,6 +69,48 @@ class MemberDetailsCard extends StatelessWidget {
                 (l10n.fieldEmail, member.email ?? notSet),
                 (l10n.fieldPhone, member.phone ?? notSet),
                 (l10n.fieldAddress, member.address ?? notSet),
+                (l10n.fieldMunicipality, member.municipality ?? notSet),
+              ].indexed) ...[
+                if (index > 0) SizedBox(height: spacing.sm),
+                AppDetailRow(label: row.$1, child: Text(row.$2)),
+              ],
+            ],
+          ),
+        ),
+        SizedBox(height: spacing.md),
+        SectionCard(
+          title: l10n.memberFormAdditional,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final (index, row) in <(String, String)>[
+                (l10n.fieldOccupation, member.occupation ?? notSet),
+                (l10n.fieldInstitution, member.institution ?? notSet),
+                (l10n.fieldIdVerification, member.idVerification ?? notSet),
+              ].indexed) ...[
+                if (index > 0) SizedBox(height: spacing.sm),
+                AppDetailRow(label: row.$1, child: Text(row.$2)),
+              ],
+            ],
+          ),
+        ),
+        SizedBox(height: spacing.md),
+        SectionCard(
+          title: l10n.memberFormEmergency,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final (index, row) in <(String, String)>[
+                (
+                  l10n.fieldEmergencyContactName,
+                  member.emergencyContactName ?? notSet,
+                ),
+                (
+                  l10n.fieldEmergencyContactPhone,
+                  member.emergencyContactPhone ?? notSet,
+                ),
               ].indexed) ...[
                 if (index > 0) SizedBox(height: spacing.sm),
                 AppDetailRow(label: row.$1, child: Text(row.$2)),

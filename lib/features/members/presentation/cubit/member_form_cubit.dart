@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/format/app_date_format.dart';
+import 'package:khulla/features/members/domain/blood_group.dart';
+import 'package:khulla/features/members/domain/gender.dart';
 import 'package:khulla/features/members/domain/member_repository.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/domain/models/member_type.dart';
@@ -80,9 +82,17 @@ class MemberFormCubit extends Cubit<MemberFormState> {
   /// blank means unknown, anything else must parse or the save is refused.
   Future<Member> saveMember({
     required String fullName,
-    required String cardNumber,
     required String memberTypeId,
     required bool sendNotices,
+    String? barcode,
+    Gender? gender,
+    BloodGroup? bloodGroup,
+    String? municipality,
+    String? occupation,
+    String? institution,
+    String? idVerification,
+    String? emergencyContactName,
+    String? emergencyContactPhone,
     String? email,
     String? phone,
     String? address,
@@ -103,10 +113,18 @@ class MemberFormCubit extends Cubit<MemberFormState> {
       }
       final saved = await _members.saveMember(
         id: state.existing?.id,
+        barcode: barcode,
         fullName: fullName,
-        cardNumber: cardNumber,
         memberTypeId: memberTypeId,
         sendNotices: sendNotices,
+        gender: gender,
+        bloodGroup: bloodGroup,
+        municipality: municipality,
+        occupation: occupation,
+        institution: institution,
+        idVerification: idVerification,
+        emergencyContactName: emergencyContactName,
+        emergencyContactPhone: emergencyContactPhone,
         email: email,
         phone: phone,
         address: address,

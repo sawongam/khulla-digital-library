@@ -165,13 +165,13 @@ void main() {
       await seedMember(
         db,
         memberTypeId: reference.memberTypeId,
-        cardNumber: 'KH-000123',
+        barcode: 'KH-000123',
         fullName: 'Sita Sharma',
       );
       await seedMember(
         db,
         memberTypeId: reference.memberTypeId,
-        cardNumber: 'KH-000456',
+        barcode: 'KH-000456',
         fullName: 'Ram Thapa',
       );
 
@@ -205,7 +205,7 @@ void main() {
       await seedMember(
         db,
         memberTypeId: reference.memberTypeId,
-        cardNumber: 'MEM-002',
+        barcode: 'MEM-002',
         fullName: 'Idle',
       );
       final first = await seedTitleWithCopy(db, formatId: reference.formatId);

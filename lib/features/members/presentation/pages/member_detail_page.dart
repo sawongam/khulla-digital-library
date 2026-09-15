@@ -287,7 +287,7 @@ class MemberDetailPage extends StatelessWidget {
                           ? null
                           : () => context.go(
                               Routes.circulationCheckOutForMember(
-                                member.cardNumber,
+                                member.barcode,
                               ),
                             ),
                       menuActions: [

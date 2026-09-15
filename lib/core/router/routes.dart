@@ -76,9 +76,9 @@ abstract final class Routes {
   /// The checkout desk.
   static const String circulationCheckOut = '$circulation/$checkOutSegment';
 
-  /// The checkout desk with a member already looked up by card number.
-  static String circulationCheckOutForMember(String cardNumber) =>
-      '$circulationCheckOut?card=${Uri.encodeComponent(cardNumber)}';
+  /// The checkout desk with a member already looked up by barcode.
+  static String circulationCheckOutForMember(String barcode) =>
+      '$circulationCheckOut?card=${Uri.encodeComponent(barcode)}';
 
   /// The returns desk.
   static const String circulationReturn = '$circulation/$returnsSegment';

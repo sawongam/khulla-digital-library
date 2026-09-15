@@ -25,6 +25,8 @@ import 'package:khulla/features/circulation/shared/domain/fine_reason.dart';
 import 'package:khulla/features/circulation/shared/domain/reservation_status.dart';
 import 'package:khulla/features/members/data/tables/member_types.dart';
 import 'package:khulla/features/members/data/tables/members.dart';
+import 'package:khulla/features/members/domain/blood_group.dart';
+import 'package:khulla/features/members/domain/gender.dart';
 import 'package:khulla/features/settings/data/tables/library_settings.dart';
 import 'package:khulla/features/settings/data/tables/loan_rules.dart';
 import 'package:khulla/features/users/data/tables/staff.dart';
@@ -70,7 +72,7 @@ class AppDatabase extends _$AppDatabase {
   static const String _source = 'AppDatabase';
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -367,6 +369,39 @@ class AppDatabase extends _$AppDatabase {
           schema.librarySettings.logoRef,
         );
       },
+      from13To14: (m, schema) async {
+        await customStatement(
+          'ALTER TABLE members RENAME COLUMN card_number TO barcode',
+        );
+        await customStatement('DROP INDEX IF EXISTS members_card');
+        await m.createIndex(schema.membersBarcode);
+        await m.addColumn(schema.members, schema.members.gender);
+        await m.addColumn(schema.members, schema.members.bloodGroup);
+        await m.addColumn(schema.members, schema.members.municipality);
+        await m.addColumn(schema.members, schema.members.occupation);
+        await m.addColumn(schema.members, schema.members.institution);
+        await m.addColumn(schema.members, schema.members.idVerification);
+        await m.addColumn(
+          schema.members,
+          schema.members.emergencyContactName,
+        );
+        await m.addColumn(
+          schema.members,
+          schema.members.emergencyContactPhone,
+        );
+        await customStatement('DROP TRIGGER IF EXISTS members_fts_insert');
+        await customStatement('DROP TRIGGER IF EXISTS members_fts_update');
+        await customStatement('DROP TRIGGER IF EXISTS members_fts_delete');
+        await customStatement('DROP TABLE IF EXISTS members_fts');
+        await m.create(schema.membersFts);
+        for (final statement in _v14SearchTriggers) {
+          await customStatement(statement);
+        }
+        await customStatement(
+          'INSERT INTO members_fts (rowid, full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian) '
+          'SELECT rowid, full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian FROM members',
+        );
+      },
     )(m, from, to);
   }
 }
@@ -409,6 +444,38 @@ AFTER UPDATE OF full_name, card_number, email, phone, address, guardian ON membe
       email = new.email,
       phone = new.phone,
       address = new.address,
+      guardian = new.guardian
+  WHERE rowid = old.rowid;
+END;''',
+  '''
+CREATE TRIGGER members_fts_delete AFTER DELETE ON members BEGIN
+  DELETE FROM members_fts WHERE rowid = old.rowid;
+END;''',
+];
+
+/// The v14 member search triggers — `members_fts` now indexes the richer
+/// profile (barcode, municipality, occupation, institution, id verification
+/// and emergency contact) alongside the name and contacts.
+const List<String> _v14SearchTriggers = [
+  '''
+CREATE TRIGGER members_fts_insert AFTER INSERT ON members BEGIN
+  INSERT INTO members_fts (rowid, full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian)
+  VALUES (new.rowid, new.full_name, new.barcode, new.email, new.phone, new.address, new.municipality, new.occupation, new.institution, new.id_verification, new.emergency_contact_name, new.guardian);
+END;''',
+  '''
+CREATE TRIGGER members_fts_update
+AFTER UPDATE OF full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian ON members BEGIN
+  UPDATE members_fts
+  SET full_name = new.full_name,
+      barcode = new.barcode,
+      email = new.email,
+      phone = new.phone,
+      address = new.address,
+      municipality = new.municipality,
+      occupation = new.occupation,
+      institution = new.institution,
+      id_verification = new.id_verification,
+      emergency_contact_name = new.emergency_contact_name,
       guardian = new.guardian
   WHERE rowid = old.rowid;
 END;''',

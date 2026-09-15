@@ -224,7 +224,7 @@ LIMIT 6
 SELECT * FROM (
   SELECT * FROM (
     SELECT 'borrow' AS kind, t.title AS item, c.barcode AS item_code,
-           m.full_name AS member, m.card_number AS member_code,
+           m.full_name AS member, m.barcode AS member_code,
            l.checked_out_at AS at, l.due_at AS due
     FROM loans l
     JOIN copies c ON c.id = l.copy_id
@@ -237,7 +237,7 @@ SELECT * FROM (
   UNION ALL
 
   SELECT * FROM (
-    SELECT 'returned', t.title, c.barcode, m.full_name, m.card_number,
+    SELECT 'returned', t.title, c.barcode, m.full_name, m.barcode,
            l.returned_at, NULL
     FROM loans l
     JOIN copies c ON c.id = l.copy_id
@@ -251,7 +251,7 @@ SELECT * FROM (
   UNION ALL
 
   SELECT * FROM (
-    SELECT 'reserved', t.title, '', m.full_name, m.card_number,
+    SELECT 'reserved', t.title, '', m.full_name, m.barcode,
            r.placed_at, NULL
     FROM reservations r
     JOIN titles t ON t.id = r.title_id
@@ -264,7 +264,7 @@ SELECT * FROM (
 
   SELECT * FROM (
     SELECT 'fine', COALESCE(t.title, ''), COALESCE(c.barcode, ''),
-           m.full_name, m.card_number, f.raised_at, NULL
+           m.full_name, m.barcode, f.raised_at, NULL
     FROM fines f
     JOIN members m ON m.id = f.member_id
     LEFT JOIN loans l ON l.id = f.loan_id
@@ -379,7 +379,7 @@ LIMIT 5
     final rows = await _db
         .customSelect(
           '''
-SELECT m.full_name AS name, m.card_number AS detail, COUNT(*) AS c
+SELECT m.full_name AS name, m.barcode AS detail, COUNT(*) AS c
 FROM loans l
 JOIN members m ON m.id = l.member_id
 WHERE l.checked_out_at >= ? AND l.checked_out_at < ?

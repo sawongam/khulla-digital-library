@@ -9,6 +9,8 @@ import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/feedback/app_toast.dart';
 import 'package:khulla/core/format/app_date_format.dart';
 import 'package:khulla/core/lifecycle/dispose_bag.dart';
+import 'package:khulla/features/members/domain/blood_group.dart';
+import 'package:khulla/features/members/domain/gender.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/domain/models/member_type.dart';
 import 'package:khulla/features/members/presentation/cubit/member_form_cubit.dart';
@@ -23,12 +25,10 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The borrower editor, used for both a new card and an existing one.
 ///
-/// A modal rather than a route — see [AppFormModal]. Three sections in the
-/// order the counter fills them: who the person is, how to reach them, and
-/// which rules their card runs under. [MemberFormCubit] loads member types and
-/// saves the record; the category sits last because it decides the loan period,
-/// borrowing limit and fine rate. Expiry is read-only here — it is set from
-/// the loan rules on registration and extended by renewing the membership.
+/// A modal rather than a route — see [AppFormModal]. Four sections in the
+/// order the counter fills them: identity, contact, additional details and
+/// membership. [MemberFormCubit] loads member types and saves the record;
+/// barcode is auto-generated from library settings when blank.
 class MemberFormDialog extends StatelessWidget {
   const MemberFormDialog({this.memberId, super.key});
 
@@ -99,9 +99,7 @@ class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
   late final TextEditingController _name = textController(
     widget.existing?.fullName,
   );
-  late final TextEditingController _cardNumber = textController(
-    widget.existing?.cardNumber,
-  );
+  late Gender? _gender = widget.existing?.gender;
   late final TextEditingController _email = textController(
     widget.existing?.email,
   );
@@ -111,7 +109,26 @@ class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
   late final TextEditingController _address = textController(
     widget.existing?.address,
   );
+  late final TextEditingController _municipality = textController(
+    widget.existing?.municipality,
+  );
+  late final TextEditingController _occupation = textController(
+    widget.existing?.occupation,
+  );
+  late final TextEditingController _institution = textController(
+    widget.existing?.institution,
+  );
+  late final TextEditingController _idVerification = textController(
+    widget.existing?.idVerification,
+  );
+  late final TextEditingController _emergencyContactName = textController(
+    widget.existing?.emergencyContactName,
+  );
+  late final TextEditingController _emergencyContactPhone = textController(
+    widget.existing?.emergencyContactPhone,
+  );
   late DateTime? _dateOfBirth = widget.existing?.dateOfBirth;
+  late BloodGroup? _bloodGroup = widget.existing?.bloodGroup;
   late final TextEditingController _guardian = textController(
     widget.existing?.guardian,
   );
@@ -134,6 +151,7 @@ class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
 
   late bool _sendNotices = widget.existing?.sendNotices ?? true;
   late final String _expires = widget.existing?.expires ?? '';
+  late final String _barcode = widget.existing?.barcode ?? '';
 
   bool get _isEditing => widget.memberId != null;
 
@@ -186,17 +204,36 @@ class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
   Future<void> _save() async {
     final l10n = context.l10n;
     final name = _name.text.trim();
-    final cardNumber = _cardNumber.text.trim();
-    if (name.isEmpty || cardNumber.isEmpty || _memberTypeId.isEmpty) {
+    if (name.isEmpty || _memberTypeId.isEmpty) {
       AppToast.error(context, message: l10n.validationFieldRequired);
       return;
     }
     try {
       await context.read<MemberFormCubit>().saveMember(
         fullName: name,
-        cardNumber: cardNumber,
         memberTypeId: _memberTypeId,
         sendNotices: _sendNotices,
+        barcode: _barcode.isEmpty ? null : _barcode,
+        gender: _gender,
+        bloodGroup: _bloodGroup,
+        municipality: _municipality.text.trim().isEmpty
+            ? null
+            : _municipality.text.trim(),
+        occupation: _occupation.text.trim().isEmpty
+            ? null
+            : _occupation.text.trim(),
+        institution: _institution.text.trim().isEmpty
+            ? null
+            : _institution.text.trim(),
+        idVerification: _idVerification.text.trim().isEmpty
+            ? null
+            : _idVerification.text.trim(),
+        emergencyContactName: _emergencyContactName.text.trim().isEmpty
+            ? null
+            : _emergencyContactName.text.trim(),
+        emergencyContactPhone: _emergencyContactPhone.text.trim().isEmpty
+            ? null
+            : _emergencyContactPhone.text.trim(),
         email: _email.text.trim().isEmpty ? null : _email.text.trim(),
         phone: _phone.text.trim().isEmpty ? null : _phone.text.trim(),
         address: _address.text.trim().isEmpty ? null : _address.text.trim(),
@@ -239,10 +276,13 @@ class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
       children: [
         MemberFormIdentitySection(
           name: _name,
-          cardNumber: _cardNumber,
+          gender: _gender,
+          onGenderChanged: (v) => setState(() => _gender = v),
           dateOfBirth: _dateOfBirth == null
               ? null
               : AppDateFormat.format(_dateOfBirth!),
+          bloodGroup: _bloodGroup,
+          onBloodGroupChanged: (v) => setState(() => _bloodGroup = v),
           guardian: _guardian,
           onPickDateOfBirth: () => unawaited(_pickDateOfBirth()),
           onClearDateOfBirth: _dateOfBirth == null
@@ -253,11 +293,22 @@ class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
           email: _email,
           phone: _phone,
           address: _address,
+          municipality: _municipality,
+        ),
+        MemberFormAdditionalSection(
+          occupation: _occupation,
+          institution: _institution,
+          idVerification: _idVerification,
+        ),
+        MemberFormEmergencySection(
+          emergencyContactName: _emergencyContactName,
+          emergencyContactPhone: _emergencyContactPhone,
         ),
         MemberFormMembershipSection(
           memberTypes: widget.memberTypes,
           selectedType: _selectedType,
           expires: _expires,
+          barcode: _barcode,
           notes: _notes,
           sendNotices: _sendNotices,
           onTypeChanged: (type) => setState(
