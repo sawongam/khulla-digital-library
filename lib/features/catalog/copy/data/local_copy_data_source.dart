@@ -190,8 +190,7 @@ WHERE c.id = ?
                   (s) => s.id.equals(LibrarySettings.singletonId),
                 ))
                 .getSingle();
-        barcode =
-            '${settings.barcodePrefix}${settings.barcodeNextValue.toString().padLeft(6, '0')}';
+        barcode = '${settings.barcodePrefix}${settings.barcodeNextValue}';
         await (_db.update(_db.librarySettings)..where(
               (s) => s.id.equals(LibrarySettings.singletonId),
             ))
