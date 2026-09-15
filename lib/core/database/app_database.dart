@@ -85,6 +85,29 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> warmUp() => customSelect('SELECT 1').get();
 
+  /// Runs [action] in a transaction, then makes sure its commit reaches the
+  /// browser's storage.
+  ///
+  /// On web, drift keeps the database in memory and copies it to IndexedDB
+  /// after each statement that runs outside a transaction. The `COMMIT` itself
+  /// still counts as inside one — drift clears the flag only after it — so a
+  /// committed transaction stays in memory until some later plain write
+  /// happens to copy it. A refresh before that loses it: onboarding's
+  /// administrator vanished this way, and so would a checkout.
+  ///
+  /// The no-op statement after the commit runs with the flag clear, which is
+  /// what triggers the copy. Inside an outer transaction it joins that one and
+  /// does nothing, and on native it is one trivial statement.
+  @override
+  Future<T> transaction<T>(
+    Future<T> Function() action, {
+    bool requireNew = false,
+  }) async {
+    final result = await super.transaction(action, requireNew: requireNew);
+    await customStatement('SELECT 1');
+    return result;
+  }
+
   @disposeMethod
   Future<void> dispose() => close();
 
