@@ -476,6 +476,10 @@ class CirculationRepositoryImpl implements CirculationRepository {
       _loanDataSource.findLoans(query);
 
   @override
+  Future<Loan?> findOpenLoanByBarcode(String barcode) =>
+      _loanDataSource.findOpenLoanByBarcode(barcode.trim());
+
+  @override
   Future<Loan?> findLoan(String id) => _loanDataSource.findLoanById(id);
 
   @override

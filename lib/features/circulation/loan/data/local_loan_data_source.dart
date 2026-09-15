@@ -222,6 +222,27 @@ WHERE l.copy_id = ? AND l.returned_at IS NULL
   );
 
   @override
+  Future<Loan?> findOpenLoanByBarcode(String barcode) => guardDatabase(
+    () async {
+      final trimmed = barcode.trim();
+      if (trimmed.isEmpty) return null;
+      final rows = await _db
+          .customSelect(
+            '''
+SELECT $_selectColumns
+$_fromClause
+WHERE LOWER(c.barcode) = LOWER(?) AND l.returned_at IS NULL
+''',
+            variables: [Variable<String>(trimmed)],
+          )
+          .get();
+      if (rows.isEmpty) return null;
+      return _mapRow(rows.first);
+    },
+    source: '$_source.findOpenLoanByBarcode',
+  );
+
+  @override
   Future<int> countOpenLoansForMember(String memberId) => guardDatabase(
     () {
       final count = _db.loans.id.count();
