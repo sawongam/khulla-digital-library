@@ -126,9 +126,6 @@ abstract final class Routes {
   static const String appearanceSegment = 'appearance';
   static const String backupSegment = 'backup';
 
-  /// Online sync, under settings.
-  static const String syncSegment = 'sync';
-
   /// The component gallery, under settings. Registered by the dev build only.
   static const String designSystemSegment = 'design-system';
 
@@ -143,9 +140,6 @@ abstract final class Routes {
 
   /// Export, restore, import, and the destructive reset.
   static const String settingsBackup = '$settings/$backupSegment';
-
-  /// The online sync and remote backup screen.
-  static const String settingsSync = '$settings/$syncSegment';
 
   /// The design-system gallery. Only reachable in the dev flavor — the
   /// release build declares neither the route nor the door to it.

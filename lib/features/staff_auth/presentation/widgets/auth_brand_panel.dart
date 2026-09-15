@@ -58,12 +58,6 @@ class AuthBrandPanel extends StatelessWidget {
                 ),
                 SizedBox(height: spacing.md),
                 _AuthBrandPoint(
-                  icon: AppIcons.cloudSync,
-                  title: l10n.authBrandSyncTitle,
-                  body: l10n.authBrandSyncBody,
-                ),
-                SizedBox(height: spacing.md),
-                _AuthBrandPoint(
                   icon: AppIcons.privacy,
                   title: l10n.authBrandOpenTitle,
                   body: l10n.authBrandOpenBody,
