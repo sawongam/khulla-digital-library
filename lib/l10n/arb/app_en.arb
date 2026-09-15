@@ -867,7 +867,7 @@
     "reportsSavedAcquisitions": "Acquisitions",
     "reportsSavedAcquisitionsBody": "Titles added over a period, with cost and supplier.",
     "usersAdd": "Add staff",
-    "usersSearchHint": "Search staff by name or email",
+    "usersSearchHint": "Search staff by name, barcode or email",
     "usersColumnName": "Name",
     "usersColumnEmail": "Email",
     "usersColumnRole": "Role",

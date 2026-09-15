@@ -869,7 +869,7 @@
   "reportsSavedAcquisitions": "खरिद",
   "reportsSavedAcquisitionsBody": "अवधिभर थपिएका शीर्षकहरू, लागत र आपूर्तिकर्तासहित।",
   "usersAdd": "कर्मचारी थप्नुहोस्",
-  "usersSearchHint": "नाम वा इमेलबाट कर्मचारी खोज्नुहोस्",
+  "usersSearchHint": "नाम, बारकोड वा इमेलबाट कर्मचारी खोज्नुहोस्",
   "usersColumnName": "नाम",
   "usersColumnEmail": "इमेल",
   "usersColumnRole": "भूमिका",

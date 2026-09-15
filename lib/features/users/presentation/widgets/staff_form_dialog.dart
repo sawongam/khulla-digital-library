@@ -180,6 +180,13 @@ class _StaffFormBodyState extends State<_StaffFormBody> with DisposeBag {
           itemIcon: (role) => role.icon,
           onChanged: (role) => role == null ? null : cubit.roleChanged(role),
         ),
+        AppPickerField(
+          label: l10n.fieldBarcode,
+          value: state.existing?.barcode ?? l10n.memberFormBarcodeHint,
+          icon: AppIcons.scan,
+          enabled: false,
+          onTap: null,
+        ),
         if (!_isEditing)
           AppFormRow(
             children: [
