@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
+import 'package:khulla/features/catalog/shared/domain/copy_condition.dart';
 import 'package:khulla/features/circulation/circulation/presentation/cubit/loan_list_state.dart';
 import 'package:khulla/features/circulation/loan/domain/models/loan_query.dart';
 import 'package:khulla/features/circulation/reservation/domain/models/reservation_query.dart';
@@ -125,6 +126,17 @@ class LoanListCubit extends Cubit<LoanListState> {
   /// Extends the due date for one open loan. Rethrows on failure.
   Future<void> renewLoan(String loanId) async {
     await _repository.renewLoan(loanId, staffId: _auth.state.staff?.id);
+    if (isClosed) return;
+    await loadOpenLoans();
+  }
+
+  /// Returns one copy directly from the loans list. Rethrows on failure.
+  Future<void> returnLoan(String barcode) async {
+    await _repository.returnCopy(
+      barcode: barcode.trim(),
+      condition: CopyCondition.good,
+      staffId: _auth.state.staff?.id,
+    );
     if (isClosed) return;
     await loadOpenLoans();
   }

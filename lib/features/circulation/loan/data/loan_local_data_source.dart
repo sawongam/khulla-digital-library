@@ -17,6 +17,8 @@ abstract interface class LoanLocalDataSource {
 
   Future<Loan?> findOpenLoanByCopyId(String copyId);
 
+  Future<Loan?> findOpenLoanByBarcode(String barcode);
+
   Future<int> countOpenLoansForMember(String memberId);
 
   Future<bool> memberHasOverdueLoans(String memberId);

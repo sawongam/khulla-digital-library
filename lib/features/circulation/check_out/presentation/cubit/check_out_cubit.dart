@@ -91,7 +91,7 @@ class CheckOutCubit extends Cubit<CheckOutState> {
     );
     try {
       final trimmed = query.trim();
-      final exact = await _memberRepository.findMemberByCardNumber(trimmed);
+      final exact = await _memberRepository.findMemberByBarcode(trimmed);
       if (isClosed) return;
       if (exact != null) {
         final rules = await _loadEffectiveRules(exact.memberTypeId);
@@ -156,7 +156,7 @@ class CheckOutCubit extends Cubit<CheckOutState> {
     }
   }
 
-  /// Resolves a member by card number or unambiguous name search.
+  /// Resolves a member by barcode or unambiguous name search.
   ///
   /// One-shot direct resolution for the `?card=` deep link. Loads
   /// [EffectiveLoanRules] for their type on success. Failures emit
@@ -172,7 +172,7 @@ class CheckOutCubit extends Cubit<CheckOutState> {
     );
     try {
       final trimmed = query.trim();
-      var member = await _memberRepository.findMemberByCardNumber(trimmed);
+      var member = await _memberRepository.findMemberByBarcode(trimmed);
       if (member == null) {
         final results = await _memberRepository.findMembers(
           MemberQuery(search: trimmed, limit: 2),

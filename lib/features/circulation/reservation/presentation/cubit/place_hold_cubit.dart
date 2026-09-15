@@ -81,7 +81,7 @@ class PlaceHoldCubit extends Cubit<PlaceHoldState> {
     );
     try {
       final trimmed = query.trim();
-      final exact = await _members.findMemberByCardNumber(trimmed);
+      final exact = await _members.findMemberByBarcode(trimmed);
       if (isClosed) return;
       if (exact != null) {
         emit(

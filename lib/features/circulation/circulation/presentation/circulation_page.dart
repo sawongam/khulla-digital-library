@@ -27,8 +27,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// One page rather than a landing screen plus a list, because the loans table
 /// *is* what a librarian came here to look at. [LoanListCubit] supplies the
 /// counts, the open-loan query and the holds figure for the stat strip — tapping
-/// *Overdue* selects the same rows the chip does. Renew and mark lost in the row
-/// menu still toast as not wired for mark lost; return routes to the returns desk.
+/// *Overdue* selects the same rows the chip does. Renew toasts at its call site;
+/// return routes to the returns desk.
 ///
 /// Stats, toolbar, columns and card live in `presentation/widgets/`; renew
 /// toasts at its call site here.
@@ -44,6 +44,35 @@ class CirculationPage extends StatelessWidget {
       await context.read<LoanListCubit>().renewLoan(loan.id);
       if (!context.mounted) return;
       AppToast.success(context, message: l10n.loansRenewSuccess);
+    } on AppException catch (error) {
+      if (!context.mounted) return;
+      AppToast.error(context, message: error.localizedMessage(l10n));
+    }
+  }
+
+  Future<void> _returnLoan(BuildContext context, Loan loan) async {
+    final l10n = context.l10n;
+    final barcode = loan.barcode;
+    if (barcode == null || barcode.trim().isEmpty) {
+      AppToast.error(
+        context,
+        message: const NotFoundException('That copy has no barcode.')
+            .localizedMessage(l10n),
+      );
+      return;
+    }
+    final confirmed = await AppDialog.confirmDestructive(
+      context: context,
+      title: l10n.loansReturn,
+      message: '${l10n.loansReturn} $barcode?',
+      confirmLabel: l10n.returnsConfirm,
+      cancelLabel: l10n.commonCancel,
+    );
+    if (!context.mounted || !confirmed) return;
+    try {
+      await context.read<LoanListCubit>().returnLoan(barcode);
+      if (!context.mounted) return;
+      AppToast.success(context, message: l10n.returnsSuccess);
     } on AppException catch (error) {
       if (!context.mounted) return;
       AppToast.error(context, message: error.localizedMessage(l10n));
@@ -94,6 +123,7 @@ class CirculationPage extends StatelessWidget {
           columns: loanListColumns(
             context,
             onRenew: (loan) => unawaited(_renewLoan(context, loan)),
+            onReturn: (loan) => unawaited(_returnLoan(context, loan)),
           ),
           sort: sort,
           onSort: (next) => cubit.sortChanged(next.columnId, next.ascending),
@@ -101,6 +131,9 @@ class CirculationPage extends StatelessWidget {
           compactBuilder: (context, loan) => LoanCard(
             loan: loan,
             onTap: () => context.go(Routes.member(loan.memberId)),
+            onReturn: context.canManage(StaffPermission.circulation)
+                ? () => unawaited(_returnLoan(context, loan))
+                : null,
           ),
           emptyState: bootstrapping
               ? const Center(child: AppSpinner())

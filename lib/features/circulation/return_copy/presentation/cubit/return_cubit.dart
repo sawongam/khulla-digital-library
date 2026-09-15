@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_condition.dart';
 import 'package:khulla/features/circulation/loan/domain/models/loan.dart';
-import 'package:khulla/features/circulation/loan/domain/models/loan_query.dart';
 import 'package:khulla/features/circulation/return_copy/presentation/cubit/return_state.dart';
 import 'package:khulla/features/circulation/shared/domain/circulation_repository.dart';
 import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
@@ -29,32 +28,26 @@ class ReturnCubit extends Cubit<ReturnState> {
     if (trimmed.isEmpty) return;
 
     try {
-      final result = await _repository.findOpenLoans(
-        LoanQuery(search: trimmed, limit: 5),
-      );
+      final loan = await _repository.findOpenLoanByBarcode(trimmed);
       if (isClosed) return;
-
-      Loan? loan;
-      for (final item in result.items) {
-        if (item.barcode?.toLowerCase() == trimmed.toLowerCase()) {
-          loan = item;
-          break;
-        }
-      }
-      loan ??= result.items.length == 1 ? result.items.first : null;
       if (loan == null) {
         throw const NotFoundException('That copy is not on loan.');
       }
-      final resolved = loan;
-      if (state.basket.any((item) => item.id == resolved.id)) {
+      if (state.basket.any((item) => item.id == loan.id)) {
         throw const ConflictException('That copy is already in the basket.');
       }
-      emit(state.copyWith(basket: [...state.basket, resolved], error: null));
+      emit(state.copyWith(basket: [...state.basket, loan], error: null));
     } on AppException catch (error) {
       if (isClosed) return;
       emit(state.copyWith(error: error));
       rethrow;
     }
+  }
+
+  /// Adds a loan directly (for one-click return from the loans list).
+  void addLoan(Loan loan) {
+    if (state.basket.any((item) => item.id == loan.id)) return;
+    emit(state.copyWith(basket: [...state.basket, loan], error: null));
   }
 
   void removeLoan(Loan loan) {

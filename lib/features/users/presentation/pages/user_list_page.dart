@@ -68,13 +68,15 @@ class _UserListPageState extends State<UserListPage> {
       for (final member in staff)
         if ((needle.isEmpty ||
                 member.name.toLowerCase().contains(needle) ||
-                member.email.toLowerCase().contains(needle)) &&
+                member.email.toLowerCase().contains(needle) ||
+                (member.barcode?.toLowerCase().contains(needle) ?? false)) &&
             (_statuses.isEmpty || _statuses.contains(member.status)))
           member,
     ];
 
     return matches..sort((a, b) {
       final order = switch (_sort.columnId) {
+        'barcode' => (a.barcode ?? '').compareTo(b.barcode ?? ''),
         'email' => a.email.compareTo(b.email),
         'role' => a.role.index.compareTo(b.role.index),
         'status' => a.status.index.compareTo(b.status.index),

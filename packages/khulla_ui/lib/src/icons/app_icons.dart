@@ -353,9 +353,6 @@ abstract final class AppIcons {
   /// A backup that is safely stored.
   static const AppIconSpec cloudDone = AppIconSpec(SolarIcons.cloudCheck);
 
-  /// A backup in progress.
-  static const AppIconSpec cloudSync = AppIconSpec(SolarIcons.cloudStorage);
-
   /// No backup destination is reachable.
   static const AppIconSpec cloudOff = AppIconSpec(SolarIcons.cloudCross);
 

@@ -23,6 +23,7 @@ abstract class StaffMember with _$StaffMember {
     required UserRole role,
     required UserStatus status,
     required DateTime createdAt,
+    String? barcode,
   }) = _StaffMember;
 
   const StaffMember._();

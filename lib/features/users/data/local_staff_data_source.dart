@@ -118,7 +118,29 @@ class LocalStaffDataSource implements StaffLocalDataSource {
     List<String> recoveryCodeHashes = const [],
   }) => guardDatabase(
     () => _db.transaction(() async {
-      final normalized = staff.copyWith(email: normalizeEmail(staff.email));
+      var normalized = staff.copyWith(email: normalizeEmail(staff.email));
+      if (normalized.barcode == null || normalized.barcode!.trim().isEmpty) {
+        final settings = await (_db.select(
+          _db.librarySettings,
+        )..where((s) => s.id.equals(1))).getSingleOrNull();
+        if (settings == null) {
+          normalized = normalized.copyWith(
+            barcode: 'STF-${DateTime.now().millisecondsSinceEpoch}',
+          );
+        } else {
+          final barcode =
+              '${settings.staffBarcodePrefix}${settings.staffBarcodeNextValue}';
+          await (_db.update(
+            _db.librarySettings,
+          )..where((s) => s.id.equals(1))).write(
+            LibrarySettingsCompanion(
+              staffBarcodeNextValue: Value(settings.staffBarcodeNextValue + 1),
+              updatedAt: Value(DateTime.now()),
+            ),
+          );
+          normalized = normalized.copyWith(barcode: barcode);
+        }
+      }
       await _db
           .into(_db.staff)
           .insert(normalized.toCompanion(passwordHash: passwordHash));

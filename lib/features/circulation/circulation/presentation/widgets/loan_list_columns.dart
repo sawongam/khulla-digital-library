@@ -21,6 +21,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 List<AppTableColumn<Loan>> loanListColumns(
   BuildContext context, {
   required void Function(Loan loan) onRenew,
+  void Function(Loan loan)? onReturn,
 }) {
   final l10n = context.l10n;
   final scheme = context.colorScheme;
@@ -51,7 +52,7 @@ List<AppTableColumn<Loan>> loanListColumns(
       id: 'barcode',
       label: l10n.loansColumnBarcode,
       flex: 2,
-      showFrom: FormFactor.large,
+      showFrom: FormFactor.medium,
       cellBuilder: (context, loan) =>
           Text(loan.barcode ?? l10n.commonNotSet, style: muted),
     ),
@@ -112,7 +113,9 @@ List<AppTableColumn<Loan>> loanListColumns(
               AppMenuAction(
                 label: l10n.loansReturn,
                 icon: AppIcons.checkIn,
-                onSelected: () => context.go(Routes.circulationReturn),
+                onSelected: () => onReturn != null
+                    ? onReturn(loan)
+                    : context.go(Routes.circulationReturn),
               ),
               AppMenuAction(
                 label: l10n.loansRenew,
@@ -140,12 +143,19 @@ List<AppTableColumn<Loan>> loanListColumns(
 }
 
 /// The compact loan card for narrow windows: title and standing up top,
-/// member and due-with-fine below.
+/// member and due-with-fine below, with barcode so the desk can identify the
+/// physical copy without opening the row menu.
 class LoanCard extends StatelessWidget {
-  const LoanCard({required this.loan, required this.onTap, super.key});
+  const LoanCard({
+    required this.loan,
+    required this.onTap,
+    this.onReturn,
+    super.key,
+  });
 
   final Loan loan;
   final VoidCallback onTap;
+  final VoidCallback? onReturn;
 
   @override
   Widget build(BuildContext context) {
@@ -191,17 +201,51 @@ class LoanCard extends StatelessWidget {
               ),
             ),
             SizedBox(height: spacing.xs),
-            Text(
-              loan.accruedFine.isZero
-                  ? '${l10n.loansColumnDue} ${loan.dueOn}'
-                  : '${l10n.loansColumnDue} ${loan.dueOn} · ${loan.accruedFine.display()}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.textTheme.bodySmall?.copyWith(
-                color: loan.accruedFine.isZero
-                    ? scheme.onSurfaceVariant
-                    : scheme.error,
-              ),
+            Row(
+              children: [
+                AppIcon(
+                  AppIcons.barcode,
+                  size: context.appMetrics.iconDense,
+                  color: scheme.onSurfaceVariant,
+                ),
+                SizedBox(width: spacing.xxs),
+                Expanded(
+                  child: Text(
+                    loan.barcode ?? l10n.commonNotSet,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: spacing.xs),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    loan.accruedFine.isZero
+                        ? '${l10n.loansColumnDue} ${loan.dueOn}'
+                        : '${l10n.loansColumnDue} ${loan.dueOn} · ${loan.accruedFine.display()}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: loan.accruedFine.isZero
+                          ? scheme.onSurfaceVariant
+                          : scheme.error,
+                    ),
+                  ),
+                ),
+                if (onReturn != null) ...[
+                  SizedBox(width: spacing.xs),
+                  AppTextButton(
+                    onPressed: onReturn,
+                    child: Text(l10n.loansReturn),
+                  ),
+                ],
+              ],
             ),
           ],
         ),

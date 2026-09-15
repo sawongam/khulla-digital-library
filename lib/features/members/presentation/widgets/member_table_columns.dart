@@ -49,12 +49,12 @@ List<AppTableColumn<Member>> memberTableColumns(
       ),
     ),
     AppTableColumn<Member>(
-      id: 'card',
-      label: l10n.membersColumnCard,
+      id: 'barcode',
+      label: l10n.fieldBarcode,
       flex: 2,
       sortable: true,
       showFrom: FormFactor.medium,
-      cellBuilder: (context, member) => Text(member.cardNumber, style: muted),
+      cellBuilder: (context, member) => Text(member.barcode, style: muted),
     ),
     AppTableColumn<Member>(
       id: 'category',
@@ -161,7 +161,7 @@ List<AppTableColumn<Member>> memberTableColumns(
   ];
 }
 
-/// Sends a row to the checkout desk for the member's card.
+/// Sends a row to the checkout desk for the member's barcode.
 void goToMemberCheckOut(BuildContext context, Member member) => context.go(
-  Routes.circulationCheckOutForMember(member.cardNumber),
+  Routes.circulationCheckOutForMember(member.barcode),
 );

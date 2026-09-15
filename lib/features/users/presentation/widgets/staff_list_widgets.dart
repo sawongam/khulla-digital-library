@@ -48,6 +48,21 @@ List<AppTableColumn<StaffMember>> staffTableColumns(
       ),
     ),
     AppTableColumn<StaffMember>(
+      id: 'barcode',
+      label: l10n.fieldBarcode,
+      flex: 2,
+      sortable: true,
+      showFrom: FormFactor.medium,
+      cellBuilder: (context, staff) => Text(
+        staff.barcode ?? l10n.commonNotSet,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: context.textTheme.bodySmall?.copyWith(
+          color: colors.textMuted,
+        ),
+      ),
+    ),
+    AppTableColumn<StaffMember>(
       id: 'email',
       label: l10n.usersColumnEmail,
       flex: 3,

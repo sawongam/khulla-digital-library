@@ -64,6 +64,17 @@ class StaffCard extends StatelessWidget {
                       color: colors.textMuted,
                     ),
                   ),
+                  if (staff.barcode != null) ...[
+                    SizedBox(height: spacing.xxs),
+                    Text(
+                      staff.barcode!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textTheme.bodySmall?.copyWith(
+                        color: colors.textMuted,
+                      ),
+                    ),
+                  ],
                   SizedBox(height: spacing.xxs),
                   Text(
                     staff.role.label(l10n),

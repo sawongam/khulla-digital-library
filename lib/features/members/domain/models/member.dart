@@ -4,6 +4,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/format/app_date_format.dart';
 import 'package:khulla/core/money/money.dart';
+import 'package:khulla/features/members/domain/blood_group.dart';
+import 'package:khulla/features/members/domain/gender.dart';
 import 'package:khulla/features/members/domain/member_status.dart';
 
 part 'member.freezed.dart';
@@ -14,7 +16,7 @@ abstract class Member with _$Member {
   const factory Member({
     required String id,
     required String fullName,
-    required String cardNumber,
+    required String barcode,
     required String memberTypeId,
     required String memberTypeName,
     required DateTime joinedAt,
@@ -26,10 +28,18 @@ abstract class Member with _$Member {
     required int borrowedAllTime,
     String? memberTypeCode,
     @Default(true) bool sendNotices,
+    Gender? gender,
     DateTime? dateOfBirth,
+    BloodGroup? bloodGroup,
     String? email,
     String? phone,
     String? address,
+    String? municipality,
+    String? occupation,
+    String? institution,
+    String? idVerification,
+    String? emergencyContactName,
+    String? emergencyContactPhone,
     String? guardian,
     String? notes,
     DateTime? expiresAt,

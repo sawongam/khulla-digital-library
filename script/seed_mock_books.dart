@@ -133,7 +133,7 @@ void _seedBooks(_Options options) {
             copyStmt.execute(<Object?>[
               copyId,
               titleId,
-              '${settings.prefix}${barcodeSeq.toString().padLeft(6, '0')}',
+              '${settings.prefix}$barcodeSeq',
               book.shelf,
               'available',
               nowText,
@@ -161,10 +161,8 @@ void _seedBooks(_Options options) {
           'copyIds': seededCopyIds,
         }),
       );
-      final firstBarcode =
-          '${settings.prefix}${settings.nextValue.toString().padLeft(6, '0')}';
-      final lastBarcode =
-          '${settings.prefix}${(barcodeSeq - 1).toString().padLeft(6, '0')}';
+      final firstBarcode = '${settings.prefix}${settings.nextValue}';
+      final lastBarcode = '${settings.prefix}${barcodeSeq - 1}';
       stdout.writeln(
         'Seeded ${seededTitleIds.length} titles and '
         '${seededCopyIds.length} copies into ${options.dbPath} '
@@ -359,7 +357,7 @@ String _ensureBookFormat(Database db) {
 ///
 /// The app hands the next value out to copies added without an explicit
 /// barcode and bumps the row; the script does the same, so seeded barcodes
-/// continue the real `KH-000001` sequence instead of living in a side series.
+/// continue the real `KH-1` sequence instead of living in a side series.
 ({String prefix, int nextValue}) _readBarcodeSettings(Database db) {
   final rows = db.select(
     'SELECT barcode_prefix, barcode_next_value FROM library_settings '

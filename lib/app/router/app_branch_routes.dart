@@ -44,7 +44,6 @@ import 'package:khulla/features/settings/presentation/pages/appearance_page.dart
 import 'package:khulla/features/settings/presentation/pages/backup_page.dart';
 import 'package:khulla/features/settings/presentation/pages/library_profile_page.dart';
 import 'package:khulla/features/settings/presentation/pages/loan_rules_page.dart';
-import 'package:khulla/features/settings/presentation/pages/sync_page.dart';
 import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
 import 'package:khulla/features/users/presentation/cubit/staff_list_cubit.dart';
 import 'package:khulla/features/users/presentation/pages/role_list_page.dart';
@@ -369,10 +368,6 @@ StatefulShellBranch settingsBranch({
             },
             child: const BackupPage(),
           ),
-        ),
-        GoRoute(
-          path: Routes.syncSegment,
-          builder: (context, _) => const SyncPage(),
         ),
         // The component gallery is a development surface: the
         // release build never declares the route, so there is no

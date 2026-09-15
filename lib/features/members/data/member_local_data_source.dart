@@ -10,7 +10,7 @@ abstract interface class MemberLocalDataSource {
 
   Future<Member?> findMemberById(String id);
 
-  Future<Member?> findMemberByCardNumber(String cardNumber);
+  Future<Member?> findMemberByBarcode(String barcode);
 
   Future<Member> insertMember(Member member);
 

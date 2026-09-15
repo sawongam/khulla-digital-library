@@ -99,7 +99,7 @@ void main() {
       final member = await seedMember(
         db,
         memberTypeId: reference.memberTypeId,
-        cardNumber: 'LIMIT-MEM',
+        barcode: 'LIMIT-MEM',
       );
 
       await repository.checkOutCopy(
@@ -122,7 +122,7 @@ void main() {
       final member = await seedMember(
         db,
         memberTypeId: reference.memberTypeId,
-        cardNumber: 'SUSP-MEM',
+        barcode: 'SUSP-MEM',
         suspendedAt: DateTime.now(),
       );
 
@@ -141,7 +141,7 @@ void main() {
       final member = await seedMember(
         db,
         memberTypeId: reference.memberTypeId,
-        cardNumber: 'EXP-MEM',
+        barcode: 'EXP-MEM',
         expiresAt: addCalendarDays(dateOnly(DateTime.now()), -1),
       );
 
@@ -166,7 +166,7 @@ void main() {
         final member = await seedMember(
           db,
           memberTypeId: reference.memberTypeId,
-          cardNumber: 'FINE-MEM',
+          barcode: 'FINE-MEM',
         );
 
         final loan = await repository.checkOutCopy(
@@ -221,7 +221,7 @@ void main() {
         final member = await seedMember(
           db,
           memberTypeId: reference.memberTypeId,
-          cardNumber: 'ROLL-MEM',
+          barcode: 'ROLL-MEM',
         );
 
         await repository.checkOutCopy(

@@ -22,6 +22,10 @@ abstract class LibraryProfile with _$LibraryProfile {
     String? openingHours,
     @Default('KH-') String barcodePrefix,
     @Default(1) int barcodeNextValue,
+    @Default('MEM-') String memberBarcodePrefix,
+    @Default(1) int memberBarcodeNextValue,
+    @Default('STF-') String staffBarcodePrefix,
+    @Default(1) int staffBarcodeNextValue,
     DateTime? updatedAt,
     String? logoRef,
   }) = _LibraryProfile;

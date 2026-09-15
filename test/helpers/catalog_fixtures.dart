@@ -27,7 +27,7 @@ typedef TitleWithCopySeed = ({
 
 typedef MemberSeed = ({
   String memberId,
-  String cardNumber,
+  String barcode,
 });
 
 /// Seeds the reference rows every catalogue test needs.
@@ -97,11 +97,11 @@ Future<TitleWithCopySeed> seedTitleWithCopy(
   return (titleId: titleId, copyId: copyId, barcode: barcode);
 }
 
-/// A member card on the register, optionally expired or suspended.
+/// A member barcode on the register, optionally expired or suspended.
 Future<MemberSeed> seedMember(
   AppDatabase db, {
   required String memberTypeId,
-  String cardNumber = 'MEM-001',
+  String barcode = 'MEM-001',
   String fullName = 'Test Member',
   DateTime? expiresAt,
   DateTime? suspendedAt,
@@ -114,7 +114,7 @@ Future<MemberSeed> seedMember(
       .insert(
         MembersCompanion.insert(
           id: memberId,
-          cardNumber: cardNumber,
+          barcode: barcode,
           fullName: fullName,
           memberTypeId: memberTypeId,
           joinedAt: now,
@@ -125,7 +125,7 @@ Future<MemberSeed> seedMember(
         ),
       );
 
-  return (memberId: memberId, cardNumber: cardNumber);
+  return (memberId: memberId, barcode: barcode);
 }
 
 /// Tweaks the singleton loan-rules row without going through a repository.

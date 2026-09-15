@@ -44,7 +44,6 @@ class TitleHistoryCard extends StatelessWidget {
                   id: 'barcode',
                   label: l10n.loansColumnBarcode,
                   flex: 2,
-                  showFrom: FormFactor.expanded,
                   cellBuilder: (context, loan) => Text(
                     loan.barcode ?? l10n.commonNotSet,
                     style: context.textTheme.bodySmall?.copyWith(
@@ -56,7 +55,7 @@ class TitleHistoryCard extends StatelessWidget {
                   id: 'borrowed',
                   label: l10n.loansColumnIssued,
                   flex: 2,
-                  showFrom: FormFactor.medium,
+                  showFrom: FormFactor.large,
                   cellBuilder: (context, loan) => Text(loan.issuedOn),
                 ),
                 AppTableColumn<Loan>(

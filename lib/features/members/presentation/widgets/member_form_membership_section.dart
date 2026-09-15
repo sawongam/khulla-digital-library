@@ -17,6 +17,7 @@ class MemberFormMembershipSection extends StatelessWidget {
     required this.memberTypes,
     required this.selectedType,
     required this.expires,
+    required this.barcode,
     required this.notes,
     required this.sendNotices,
     required this.onTypeChanged,
@@ -28,6 +29,7 @@ class MemberFormMembershipSection extends StatelessWidget {
   final List<MemberType> memberTypes;
   final MemberType? selectedType;
   final String expires;
+  final String barcode;
   final TextEditingController notes;
   final bool sendNotices;
   final ValueChanged<MemberType?> onTypeChanged;
@@ -55,12 +57,24 @@ class MemberFormMembershipSection extends StatelessWidget {
               onChanged: onTypeChanged,
             ),
             AppPickerField(
+              label: l10n.fieldBarcode,
+              value: barcode.isEmpty ? l10n.memberFormBarcodeHint : barcode,
+              icon: AppIcons.scan,
+              enabled: false,
+              onTap: null,
+            ),
+          ],
+        ),
+        AppFormRow(
+          children: [
+            AppPickerField(
               label: l10n.fieldExpires,
               value: expires.isEmpty ? l10n.commonNotSet : expires,
               icon: AppIcons.calendar,
               enabled: false,
               onTap: null,
             ),
+            const SizedBox.shrink(),
           ],
         ),
         MemberExpiresHint(message: l10n.memberFormExpiresHint),

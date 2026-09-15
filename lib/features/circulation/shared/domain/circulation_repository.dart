@@ -83,6 +83,8 @@ abstract interface class CirculationRepository {
 
   Future<LoanListResult> findLoans(LoanQuery query);
 
+  Future<Loan?> findOpenLoanByBarcode(String barcode);
+
   Future<Loan?> findLoan(String id);
 
   Future<FineListResult> findFines(FineQuery query);

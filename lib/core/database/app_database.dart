@@ -25,6 +25,8 @@ import 'package:khulla/features/circulation/shared/domain/fine_reason.dart';
 import 'package:khulla/features/circulation/shared/domain/reservation_status.dart';
 import 'package:khulla/features/members/data/tables/member_types.dart';
 import 'package:khulla/features/members/data/tables/members.dart';
+import 'package:khulla/features/members/domain/blood_group.dart';
+import 'package:khulla/features/members/domain/gender.dart';
 import 'package:khulla/features/settings/data/tables/library_settings.dart';
 import 'package:khulla/features/settings/data/tables/loan_rules.dart';
 import 'package:khulla/features/users/data/tables/staff.dart';
@@ -70,7 +72,7 @@ class AppDatabase extends _$AppDatabase {
   static const String _source = 'AppDatabase';
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -82,6 +84,29 @@ class AppDatabase extends _$AppDatabase {
   );
 
   Future<void> warmUp() => customSelect('SELECT 1').get();
+
+  /// Runs [action] in a transaction, then makes sure its commit reaches the
+  /// browser's storage.
+  ///
+  /// On web, drift keeps the database in memory and copies it to IndexedDB
+  /// after each statement that runs outside a transaction. The `COMMIT` itself
+  /// still counts as inside one — drift clears the flag only after it — so a
+  /// committed transaction stays in memory until some later plain write
+  /// happens to copy it. A refresh before that loses it: onboarding's
+  /// administrator vanished this way, and so would a checkout.
+  ///
+  /// The no-op statement after the commit runs with the flag clear, which is
+  /// what triggers the copy. Inside an outer transaction it joins that one and
+  /// does nothing, and on native it is one trivial statement.
+  @override
+  Future<T> transaction<T>(
+    Future<T> Function() action, {
+    bool requireNew = false,
+  }) async {
+    final result = await super.transaction(action, requireNew: requireNew);
+    await customStatement('SELECT 1');
+    return result;
+  }
 
   @disposeMethod
   Future<void> dispose() => close();
@@ -367,6 +392,83 @@ class AppDatabase extends _$AppDatabase {
           schema.librarySettings.logoRef,
         );
       },
+      from13To14: (m, schema) async {
+        await customStatement(
+          'ALTER TABLE members RENAME COLUMN card_number TO barcode',
+        );
+        await customStatement('DROP INDEX IF EXISTS members_card');
+        await m.createIndex(schema.membersBarcode);
+        await m.addColumn(schema.members, schema.members.gender);
+        await m.addColumn(schema.members, schema.members.bloodGroup);
+        await m.addColumn(schema.members, schema.members.municipality);
+        await m.addColumn(schema.members, schema.members.occupation);
+        await m.addColumn(schema.members, schema.members.institution);
+        await m.addColumn(schema.members, schema.members.idVerification);
+        await m.addColumn(
+          schema.members,
+          schema.members.emergencyContactName,
+        );
+        await m.addColumn(
+          schema.members,
+          schema.members.emergencyContactPhone,
+        );
+        await customStatement('DROP TRIGGER IF EXISTS members_fts_insert');
+        await customStatement('DROP TRIGGER IF EXISTS members_fts_update');
+        await customStatement('DROP TRIGGER IF EXISTS members_fts_delete');
+        await customStatement('DROP TABLE IF EXISTS members_fts');
+        await m.create(schema.membersFts);
+        for (final statement in _v14SearchTriggers) {
+          await customStatement(statement);
+        }
+        await customStatement(
+          'INSERT INTO members_fts (rowid, full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian) '
+          'SELECT rowid, full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian FROM members',
+        );
+      },
+      from14To15: (m, schema) async {
+        await m.addColumn(
+          schema.librarySettings,
+          schema.librarySettings.memberBarcodePrefix,
+        );
+        await m.addColumn(
+          schema.librarySettings,
+          schema.librarySettings.memberBarcodeNextValue,
+        );
+        await m.addColumn(
+          schema.librarySettings,
+          schema.librarySettings.staffBarcodePrefix,
+        );
+        await m.addColumn(
+          schema.librarySettings,
+          schema.librarySettings.staffBarcodeNextValue,
+        );
+        await m.addColumn(schema.staff, schema.staff.barcode);
+        await m.createIndex(schema.staffBarcode);
+        // Backfill existing staff with generated barcodes.
+        final settingsRow = await customSelect(
+          'SELECT staff_barcode_prefix, staff_barcode_next_value FROM library_settings WHERE id = 1',
+        ).getSingleOrNull();
+        if (settingsRow != null) {
+          final prefix = settingsRow.read<String>('staff_barcode_prefix');
+          var next = settingsRow.read<int>('staff_barcode_next_value');
+          final staffRows = await customSelect(
+            'SELECT id FROM staff WHERE barcode IS NULL ORDER BY created_at',
+          ).get();
+          for (final row in staffRows) {
+            final id = row.read<String>('id');
+            final barcode = '$prefix$next';
+            await customStatement(
+              'UPDATE staff SET barcode = ? WHERE id = ?',
+              [barcode, id],
+            );
+            next++;
+          }
+          await customStatement(
+            'UPDATE library_settings SET staff_barcode_next_value = ? WHERE id = 1',
+            [next],
+          );
+        }
+      },
     )(m, from, to);
   }
 }
@@ -409,6 +511,38 @@ AFTER UPDATE OF full_name, card_number, email, phone, address, guardian ON membe
       email = new.email,
       phone = new.phone,
       address = new.address,
+      guardian = new.guardian
+  WHERE rowid = old.rowid;
+END;''',
+  '''
+CREATE TRIGGER members_fts_delete AFTER DELETE ON members BEGIN
+  DELETE FROM members_fts WHERE rowid = old.rowid;
+END;''',
+];
+
+/// The v14 member search triggers — `members_fts` now indexes the richer
+/// profile (barcode, municipality, occupation, institution, id verification
+/// and emergency contact) alongside the name and contacts.
+const List<String> _v14SearchTriggers = [
+  '''
+CREATE TRIGGER members_fts_insert AFTER INSERT ON members BEGIN
+  INSERT INTO members_fts (rowid, full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian)
+  VALUES (new.rowid, new.full_name, new.barcode, new.email, new.phone, new.address, new.municipality, new.occupation, new.institution, new.id_verification, new.emergency_contact_name, new.guardian);
+END;''',
+  '''
+CREATE TRIGGER members_fts_update
+AFTER UPDATE OF full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian ON members BEGIN
+  UPDATE members_fts
+  SET full_name = new.full_name,
+      barcode = new.barcode,
+      email = new.email,
+      phone = new.phone,
+      address = new.address,
+      municipality = new.municipality,
+      occupation = new.occupation,
+      institution = new.institution,
+      id_verification = new.id_verification,
+      emergency_contact_name = new.emergency_contact_name,
       guardian = new.guardian
   WHERE rowid = old.rowid;
 END;''',

@@ -8,27 +8,37 @@ import 'members.dart';
 -- rowid shared with `members`, triggers as the only writers.
 CREATE VIRTUAL TABLE members_fts USING fts5(
   full_name,
-  card_number,
+  barcode,
   email,
   phone,
   address,
+  municipality,
+  occupation,
+  institution,
+  id_verification,
+  emergency_contact_name,
   guardian,
   tokenize = 'trigram remove_diacritics 1'
 );
 
 CREATE TRIGGER members_fts_insert AFTER INSERT ON members BEGIN
-  INSERT INTO members_fts (rowid, full_name, card_number, email, phone, address, guardian)
-  VALUES (new.rowid, new.full_name, new.card_number, new.email, new.phone, new.address, new.guardian);
+  INSERT INTO members_fts (rowid, full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian)
+  VALUES (new.rowid, new.full_name, new.barcode, new.email, new.phone, new.address, new.municipality, new.occupation, new.institution, new.id_verification, new.emergency_contact_name, new.guardian);
 END;
 
 CREATE TRIGGER members_fts_update
-AFTER UPDATE OF full_name, card_number, email, phone, address, guardian ON members BEGIN
+AFTER UPDATE OF full_name, barcode, email, phone, address, municipality, occupation, institution, id_verification, emergency_contact_name, guardian ON members BEGIN
   UPDATE members_fts
   SET full_name = new.full_name,
-      card_number = new.card_number,
+      barcode = new.barcode,
       email = new.email,
       phone = new.phone,
       address = new.address,
+      municipality = new.municipality,
+      occupation = new.occupation,
+      institution = new.institution,
+      id_verification = new.id_verification,
+      emergency_contact_name = new.emergency_contact_name,
       guardian = new.guardian
   WHERE rowid = old.rowid;
 END;

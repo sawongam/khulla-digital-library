@@ -241,7 +241,7 @@ LIMIT 5
     final rows = await _db
         .customSelect(
           '''
-SELECT m.full_name AS name, m.card_number AS detail, COUNT(*) AS c
+SELECT m.full_name AS name, m.barcode AS detail, COUNT(*) AS c
 FROM loans l
 JOIN members m ON m.id = l.member_id
 WHERE l.checked_out_at >= ? AND l.checked_out_at < ?

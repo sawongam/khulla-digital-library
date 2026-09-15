@@ -55,6 +55,9 @@ void main() {
   test('v11 to v12 indexes existing rows for search and reconciles holds '
       'whose status and closed_at disagree', () async {
     final schema = await verifier.schemaAt(11);
+    // Search now indexes the richer profile (barcode, municipality, …)
+    // added in v14. Verifying against the latest schema ensures the data
+    // seeded on the old shape survives the full chain of FTS rebuilds.
     const at = '2026-09-01T10:00:00.000Z';
     schema.rawDatabase
       ..execute(
@@ -91,7 +94,7 @@ void main() {
       );
 
     final db = AppDatabase.connect(schema.newConnection());
-    await verifier.migrateAndValidate(db, 12);
+    await verifier.migrateAndValidate(db, 14);
 
     final titles = await LocalTitleDataSource(
       db,

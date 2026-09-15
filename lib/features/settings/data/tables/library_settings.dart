@@ -47,6 +47,22 @@ class LibrarySettings extends Table {
   /// Next integer appended after [barcodePrefix] when a copy gets no barcode.
   IntColumn get barcodeNextValue => integer().withDefault(const Constant(1))();
 
+  /// Prefix for auto-generated member barcodes.
+  TextColumn get memberBarcodePrefix =>
+      text().withDefault(const Constant('MEM-'))();
+
+  /// Next integer for member barcodes.
+  IntColumn get memberBarcodeNextValue =>
+      integer().withDefault(const Constant(1))();
+
+  /// Prefix for auto-generated staff barcodes.
+  TextColumn get staffBarcodePrefix =>
+      text().withDefault(const Constant('STF-'))();
+
+  /// Next integer for staff barcodes.
+  IntColumn get staffBarcodeNextValue =>
+      integer().withDefault(const Constant(1))();
+
   /// Opaque reference to the uploaded library mark, resolved through
   /// `lib/core/storage/logo_store.dart` — an absolute file path on native,
   /// base64-encoded bytes on web (which has nowhere to keep a file). Never

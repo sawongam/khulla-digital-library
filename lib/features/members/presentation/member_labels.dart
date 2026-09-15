@@ -1,6 +1,8 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
 // SPDX-License-Identifier: MIT
 
+import 'package:khulla/features/members/domain/blood_group.dart';
+import 'package:khulla/features/members/domain/gender.dart';
 import 'package:khulla/features/members/domain/member_status.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
@@ -28,5 +30,27 @@ extension MemberTypeCodeX on String? {
     'teacher' => AppIcons.teacher,
     'child' => AppIcons.child,
     _ => AppIcons.person,
+  };
+}
+
+extension GenderX on Gender {
+  String label(AppLocalizations l10n) => switch (this) {
+    Gender.male => l10n.genderMale,
+    Gender.female => l10n.genderFemale,
+    Gender.other => l10n.genderOther,
+    Gender.preferNotToSay => l10n.genderPreferNotToSay,
+  };
+}
+
+extension BloodGroupX on BloodGroup {
+  String get label => switch (this) {
+    BloodGroup.aPositive => 'A+',
+    BloodGroup.aNegative => 'A-',
+    BloodGroup.bPositive => 'B+',
+    BloodGroup.bNegative => 'B-',
+    BloodGroup.abPositive => 'AB+',
+    BloodGroup.abNegative => 'AB-',
+    BloodGroup.oPositive => 'O+',
+    BloodGroup.oNegative => 'O-',
   };
 }

@@ -27,7 +27,6 @@ const List<String> _everyLocation = [
   Routes.settingsLoanRules,
   Routes.settingsAppearance,
   Routes.settingsBackup,
-  Routes.settingsSync,
 ];
 
 void main() {

@@ -190,7 +190,7 @@ class _MemberPickRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${member.cardNumber} · ${member.memberTypeName}',
+                  '${member.barcode} · ${member.memberTypeName}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: context.textTheme.bodySmall?.copyWith(
