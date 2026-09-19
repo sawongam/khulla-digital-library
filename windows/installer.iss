@@ -4,7 +4,7 @@
 
 #define MyAppName "Khulla Digital Library"
 #define MyAppPublisher "Khulla Digital Library"
-#define MyAppURL "https://github.com/khulla-digital-library/khulla-digital-library"
+#define MyAppURL "https://github.com/sawongam/khulla-digital-library"
 #define MyAppExeName "khulla.exe"
 
 #ifndef MyAppVersion
