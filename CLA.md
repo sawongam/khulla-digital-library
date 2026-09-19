@@ -6,7 +6,7 @@ Khulla Digital Library is released under the AGPL-3.0 and also offered under a c
 
 By submitting a Contribution, you agree that:
 
-1. **Copyright licence.** You grant the Maintainer a perpetual, worldwide, non-exclusive, royalty-free, irrevocable licence to use, reproduce, modify, publicly display, distribute and sublicense your Contribution, and derivative works of it, under any licence terms — including the AGPL-3.0 and proprietary commercial licences.
+1. **Copyright licence.** You grant the Maintainer a perpetual, worldwide, non-exclusive, royalty-free, irrevocable licence to use, reproduce, modify, publicly display, distribute and sublicense your Contribution, and derivative works of it, under any licence terms - including the AGPL-3.0 and proprietary commercial licences.
 2. **Patent licence.** You grant the Maintainer, and everyone who receives the software from the project, a perpetual, worldwide, non-exclusive, royalty-free, irrevocable licence under any patent you hold that your Contribution necessarily infringes, to make, use, sell and distribute it as part of the project.
 3. **Your right to grant this.** The Contribution is your original work, or you have the right to submit it under these terms. If your employer has rights to what you create, you have their permission, or they have waived those rights.
 4. **Third-party material.** If any part of the Contribution is not your own work, you say so in the pull request and name its source and licence.

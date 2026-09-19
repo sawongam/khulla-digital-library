@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// Two things about it are deliberate and easy to undo by accident.
 ///
-/// **There is no focus ring, and the border never changes color** — not on
+/// **There is no focus ring, and the border never changes color** - not on
 /// focus, not on error. Focus is signalled by the text nudging 2px to the
 /// right over 300ms, which is quiet enough to live on a form of twenty fields
 /// without the screen lighting up. On error the *label* turns red and the

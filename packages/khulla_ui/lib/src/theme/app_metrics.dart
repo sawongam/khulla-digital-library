@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Every control dimension in the system, already resolved for the ambient
 /// [AppDensity].
 ///
-/// These numbers are what make the product feel like itself — get the colors
+/// These numbers are what make the product feel like itself - get the colors
 /// perfect and the heights wrong and it still reads as a different app. A
 /// 40px button next to a 44px field next to a 52px table row is the rhythm;
 /// Material's defaults (48px everything) are roughly a third looser and turn
@@ -76,7 +76,7 @@ class AppMetrics extends ThemeExtension<AppMetrics> {
   /// A table's header row.
   final double tableHeaderHeight;
 
-  /// A table body row. One global height for every table in the app — not
+  /// A table body row. One global height for every table in the app - not
   /// tied to [AppDensity] and not overridable per table.
   final double tableRowHeight;
 
@@ -98,7 +98,7 @@ class AppMetrics extends ThemeExtension<AppMetrics> {
   /// The default button. Smaller than Material's, on purpose.
   final double buttonHeightSmall;
 
-  /// A button that needs more presence — a form's primary action.
+  /// A button that needs more presence - a form's primary action.
   final double buttonHeightMedium;
 
   /// The largest button, for a page's single most important action.
@@ -116,7 +116,7 @@ class AppMetrics extends ThemeExtension<AppMetrics> {
   /// A dense chevron or a bullet.
   final double iconDense;
 
-  /// The glyph inside a button — smaller than a standalone icon, so the
+  /// The glyph inside a button - smaller than a standalone icon, so the
   /// label stays the thing being read.
   final double iconInButton;
 

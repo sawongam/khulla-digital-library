@@ -4,7 +4,7 @@ Khulla Digital Library is dual-licensed.
 
 ## Free: AGPL-3.0
 
-The app is released under the [GNU Affero General Public License v3.0 only](./LICENSE) (`AGPL-3.0-only`). Under it, anyone may use, study, change and share Khulla at no cost — including libraries, schools, colleges and NGOs running it for their own collection.
+The app is released under the [GNU Affero General Public License v3.0 only](./LICENSE) (`AGPL-3.0-only`). Under it, anyone may use, study, change and share Khulla at no cost - including libraries, schools, colleges and NGOs running it for their own collection.
 
 In return, the AGPL asks one thing: if you distribute Khulla, or a modified version of it, **or let people use a modified version over a network** (a hosted or SaaS offering), you must make the complete source of that version available to its users under the same licence.
 

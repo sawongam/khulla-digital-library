@@ -13,6 +13,7 @@
 ## Contributor License Agreement
 
 <!-- Required once per contributor. Leave this line in to agree. -->
+
 I have read the Contributor License Agreement in `CLA.md` and I agree to it for this and all my future contributions to Khulla Digital Library.
 
 ## Checklist
@@ -22,6 +23,6 @@ I have read the Contributor License Agreement in `CLA.md` and I agree to it for 
 - [ ] `make migrate` run and the generated step filled in, if the schema changed
 - [ ] `make localize` run, if an ARB key was added
 - [ ] New user-facing text is in `lib/l10n/arb/app_en.arb`, not hard-coded
-- [ ] New UI uses design tokens and `AppIcons` — no raw colors, spacing, radii or `Icons.*`
+- [ ] New UI uses design tokens and `AppIcons` - no raw colors, spacing, radii or `Icons.*`
 - [ ] Visual changes verified by running the app, or described above for the reviewer to check
-- [ ] **Targeting `prod`?** `version:` in `pubspec.yaml` is bumped, build number included — merging publishes a release at that version
+- [ ] **Targeting `prod`?** `version:` in `pubspec.yaml` is bumped, build number included - merging publishes a release at that version

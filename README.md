@@ -2,10 +2,6 @@
 
 An open-source library management system, built as a **local-first Flutter app**. Your catalogue lives in a SQLite database on your own machine — no server to run, no account to create, no data leaving the building.
 
-*Khulla* (खुल्ला) is Nepali for "open".
-
-**[khulladigitallibrary.com](https://khulladigitallibrary.com)** · **[Try it in your browser](https://app.khulladigitallibrary.com/)**
-
 ## What it does
 
 - **Dashboard** — overdue, due today and inventory at a glance.

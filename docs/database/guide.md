@@ -1,19 +1,19 @@
-# Database guide — how to work with the DB in Khulla
+# Database guide - how to work with the DB in Khulla
 
 Everything you need to add tables, query data, write data, do migrations, and remove things safely.  
-This is the **how-to** companion to [overview.md](overview.md), which covers the *what* and *why*.
+This is the **how-to** companion to [overview.md](overview.md), which covers the _what_ and _why_.
 
 ---
 
 ## Quick reference
 
-| Task | Command |
-|---|---|
-| Added/changed a table | `make migrate` then `make build` then `make db-diagram` |
-| Just changed non-DB code | `make build` |
-| Refresh the visual schema | `make db-diagram` |
-| Run tests | `make test` |
-| Generate code only | `dart run build_runner build --delete-conflicting-outputs` |
+| Task                      | Command                                                    |
+| ------------------------- | ---------------------------------------------------------- |
+| Added/changed a table     | `make migrate` then `make build` then `make db-diagram`    |
+| Just changed non-DB code  | `make build`                                               |
+| Refresh the visual schema | `make db-diagram`                                          |
+| Run tests                 | `make test`                                                |
+| Generate code only        | `dart run build_runner build --delete-conflicting-outputs` |
 
 ---
 
@@ -40,13 +40,13 @@ Features own the **schema** (what tables exist).
 
 ---
 
-## How to add a table — full step-by-step
+## How to add a table - full step-by-step
 
 Let's say you want to add a `Books` table. Here's the full flow:
 
 ---
 
-### Step 1 — Create the Table class
+### Step 1 - Create the Table class
 
 ```dart
 // lib/features/catalog/title/data/tables/titles.dart
@@ -61,10 +61,10 @@ class Titles extends Table {
   // Required text, max 500 chars
   TextColumn get title => text().withLength(max: 500)();
 
-  // Unique column — DB will reject duplicates automatically
+  // Unique column - DB will reject duplicates automatically
   TextColumn get isbn => text().withLength(min: 10, max: 13).unique()();
 
-  // Nullable column — author might not be known yet
+  // Nullable column - author might not be known yet
   TextColumn get author => text().nullable()();
 
   // Money stored as integer paisa (use MoneyConverter, never store as double!)
@@ -77,22 +77,22 @@ class Titles extends Table {
   // Boolean stored as 0/1
   BoolColumn get isAvailable => boolean().withDefault(const Constant(true))();
 
-  // Foreign key to another table (must have foreign_keys ON — already done in beforeOpen)
+  // Foreign key to another table (must have foreign_keys ON - already done in beforeOpen)
   IntColumn get authorId => integer().references(Authors, #id).nullable()();
 }
 ```
 
 **Column types cheat sheet:**
 
-| Dart type | Column builder | Notes |
-|---|---|---|
-| `int` | `integer()` | |
-| `String` | `text()` | |
-| `bool` | `boolean()` | stored as 0/1 |
-| `DateTime` | `dateTime()` | stored as ISO-8601 text (our config) |
-| `double` | `real()` | avoid for money! |
-| `Uint8List` | `blob()` | binary data |
-| `Money` | `integer().map(const MoneyConverter())()` | always use this for money |
+| Dart type   | Column builder                            | Notes                                |
+| ----------- | ----------------------------------------- | ------------------------------------ |
+| `int`       | `integer()`                               |                                      |
+| `String`    | `text()`                                  |                                      |
+| `bool`      | `boolean()`                               | stored as 0/1                        |
+| `DateTime`  | `dateTime()`                              | stored as ISO-8601 text (our config) |
+| `double`    | `real()`                                  | avoid for money!                     |
+| `Uint8List` | `blob()`                                  | binary data                          |
+| `Money`     | `integer().map(const MoneyConverter())()` | always use this for money            |
 
 **Column modifiers:**
 
@@ -108,7 +108,7 @@ integer().references(OtherTable, #columnName)() // foreign key
 
 ---
 
-### Step 2 — Register the Table in AppDatabase
+### Step 2 - Register the Table in AppDatabase
 
 Open `lib/core/database/app_database.dart` and add your table:
 
@@ -131,7 +131,7 @@ class AppDatabase extends _$AppDatabase { ... }
 
 ---
 
-### Step 3 — Bump the Schema Version
+### Step 3 - Bump the Schema Version
 
 Still in `app_database.dart`, increment `schemaVersion` by **exactly 1**:
 
@@ -150,7 +150,7 @@ int get schemaVersion => 2;
 
 ---
 
-### Step 4 — Run `make migrate`
+### Step 4 - Run `make migrate`
 
 ```bash
 make migrate
@@ -158,13 +158,14 @@ make migrate
 ```
 
 This does three things automatically:
-1. Writes `drift_schemas/drift_schema_v2.json` — a snapshot of what the schema looks like at v2
-2. Regenerates `lib/core/database/app_database.steps.dart` — the step-by-step migration file
-3. Generates `test/drift/` — auto-generated tests that prove the migration is correct
+
+1. Writes `drift_schemas/drift_schema_v2.json` - a snapshot of what the schema looks like at v2
+2. Regenerates `lib/core/database/app_database.steps.dart` - the step-by-step migration file
+3. Generates `test/drift/` - auto-generated tests that prove the migration is correct
 
 ---
 
-### Step 5 — Fill in the Migration Step
+### Step 5 - Fill in the Migration Step
 
 After `make migrate`, open `lib/core/database/app_database.dart`.  
 The `_upgradeSchema` method now has a generated `stepByStep` call waiting for you to fill in:
@@ -175,7 +176,7 @@ Future<void> _upgradeSchema(Migrator m, int from, int to) async {
     throw const DatabaseUnavailableException(...);
   }
 
-  // This was generated by make migrate — fill in the callback:
+  // This was generated by make migrate - fill in the callback:
   await stepByStep(
     from1To2: (m, schema) async {
       // Creating a brand new table:
@@ -184,7 +185,7 @@ Future<void> _upgradeSchema(Migrator m, int from, int to) async {
       // Adding a column to an existing table:
       // await m.addColumn(schema.titles, schema.titles.author);
 
-      // Renaming/altering a table (more complex — see the Migration section below):
+      // Renaming/altering a table (more complex - see the Migration section below):
       // await m.alterTable(TableMigration(schema.titles));
     },
   )(m, from, to);
@@ -193,15 +194,15 @@ Future<void> _upgradeSchema(Migrator m, int from, int to) async {
 
 > ⚠️ **Critical rule: NEVER use `this` inside a step.**  
 > Steps receive their own `schema` snapshot object. Using `this` (the live database)  
-> inside a step uses today's schema instead — migrations pass in dev and corrupt real upgrades.
+> inside a step uses today's schema instead - migrations pass in dev and corrupt real upgrades.
 >
 > ```dart
-> // WRONG — uses live schema
+> // WRONG - uses live schema
 > from1To2: (m, schema) async {
 >   await m.createTable(titles);   // `titles` refers to `this.titles`
 > }
 >
-> // CORRECT — uses the snapshot
+> // CORRECT - uses the snapshot
 > from1To2: (m, schema) async {
 >   await m.createTable(schema.titles);   // `schema.titles` is the v2 snapshot
 > }
@@ -209,7 +210,7 @@ Future<void> _upgradeSchema(Migrator m, int from, int to) async {
 
 ---
 
-### Step 6 — Regenerate Code and Test
+### Step 6 - Regenerate Code and Test
 
 ```bash
 make build    # regenerates app_database.g.dart with TitleData, TitlesCompanion, etc.
@@ -217,6 +218,7 @@ make test     # runs the generated migration tests
 ```
 
 The auto-generated migration test checks that:
+
 - Upgrading from v1 → v2 produces the **same schema** as a fresh v2 install
 - This is the thing hand-rolled migration frameworks couldn't do
 
@@ -244,10 +246,10 @@ If the test is red → your migration step has a bug. Fix the step before mergin
 After `make build`, Drift generates typed classes for your table.  
 For a `Titles` table, you get:
 
-- `TitleData` — a row read from the database (immutable)
-- `TitlesCompanion` — used for inserts and updates (fields are optional `Value<T>`)
-- `db.titles` — the table object used to build queries
-- `db.managers.titles` — the newer manager API for simpler queries
+- `TitleData` - a row read from the database (immutable)
+- `TitlesCompanion` - used for inserts and updates (fields are optional `Value<T>`)
+- `db.titles` - the table object used to build queries
+- `db.managers.titles` - the newer manager API for simpler queries
 
 ---
 
@@ -355,7 +357,7 @@ Future<List<TitleData>> search(String query) => guardDatabase(
 
 ---
 
-### Reactive Streams — `watch()` vs `get()`
+### Reactive Streams - `watch()` vs `get()`
 
 `watch()` returns a `Stream` that **automatically re-runs** when the data changes.  
 Any write to the `titles` table → the stream emits a new list. No manual refresh needed.
@@ -401,6 +403,7 @@ class TitleCubit extends Cubit<TitleState> {
 ```
 
 > ⚠️ **Watch rules:**
+>
 > - Drift invalidates per **table**, not per row. Any write to `titles` re-runs every watcher of `titles`.
 > - Keep watched queries narrow. A watched query that scans 10,000 rows re-runs on every single insert.
 > - `customStatement` writes do NOT notify watchers. Call `notifyUpdates({db.titles})` explicitly if you use raw SQL writes.
@@ -413,7 +416,7 @@ class TitleCubit extends Cubit<TitleState> {
 **Insert:**
 
 ```dart
-// Insert a new row — throws DuplicateRecordException if ISBN already exists
+// Insert a new row - throws DuplicateRecordException if ISBN already exists
 Future<void> save(TitlesCompanion data) => guardDatabase(
   () => _db.into(_db.titles).insert(data),
   source: 'DriftTitleDataSource.save',
@@ -475,7 +478,7 @@ Future<void> deleteAll() => guardDatabase(
 );
 ```
 
-**Transactions — multiple writes atomically:**
+**Transactions - multiple writes atomically:**
 
 ```dart
 // Either ALL writes succeed, or NONE do
@@ -548,7 +551,7 @@ Migrations are how you evolve the database schema over time **without losing exi
 
 ### The Golden Rules
 
-1. **Migrations are append-only.** A shipped step is frozen. Someone's database was built by running exactly that SQL. Fix a mistake with the *next* migration — never by editing an old one.
+1. **Migrations are append-only.** A shipped step is frozen. Someone's database was built by running exactly that SQL. Fix a mistake with the _next_ migration - never by editing an old one.
 2. **Never touch `this` inside a step.** Use the `schema` snapshot passed to the callback.
 3. **Bump `schemaVersion` by exactly +1** per change.
 4. **`make migrate` before `make build`.** The schema snapshot must exist before code generation.
@@ -558,12 +561,12 @@ Migrations are how you evolve the database schema over time **without losing exi
 
 ### What Happens at Different Schema States
 
-| Scenario | What happens |
-|---|---|
-| Fresh install (no DB file exists) | `onCreate` runs — `m.createAll()` creates all tables |
-| Same version as DB file | Nothing runs — DB opens normally |
-| App is newer (v1 → v2) | `onUpgrade` runs your step-by-step migration |
-| App is OLDER than DB file (downgrade) | **Refuses to open** — throws `DatabaseUnavailableException` |
+| Scenario                              | What happens                                                |
+| ------------------------------------- | ----------------------------------------------------------- |
+| Fresh install (no DB file exists)     | `onCreate` runs - `m.createAll()` creates all tables        |
+| Same version as DB file               | Nothing runs - DB opens normally                            |
+| App is newer (v1 → v2)                | `onUpgrade` runs your step-by-step migration                |
+| App is OLDER than DB file (downgrade) | **Refuses to open** - throws `DatabaseUnavailableException` |
 
 ### Adding a Column (v1 → v2)
 
@@ -659,7 +662,7 @@ from2To3: (m, schema) async {
 
 ---
 
-## Joins — querying multiple tables
+## Joins - querying multiple tables
 
 Drift supports joining tables with typed results:
 
@@ -687,7 +690,7 @@ Future<List<TitleWithAuthor>> findAllWithAuthor() => guardDatabase(
 
 ---
 
-## Aggregates — COUNT, SUM, etc.
+## Aggregates - COUNT, SUM, etc.
 
 ```dart
 // Count all titles
@@ -718,7 +721,7 @@ Future<Money> totalFinesOwed() => guardDatabase(
 ## Testing with an in-memory database
 
 For tests, use `AppDatabase.connect()` with an in-memory database.  
-It wipes itself after each test — no cleanup needed.
+It wipes itself after each test - no cleanup needed.
 
 ```dart
 // test/features/catalog/title/data/drift_title_data_source_test.dart
@@ -778,7 +781,7 @@ void main() {
 All database errors are converted to `AppException` by `guardDatabase`. Cubits catch these:
 
 ```dart
-// In a Cubit — reads swallow the error into state:
+// In a Cubit - reads swallow the error into state:
 Future<void> loadTitles() async {
   emit(state.copyWith(status: LoadStatus.loading, error: null));
   try {
@@ -786,11 +789,11 @@ Future<void> loadTitles() async {
     emit(state.copyWith(status: LoadStatus.loaded, titles: titles));
   } on AppException catch (e) {
     emit(state.copyWith(status: LoadStatus.failure, error: e));
-    // DO NOT rethrow for reads — the screen watches state.error
+    // DO NOT rethrow for reads - the screen watches state.error
   }
 }
 
-// In a Cubit — writes rethrow so the gesture can show a toast:
+// In a Cubit - writes rethrow so the gesture can show a toast:
 Future<void> saveTitle(Title title) async {
   try {
     await _dataSource.save(title.toCompanion());
@@ -804,30 +807,30 @@ Future<void> saveTitle(Title title) async {
 
 **The AppException types you'll encounter:**
 
-| Exception | When you see it | Example |
-|---|---|---|
-| `DuplicateRecordException` | Unique/primary key violation | Duplicate ISBN |
-| `ConflictException` | Foreign key violation | Deleting author who has titles |
-| `InvalidInputException` | NOT NULL or CHECK constraint | Required field left empty |
-| `DatabaseUnavailableException` | DB locked, corrupted, or newer | App on a network share |
-| `NotFoundException` | Row doesn't exist (you throw this manually) | `getSingleOrNull()` returned null |
-| `DatabaseFailureException` | Unclassified SQLite error | Rare edge cases |
-| `UnknownException` | Anything else | Should not happen in normal use |
+| Exception                      | When you see it                             | Example                           |
+| ------------------------------ | ------------------------------------------- | --------------------------------- |
+| `DuplicateRecordException`     | Unique/primary key violation                | Duplicate ISBN                    |
+| `ConflictException`            | Foreign key violation                       | Deleting author who has titles    |
+| `InvalidInputException`        | NOT NULL or CHECK constraint                | Required field left empty         |
+| `DatabaseUnavailableException` | DB locked, corrupted, or newer              | App on a network share            |
+| `NotFoundException`            | Row doesn't exist (you throw this manually) | `getSingleOrNull()` returned null |
+| `DatabaseFailureException`     | Unclassified SQLite error                   | Rare edge cases                   |
+| `UnknownException`             | Anything else                               | Should not happen in normal use   |
 
 ---
 
-## Checklist — definition of done for DB changes
+## Checklist - definition of done for DB changes
 
 Every schema change must complete all of these before it's considered done:
 
 - [ ] Table class created or updated in the right sub-feature folder
 - [ ] Table registered in `@DriftDatabase(tables: [...])`
 - [ ] `schemaVersion` bumped by exactly 1
-- [ ] `make migrate` run — `drift_schemas/` and `test/drift/` updated
+- [ ] `make migrate` run - `drift_schemas/` and `test/drift/` updated
 - [ ] Migration step filled in (never using `this`)
-- [ ] `make build` run — `.g.dart` files regenerated
-- [ ] `make db-diagram` run — `docs/database/schema.md` refreshed
-- [ ] `make test` is green — migration tests pass
+- [ ] `make build` run - `.g.dart` files regenerated
+- [ ] `make db-diagram` run - `docs/database/schema.md` refreshed
+- [ ] `make test` is green - migration tests pass
 - [ ] Data source reads/writes wrapped in `guardDatabase`
 - [ ] Domain mapper created (`toDomain()`, `toCompanion()`)
 - [ ] `drift_schemas/drift_schema_vN.json` committed alongside code changes
@@ -839,8 +842,9 @@ Every schema change must complete all of these before it's considered done:
 **1. `Value<T>` vs `const Value.absent()` in Companions**
 
 When writing to the DB with a Companion:
-- `Value(x)` — include this field in the INSERT/UPDATE
-- `const Value.absent()` — skip this field (use DB default / don't update it)
+
+- `Value(x)` - include this field in the INSERT/UPDATE
+- `const Value.absent()` - skip this field (use DB default / don't update it)
 
 ```dart
 // Update only the title, leave everything else untouched:
@@ -852,10 +856,10 @@ TitlesCompanion(title: Value('New Title'))
 **2. Never interpolate `Money` directly**
 
 ```dart
-// ❌ WRONG — prints raw paisa: "Rs 4500"
+// ❌ WRONG - prints raw paisa: "Rs 4500"
 Text('Amount: $finePerDay');
 
-// ✅ CORRECT — prints formatted: "Rs 45.00"
+// ✅ CORRECT - prints formatted: "Rs 45.00"
 Text('Amount: ${finePerDay.display()}');
 ```
 
@@ -865,12 +869,12 @@ Text('Amount: ${finePerDay.display()}');
 await _db.customStatement('DELETE FROM titles WHERE is_available = 0');
 // Streams watching titles won't update!
 
-// Fix — notify manually:
+// Fix - notify manually:
 await _db.customStatement('DELETE FROM titles WHERE is_available = 0');
 _db.notifyUpdates({TableUpdate.onTable(_db.titles, kind: UpdateKind.delete)});
 ```
 
-**4. Foreign keys are ON — deletions will fail if records are referenced**
+**4. Foreign keys are ON - deletions will fail if records are referenced**
 
 ```dart
 // Trying to delete an author who has titles will throw ConflictException
@@ -889,10 +893,11 @@ await _db.transaction(() async {
 **5. DateTime is stored as ISO-8601 text (NOT unix timestamp)**
 
 This is configured in `build.yaml`. It means:
+
 - Human-readable in the SQLite file
 - Always preserves timezone info
 - Changing this setting after data exists = migration over every date column
 
 **6. Don't put `db.managers` queries in production yet for complex joins**
 
-The `managers` API is great for simple CRUD. For complex joins, use the classic query API (`.select().join()`) — it's more explicit and easier to debug.
+The `managers` API is great for simple CRUD. For complex joins, use the classic query API (`.select().join()`) - it's more explicit and easier to debug.

@@ -28,7 +28,7 @@ dependencies:
   get_it: ^9.2.1
   injectable: ^3.0.0
 
-  # Local database — drift over sqlite3. One typed API across every target:
+  # Local database - drift over sqlite3. One typed API across every target:
   # a background isolate on native, sqlite3-in-WebAssembly on web.
   # See docs/architecture/0002-drift-for-persistence.md.
   drift: ^2.34.3
@@ -41,7 +41,7 @@ dependencies:
   shared_preferences: ^2.5.5
 
   # Password hashing for local accounts. Pure Dart (a jBCrypt port), so
-  # it runs identically on desktop, mobile and web — no FFI, no native build.
+  # it runs identically on desktop, mobile and web - no FFI, no native build.
   bcrypt: ^1.2.0
   crypto: ^3.0.7
   file_selector: ^1.0.3
@@ -52,7 +52,7 @@ dependencies:
   share_plus: ^13.3.0
 
   # A backup restore replaces the catalogue file/store underneath a live
-  # connection — the app has to restart cleanly, and on web that means
+  # connection - the app has to restart cleanly, and on web that means
   # reloading the page. Already resolved transitively; declared directly
   # because lib/core/lifecycle/restart_app_web.dart imports it.
   web: ^1.1.1
@@ -81,7 +81,6 @@ dependencies:
   # panel is the only caller; everything else in the app is local.
   url_launcher: ^6.3.2
 
-
   # Phone, Currency and Country code
   country_phone_kit: ^1.0.1
 
@@ -93,7 +92,6 @@ dependencies:
   # views, so it runs the same on Windows and web as it does on mobile.
   crop_your_image: ^2.0.0
   package_info_plus: ^10.2.1
-  
 
 dev_dependencies:
   # Code generation
@@ -113,7 +111,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   husky: ^0.1.7
 
-  # Monorepo tooling (config in melos.yaml — not pub workspaces)
+  # Monorepo tooling (config in melos.yaml - not pub workspaces)
   melos: ^6.3.2
 
 # FlutterGen code generation for assets, fonts and colors.

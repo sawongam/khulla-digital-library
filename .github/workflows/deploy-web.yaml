@@ -46,9 +46,9 @@ jobs:
       # The base href follows wherever Pages serves the site: /<repo>/ on
       # <owner>.github.io, or / once a custom domain is set in the repository's
       # Pages settings (app.khulladigitallibrary.com). configure-pages reports
-      # that path, so switching domains needs no edit here — only a re-run.
+      # that path, so switching domains needs no edit here - only a re-run.
       # Routing uses the hash strategy (/#/catalog), which deep-links correctly
-      # on Pages with no rewrite rules — path URLs would need a server-side
+      # on Pages with no rewrite rules - path URLs would need a server-side
       # rewrite this host cannot do. See
       # docs/architecture/decisions/0005-gorouter-for-navigation.md.
       - name: Build
