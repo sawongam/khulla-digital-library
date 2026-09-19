@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -17,11 +17,11 @@ import 'package:khulla/shared/components/section_card.dart';
 import 'package:khulla/shared/utils/app_exception_l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// Export, restore — and the one irreversible action in the app.
+/// Export, restore - and the one irreversible action in the app.
 ///
 /// Khulla is local-first: there is no server holding a second copy of any of
 /// this. The erase entry sits below the routine actions as one more quiet
-/// row rather than an alarm panel — the danger lives in its button, and the
+/// row rather than an alarm panel - the danger lives in its button, and the
 /// confirmation dialog behind it is what stops an accident.
 class BackupPage extends StatelessWidget {
   const BackupPage({super.key});
@@ -52,7 +52,7 @@ class BackupPage extends StatelessWidget {
 
     final cubit = context.read<BackupCubit>();
     try {
-      // On success this never returns to a running screen — `restartApp()`
+      // On success this never returns to a running screen - `restartApp()`
       // ends the process (or reloads the page on web) before the app can
       // draw another frame from a catalogue that is being replaced under it.
       await cubit.restoreBackup();

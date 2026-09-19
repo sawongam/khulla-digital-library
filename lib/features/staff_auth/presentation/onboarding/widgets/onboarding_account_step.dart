@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khulla/core/form/inputs/password.dart';
@@ -14,7 +14,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Step two: the administrator account that will run the library.
 ///
 /// Its role is not offered as a choice. The first account is always an
-/// administrator — somebody has to be able to add the second — and a picker
+/// administrator - somebody has to be able to add the second - and a picker
 /// here would only let a new install lock itself out on its first screen.
 class OnboardingAccountStep extends StatefulWidget {
   const OnboardingAccountStep({required this.state, super.key});

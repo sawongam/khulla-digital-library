@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/error/app_exception.dart';
@@ -11,7 +11,7 @@ part 'label_state.freezed.dart';
 
 /// The label desk: the queued stickers, the layout, and the library name.
 ///
-/// [status] tracks the library-profile read only — the queue itself is local
+/// [status] tracks the library-profile read only - the queue itself is local
 /// state, so scanning never spins the screen. The preview reads [libraryName]
 /// when [includeLibrary] is on.
 @freezed

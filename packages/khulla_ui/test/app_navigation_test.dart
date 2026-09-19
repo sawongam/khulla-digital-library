@@ -36,7 +36,7 @@ void main() {
     ) async {
       // The trailing slot wraps its child in Expanded to push it to the
       // bottom of the rail. That only works if NavigationRail puts trailing
-      // inside a Flex — if a future Flutter moves it into a scroll view,
+      // inside a Flex - if a future Flutter moves it into a scroll view,
       // this test fails loudly instead of the app throwing at runtime.
       await tester.pumpWidget(
         _host(
@@ -51,7 +51,7 @@ void main() {
       );
 
       expect(tester.takeException(), isNull);
-      // Collapsed, a destination is its glyph and a tooltip — the label is
+      // Collapsed, a destination is its glyph and a tooltip - the label is
       // not painted, which is the whole point of the narrow rail.
       expect(_icon(AppIcons.book), findsOneWidget);
       expect(find.text('First'), findsNothing);
@@ -123,7 +123,7 @@ void main() {
 
     testWidgets('fits five destinations on a 360px phone', (tester) async {
       // The shell fills the bar with four sections plus *More*, and the
-      // narrowest window the product supports is 360px — about 64px a slot.
+      // narrowest window the product supports is 360px - about 64px a slot.
       // Any label or glyph that outgrows that overflows on a real phone
       // rather than ellipsing, which is what this pins.
       tester.view.physicalSize = const Size(360, 640);

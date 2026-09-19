@@ -18,7 +18,7 @@ class AppMenuButton extends StatelessWidget {
   /// The entries, in order, destructive ones last.
   final List<AppMenuAction> actions;
 
-  /// What the menu holds, already localized — "More actions".
+  /// What the menu holds, already localized - "More actions".
   final String tooltip;
 
   /// The trigger glyph.

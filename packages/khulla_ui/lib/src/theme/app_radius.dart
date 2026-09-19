@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// wrong: **a control is rounder than the container it sits in, and an item
 /// inside a container is sharper than the container.** Buttons at 8, panels
 /// and fields at 6, menu rows and tab triggers at 4. Flattening everything to
-/// one value — usually 8 — is what makes an interface read as generic.
+/// one value - usually 8 - is what makes an interface read as generic.
 ///
 /// Kept separate from [AppSpacing] so radius can be tuned without moving
 /// layout, even where the numbers happen to coincide.
@@ -33,7 +33,7 @@ class AppRadius extends ThemeExtension<AppRadius> {
   final double item;
 
   /// The dominant radius. Fields, selects, table wrappers, cards, popovers,
-  /// tooltips — anything that is a *surface* holding content.
+  /// tooltips - anything that is a *surface* holding content.
   final double container;
 
   /// Controls: buttons, dialogs, navigation rows. Deliberately one step

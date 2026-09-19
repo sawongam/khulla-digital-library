@@ -6,9 +6,9 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// {@template app_button}
 /// The system's only button.
 ///
-/// Every visual decision — height, radius, shadow, the ripple, the 0.95 press
+/// Every visual decision - height, radius, shadow, the ripple, the 0.95 press
 /// dip, the disabled 50%, the loading spinner that replaces the label without
-/// resizing the control — lives here, so a screen picks a [variant] and a
+/// resizing the control - lives here, so a screen picks a [variant] and a
 /// [size] and never writes a style. A one-off `ElevatedButton` with a custom
 /// `ButtonStyle` is the thing this exists to prevent.
 /// {@endtemplate}
@@ -42,8 +42,8 @@ class AppButton extends StatefulWidget {
   /// its width, so a row of controls does not reflow mid-submit.
   final bool isLoading;
 
-  /// A glyph before the label. Worth it on a verb — *Add title*, *Check
-  /// out* — and never worth it as decoration.
+  /// A glyph before the label. Worth it on a verb - *Add title*, *Check
+  /// out* - and never worth it as decoration.
   final AppIconSpec? icon;
 
   /// A glyph after the label, for a button that opens something.

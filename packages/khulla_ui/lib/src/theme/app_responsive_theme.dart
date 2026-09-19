@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// rung for the active brightness.
 ///
 /// Wire once in `MaterialApp.builder`. Density does not change with window
-/// width — only light/dark follows [ThemeMode].
+/// width - only light/dark follows [ThemeMode].
 ///
 /// The scale cap is not optional. Unbounded scaling overflows a table row
 /// long before it helps anyone.

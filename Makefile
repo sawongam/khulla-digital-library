@@ -17,12 +17,12 @@ install-sdk:
 bootstrap:
 	$(DART) run melos bootstrap
 
-# Keep in step with the `drift` version in pubspec.yaml — the worker and the
+# Keep in step with the `drift` version in pubspec.yaml - the worker and the
 # WebAssembly build are only guaranteed to match within one release.
 DRIFT_RELEASE := drift-2.34.3
 
 ## Fetch the SQLite WebAssembly build and the drift worker into web/.
-## Only needed after upgrading drift — the output is checked in.
+## Only needed after upgrading drift - the output is checked in.
 db-web:
 	curl -fsSL -o web/sqlite3.wasm \
 	  https://github.com/simolus3/drift/releases/download/$(DRIFT_RELEASE)/sqlite3.wasm

@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -185,7 +185,7 @@ class _CopyListPageState extends State<CopyListPage> {
         ),
       ),
       // Every action in this column writes, so the column itself is gone for
-      // a role that may read the catalogue but not change it — rather than a
+      // a role that may read the catalogue but not change it - rather than a
       // menu button that opens onto nothing.
       if (canManage)
         AppTableColumn<Copy>(

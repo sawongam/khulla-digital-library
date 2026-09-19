@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:country_phone_kit/country_phone_kit.dart';
 import 'package:flutter/foundation.dart';
@@ -8,7 +8,7 @@ import 'package:khulla/core/money/money_format.dart';
 /// The currency a library charges fines and fees in.
 ///
 /// [code], [name] and [symbol] are what the catalogue stores. The picker is
-/// seeded from [Currencies], but amounts on screen read the saved symbol — not
+/// seeded from [Currencies], but amounts on screen read the saved symbol - not
 /// a live lookup.
 @immutable
 final class AppCurrency implements Comparable<AppCurrency> {
@@ -47,7 +47,7 @@ final class AppCurrency implements Comparable<AppCurrency> {
 
   /// How amounts are rendered in this currency: symbol, side, and grouping.
   ///
-  /// What this never decides is the storage unit — every amount is an integer
+  /// What this never decides is the storage unit - every amount is an integer
   /// number of hundredths whatever the currency. See `Money`.
   MoneyFormat get format => MoneyFormat(symbol: symbol);
 

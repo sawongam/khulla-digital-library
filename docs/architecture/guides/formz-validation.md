@@ -1,4 +1,4 @@
-# ADR 0013 — `formz` for form validation
+# ADR 0013 - `formz` for form validation
 
 **Status:** Accepted · **Date:** 2026-09-03
 
@@ -6,11 +6,11 @@
 
 Form validation in Flutter has two common failure modes:
 
-**Validation in the widget.** `TextFormField`'s `validator` callback runs on submit and returns an error string. This couples validation logic to the widget tree, makes it impossible to test without building a widget, and duplicates logic when the same field type (e.g., ISBN) appears in multiple forms. It also produces an implicit validation state that lives nowhere — after `_formKey.currentState!.validate()`, the valid/invalid state is in the `Form` widget's internal state, invisible to any cubit or test.
+**Validation in the widget.** `TextFormField`'s `validator` callback runs on submit and returns an error string. This couples validation logic to the widget tree, makes it impossible to test without building a widget, and duplicates logic when the same field type (e.g., ISBN) appears in multiple forms. It also produces an implicit validation state that lives nowhere - after `_formKey.currentState!.validate()`, the valid/invalid state is in the `Form` widget's internal state, invisible to any cubit or test.
 
 **Validation flags in the cubit state.** A `bool isIsbnValid` field alongside the ISBN string. This is testable but verbose: every field needs a flag, every `copyWith` emits the flag alongside the value, and the "is the whole form submittable?" check is a conjunction of all the flags with no shared definition of what "valid" means for each field type.
 
-`formz` solves both by making a validated input a first-class type. Each `FormzInput<Value, ValidationError>` carries its value and its validation state as a single object. The cubit state holds `FormzInput` instances, not bare strings. Validation logic is in the input class — a plain Dart object — and is testable with no widget involvement. The "is the form submittable?" check is `Formz.validate([titleInput, isbnInput, authorInput])`, which returns a single `FormzStatus`.
+`formz` solves both by making a validated input a first-class type. Each `FormzInput<Value, ValidationError>` carries its value and its validation state as a single object. The cubit state holds `FormzInput` instances, not bare strings. Validation logic is in the input class - a plain Dart object - and is testable with no widget involvement. The "is the form submittable?" check is `Formz.validate([titleInput, isbnInput, authorInput])`, which returns a single `FormzStatus`.
 
 ## Decision
 
@@ -33,18 +33,18 @@ class RequiredText extends FormzInput<String, RequiredTextValidationError> {
 }
 ```
 
-`pure()` means the field has not been touched — no error shown yet even if the value is invalid. `dirty()` means the user has interacted with the field — errors are now shown. This mirrors the UX contract: a form that opens with empty fields shows no errors until the user touches each field (or submits).
+`pure()` means the field has not been touched - no error shown yet even if the value is invalid. `dirty()` means the user has interacted with the field - errors are now shown. This mirrors the UX contract: a form that opens with empty fields shows no errors until the user touches each field (or submits).
 
 ### Built-in inputs
 
 `lib/core/form/inputs/` provides:
 
-| Class | Validates |
-| --- | --- |
-| `RequiredText` | Non-empty string after trimming |
-| `Email` | Non-empty, contains `@`, has a domain segment |
-| `FullName` | Non-empty, at least two words |
-| `Password` | Minimum 8 characters, at least one digit |
+| Class          | Validates                                     |
+| -------------- | --------------------------------------------- |
+| `RequiredText` | Non-empty string after trimming               |
+| `Email`        | Non-empty, contains `@`, has a domain segment |
+| `FullName`     | Non-empty, at least two words                 |
+| `Password`     | Minimum 8 characters, at least one digit      |
 
 Feature-specific validation (ISBN format, call number syntax, membership ID pattern) goes in the feature's own `domain/` or in a sub-folder of `lib/core/form/inputs/` if the same format appears in multiple features.
 
@@ -70,7 +70,7 @@ abstract class TitleFormState with _$TitleFormState {
 }
 ```
 
-`Formz.validate([…])` returns `true` only when every input is in the valid state. It is the single submittability check, and it lives on the state so the submit button's `onPressed` is `state.isValid ? cubit.saveTitle : null` — no logic in the widget.
+`Formz.validate([…])` returns `true` only when every input is in the valid state. It is the single submittability check, and it lives on the state so the submit button's `onPressed` is `state.isValid ? cubit.saveTitle : null` - no logic in the widget.
 
 ### Field change and submission flow
 
@@ -109,7 +109,7 @@ Future<void> saveTitle() async {
 }
 ```
 
-The "mark all dirty on submit" step is the UX contract for a form where the user presses submit without touching every field — all errors appear at once rather than showing only after each field is individually touched.
+The "mark all dirty on submit" step is the UX contract for a form where the user presses submit without touching every field - all errors appear at once rather than showing only after each field is individually touched.
 
 ### Displaying errors in the widget
 
@@ -126,7 +126,7 @@ AppTextField(
 )
 ```
 
-`displayError` returns the validation error only when the input is `dirty` and invalid — never when `pure`. This means the widget has no validation logic: it maps an error enum value to a localized string and passes it to the text field. The `switch` is exhaustive; the analyzer warns if a new `ValidationError` variant is added and the switch is not updated.
+`displayError` returns the validation error only when the input is `dirty` and invalid - never when `pure`. This means the widget has no validation logic: it maps an error enum value to a localized string and passes it to the text field. The `switch` is exhaustive; the analyzer warns if a new `ValidationError` variant is added and the switch is not updated.
 
 ### `FormzInput` survives status transitions
 
@@ -151,17 +151,17 @@ A pure form state (no list, just a create/edit flow) uses `FormzSubmissionStatus
 **What this buys**
 
 - Validation logic is in one class per input type, testable with `expect(RequiredText.dirty('').isValid, false)`. No widget tree required.
-- `displayError` returns `null` for untouched fields. The widget cannot accidentally show an error before the user has interacted — the contract is enforced by the type, not by an `if` in the widget.
+- `displayError` returns `null` for untouched fields. The widget cannot accidentally show an error before the user has interacted - the contract is enforced by the type, not by an `if` in the widget.
 - `Formz.validate([…])` is the one place the form's submittability is computed. The submit button, the cubit's guard clause, and any derived state all read from the same source.
 - An exhaustive `switch` on a `ValidationError` enum means adding a new validation case produces a compile-time warning at every display site.
 - `FormzInput` values survive every cubit state transition without manual field forwarding.
 
 **What this costs**
 
-- A new field type requires a new `FormzInput` subclass, even if it is a one-line validator. For a type used in only one form, this feels like overhead. The tradeoff is testability and the `displayError` contract — a bare `String?` in the state does not give you either.
+- A new field type requires a new `FormzInput` subclass, even if it is a one-line validator. For a type used in only one form, this feels like overhead. The tradeoff is testability and the `displayError` contract - a bare `String?` in the state does not give you either.
 - `FormzSubmissionStatus` and `LoadStatus` coexist in some states. The naming convention (`status` for `LoadStatus`, named explicitly for `FormzSubmissionStatus`) prevents confusion, but contributors new to the codebase will encounter both.
 - The `pure` / `dirty` distinction requires the "mark all dirty on submit" pattern to be written correctly in every `save` / `submit` method. A cubit that forgets to dirty the fields before checking `isValid` will pass the check on empty required fields if the user presses submit without touching anything.
 
 ## Revisiting
 
-The trigger to replace `formz` is a Flutter-native form validation API that provides the `pure`/`dirty` distinction, exhaustive error enums, and a testable separation from the widget tree. Nothing in the current SDK comes close. The trigger to extend the built-in inputs is a validation rule that appears in three or more features — it graduates from the feature's `domain/` to `lib/core/form/inputs/`.
+The trigger to replace `formz` is a Flutter-native form validation API that provides the `pure`/`dirty` distinction, exhaustive error enums, and a testable separation from the widget tree. Nothing in the current SDK comes close. The trigger to extend the built-in inputs is a validation rule that appears in three or more features - it graduates from the feature's `domain/` to `lib/core/form/inputs/`.

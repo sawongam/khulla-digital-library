@@ -14,7 +14,7 @@ targets:
             app_database: lib/core/database/app_database.dart
 
           # Recorded schemas and the migration tests generated from them.
-          # Both are committed — they are the evidence that every shipped
+          # Both are committed - they are the evidence that every shipped
           # upgrade path produces the same schema as a clean install.
           schema_dir: drift_schemas/
           test_dir: test/drift/

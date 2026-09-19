@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,8 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// A stored id, not a token: there is no server to issue one and nothing to
 /// revoke. Whoever can read this key can already read the catalogue file next
-/// to it, so the id buys convenience — the desk machine does not ask for a
-/// password every morning — and claims no more security than that.
+/// to it, so the id buys convenience - the desk machine does not ask for a
+/// password every morning - and claims no more security than that.
 ///
 /// The id is checked against the staff table on every restore, so an account
 /// that was deleted or disabled since the last session does not come back.

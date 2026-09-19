@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_status.dart';
 import 'package:khulla/features/catalog/title/data/tables/titles.dart';
 
-/// One physical item on a shelf — an identifier plus physical state.
+/// One physical item on a shelf - an identifier plus physical state.
 @DataClassName('CopyRow')
 @TableIndex(name: 'copies_barcode', columns: {#barcode}, unique: true)
 @TableIndex.sql(

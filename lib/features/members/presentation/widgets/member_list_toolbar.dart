@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/members/domain/models/member_query.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// Search plus the desk's four questions of the register — who is holding
+/// Search plus the desk's four questions of the register - who is holding
 /// something, who owes something, whose card is expiring or stopped working.
 ///
 /// Dumb by design: the page owns the query and wires every control

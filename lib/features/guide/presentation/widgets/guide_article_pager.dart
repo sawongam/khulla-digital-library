@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/guide/domain/guide_article.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -7,8 +7,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// What to read before this article, and what to read after it.
 ///
-/// The manual has an order — set the library up, then watch it, then work it
-/// — and a reader who arrived from a search result has no way of knowing
+/// The manual has an order - set the library up, then watch it, then work it
+/// - and a reader who arrived from a search result has no way of knowing
 /// that. The pager is what turns eight separate articles back into a book.
 class GuideArticlePager extends StatelessWidget {
   const GuideArticlePager({

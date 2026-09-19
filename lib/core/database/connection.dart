@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
@@ -37,7 +37,7 @@ DatabaseConnection openDatabaseConnection(AppConfig config) => driftDatabase(
 /// Records which storage tier the browser actually granted.
 ///
 /// This is not diagnostics for their own sake. When a browser offers nothing
-/// persistent, drift falls back to `inMemory` and succeeds — a librarian would
+/// persistent, drift falls back to `inMemory` and succeeds - a librarian would
 /// enter a day of circulation and lose it on refresh, with no error anywhere.
 /// Logging it is the floor; a web build that becomes a system of record needs
 /// to say so on screen.

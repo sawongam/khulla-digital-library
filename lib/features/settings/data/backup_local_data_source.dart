@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/database/app_database.dart';
@@ -7,7 +7,7 @@ import 'package:khulla/core/error/guard.dart';
 
 const String _source = 'BackupLocalDataSource';
 
-/// The one operation web restore and erase — on every platform — share:
+/// The one operation web restore and erase - on every platform - share:
 /// wiping every table with no per-table knowledge of what it holds.
 ///
 /// Generic over `AppDatabase.allTables`, the same reasoning

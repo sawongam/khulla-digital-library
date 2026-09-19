@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khulla/core/theme/app_language.dart';
@@ -14,7 +14,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// [ThemeCubit] is an app-wide `@lazySingleton` with real storage behind it,
 /// so the choice made here survives a restart. It is a device setting, not a
-/// library one — nothing about it reaches the catalogue file.
+/// library one - nothing about it reaches the catalogue file.
 class AppearancePage extends StatelessWidget {
   const AppearancePage({super.key});
 

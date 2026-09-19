@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/router/routes.dart';
 import 'package:khulla/features/guide/domain/guide_article.dart';
@@ -16,7 +16,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Nepali screen.
 ///
 /// It is a plain function rather than a cubit because nothing here is read
-/// from anywhere — there is no query behind the guide, so there is no
+/// from anywhere - there is no query behind the guide, so there is no
 /// loading state, no failure, and nothing to hold between builds.
 List<GuideArticle> guideArticles(AppLocalizations l10n) => [
   _gettingStarted(l10n),

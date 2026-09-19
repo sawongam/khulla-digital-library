@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/dashboard/presentation/widgets/dashboard_section_card.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// How the catalogue divides by format — the closest categorical dimension a
+/// How the catalogue divides by format - the closest categorical dimension a
 /// title carries; there is no separate subject/genre column.
 ///
 /// Bars on a shared scale rather than a second pie: six categories in a pie

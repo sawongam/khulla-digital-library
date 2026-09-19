@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/money/money.dart';
@@ -12,7 +12,7 @@ typedef ReportsMonthCount = ({DateTime month, int count});
 /// One row of a "most borrowed" or "most active" ranking, for the period.
 typedef ReportsRanking = ({String name, String detail, int count});
 
-/// One title by catalogue format, for the collection-mix donut — a snapshot,
+/// One title by catalogue format, for the collection-mix donut - a snapshot,
 /// not scoped to the report period.
 typedef ReportsFormatCount = ({String label, int count});
 

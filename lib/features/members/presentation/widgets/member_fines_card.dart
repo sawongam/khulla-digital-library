@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/circulation/fine/domain/models/fine.dart';
 import 'package:khulla/features/circulation/fine/presentation/cubit/fine_list_cubit.dart';

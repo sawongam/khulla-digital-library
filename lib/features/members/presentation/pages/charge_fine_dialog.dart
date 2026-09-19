@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/feedback/app_toast.dart';
 import 'package:khulla/core/lifecycle/dispose_bag.dart';
@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// `MemberDetailCubit.chargeFine`.
 typedef ChargeFineResult = ({FineReason reason, Money amount, String? note});
 
-/// A one-off fine a librarian charges by hand — a lost or damaged copy, or a
+/// A one-off fine a librarian charges by hand - a lost or damaged copy, or a
 /// membership fee. The automatic overdue fine on return is the only reason
 /// not offered here.
 ///

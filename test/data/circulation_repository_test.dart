@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,8 +21,8 @@ import '../helpers/test_database.dart';
 ///
 /// Loan reads go through the real [LocalLoanDataSource] so checkout/return
 /// views reload the rows the transaction just wrote; these tests focus on
-/// transactional writes — duplicate loans, fines on return, and copy
-/// status changes — without also asserting loan-list queries.
+/// transactional writes - duplicate loans, fines on return, and copy
+/// status changes - without also asserting loan-list queries.
 void main() {
   late AppDatabase db;
   late CirculationRepositoryImpl repository;

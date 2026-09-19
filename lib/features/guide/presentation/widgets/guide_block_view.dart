@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/guide/domain/guide_block.dart';
 import 'package:khulla/features/guide/presentation/widgets/guide_callout.dart';
@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// The single place the article's data model meets the design system, which
 /// is what lets a new kind of block be added by extending the sealed type and
-/// answering the analyzer's complaint here — rather than by hunting for every
+/// answering the analyzer's complaint here - rather than by hunting for every
 /// page that renders content.
 class GuideBlockView extends StatelessWidget {
   const GuideBlockView(this.block, {super.key});

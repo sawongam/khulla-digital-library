@@ -1,10 +1,10 @@
-# ADR 0010 — Localization and asset generation strategy
+# ADR 0010 - Localization and asset generation strategy
 
 **Status:** Accepted · **Date:** 2026-09-03
 
 ## Context
 
-A library management system used in schools and community libraries across multiple regions needs two things beyond raw `String` literals: localized user-facing text, and generated accessors for image and icon assets. Both have the same failure mode if handled naively — a renamed key or a deleted file produces a runtime null or a broken image, visible only when that specific string or asset is exercised in that locale.
+A library management system used in schools and community libraries across multiple regions needs two things beyond raw `String` literals: localized user-facing text, and generated accessors for image and icon assets. Both have the same failure mode if handled naively - a renamed key or a deleted file produces a runtime null or a broken image, visible only when that specific string or asset is exercised in that locale.
 
 ### Strings
 
@@ -26,7 +26,7 @@ All user-facing strings go in **ARB files** (`lib/l10n/arb/app_en.arb` as the so
 
 #### ARB as source of truth
 
-`lib/l10n/arb/app_en.arb` is the canonical string file. Adding a locale means adding `app_<locale>.arb`. The generated `AppLocalizations` class (`lib/l10n/gen/`) is not committed — `make localize` regenerates it from the ARB files. A fresh clone runs `make localize` before the app analyzes.
+`lib/l10n/arb/app_en.arb` is the canonical string file. Adding a locale means adding `app_<locale>.arb`. The generated `AppLocalizations` class (`lib/l10n/gen/`) is not committed - `make localize` regenerates it from the ARB files. A fresh clone runs `make localize` before the app analyzes.
 
 #### Access via `context.l10n`
 
@@ -41,7 +41,7 @@ Every call site writes `context.l10n.addTitle`, not `AppLocalizations.of(context
 
 #### Naming conventions
 
-ARB keys use `lowerCamelCase`. Names express the *context and meaning* of the string, not its current English wording:
+ARB keys use `lowerCamelCase`. Names express the _context and meaning_ of the string, not its current English wording:
 
 ```json
 {
@@ -49,7 +49,9 @@ ARB keys use `lowerCamelCase`. Names express the *context and meaning* of the st
   "@addTitle": { "description": "Button label to open the add-title form" },
 
   "errorDuplicateRecord": "A record with that identifier already exists.",
-  "@errorDuplicateRecord": { "description": "Shown when a database insert fails with a unique constraint violation" },
+  "@errorDuplicateRecord": {
+    "description": "Shown when a database insert fails with a unique constraint violation"
+  },
 
   "loanDaysOverdue": "{count, plural, one{1 day overdue} other{{count} days overdue}}",
   "@loanDaysOverdue": {
@@ -70,9 +72,9 @@ Naming by English wording (`"addTitleButtonLabel"`) ties the key to the current 
 
 #### The design system split
 
-`AppErrorView` and `AppEmptyView` in `khulla_ui` take ready-made `String` parameters, not `AppLocalizations` keys. The app side (`ErrorRetryView`, `EmptyResultView`) in `shared/components/` resolves the localized strings and passes them in. `khulla_ui` has zero knowledge of `AppLocalizations` — it compiles without the localization dependency.
+`AppErrorView` and `AppEmptyView` in `khulla_ui` take ready-made `String` parameters, not `AppLocalizations` keys. The app side (`ErrorRetryView`, `EmptyResultView`) in `shared/components/` resolves the localized strings and passes them in. `khulla_ui` has zero knowledge of `AppLocalizations` - it compiles without the localization dependency.
 
-This split means a widget in `khulla_ui` can be tested with hardcoded strings and a widget in `shared/components/` is where localization knowledge lives. A violation — a `khulla_ui` widget that calls `context.l10n` — imports `package:khulla/...` and creates a circular dependency.
+This split means a widget in `khulla_ui` can be tested with hardcoded strings and a widget in `shared/components/` is where localization knowledge lives. A violation - a `khulla_ui` widget that calls `context.l10n` - imports `package:khulla/...` and creates a circular dependency.
 
 ### Assets
 
@@ -92,10 +94,10 @@ flutter:
 #### Access
 
 ```dart
-// Correct — type-safe, fails at build time if the file is deleted
+// Correct - type-safe, fails at build time if the file is deleted
 Image.asset(Assets.icons.book)
 
-// Wrong — invisible at compile time, fails at render time
+// Wrong - invisible at compile time, fails at render time
 Image.asset('assets/icons/book.png')
 ```
 
@@ -113,7 +115,7 @@ The consequence is that a fresh clone does not analyze or run without running `m
 
 ### `make localize` vs `make build`
 
-`make localize` runs `flutter gen-l10n` only — fast, regenerates just `lib/l10n/gen/`. Run it after adding an ARB key.
+`make localize` runs `flutter gen-l10n` only - fast, regenerates just `lib/l10n/gen/`. Run it after adding an ARB key.
 
 `make build` runs the full code generation pipeline (freezed, injectable, json_serializable, flutter_gen). It always regenerates assets. Run it after adding an asset, changing a table, or changing a `freezed` state.
 
@@ -125,18 +127,18 @@ They are separate commands because localization changes are common and fast; ful
 
 - A renamed ARB key is an analyzer error at every call site. Unused keys surface as warnings. Neither issue reaches a deployed build.
 - A deleted asset is an analyzer error the next `make build`. No missing images in production.
-- The ARB file is the single surface a translator edits — one file per locale, no Dart knowledge required.
-- Plurals, genders, and selected messages are handled by the ICU message format that `flutter_localizations` supports — no per-call-site `switch` on count.
+- The ARB file is the single surface a translator edits - one file per locale, no Dart knowledge required.
+- Plurals, genders, and selected messages are handled by the ICU message format that `flutter_localizations` supports - no per-call-site `switch` on count.
 - `khulla_ui` remains dependency-free with respect to localization, staying usable outside the app context.
 
 **What this costs**
 
 - `make build` is required on every fresh clone, before the app analyzes. This is called out in every setup document and enforced by CI, but it is still a step contributors can miss.
-- Adding a new string is three steps: add the ARB key, run `make localize`, write the call site. Forgetting `make localize` leaves the generated class stale and produces an analyzer error — which is the right failure mode, but it can confuse a contributor who does not know the step is needed.
+- Adding a new string is three steps: add the ARB key, run `make localize`, write the call site. Forgetting `make localize` leaves the generated class stale and produces an analyzer error - which is the right failure mode, but it can confuse a contributor who does not know the step is needed.
 - Money strings cannot use ARB placeholders as numbers. This is a feature, not a bug, but it means `context.l10n.fineTotal(amount.display())` instead of a formatter inside the ARB value. Keeping the pattern consistent matters: one call site that writes `'Rs ${amount.major}'` into an ARB placeholder reintroduces the 100× risk.
 
 ## Revisiting
 
 The trigger to add a second locale is a library in a non-English locale that needs translated strings. The infrastructure is already in place: add `app_<locale>.arb`, translate the keys, add the locale to `AppLocalizations.supportedLocales` in `app.dart`, and run `make localize`. No structural change required.
 
-The trigger to re-evaluate `flutter_gen` for assets is a project that moves to a significantly different asset pipeline — SVG sprites, Lottie animations managed by a separate tool — where string constants are generated by that tool rather than by `flutter_gen`. Until then, `flutter_gen` produces exactly what is needed with no extra tooling.
+The trigger to re-evaluate `flutter_gen` for assets is a project that moves to a significantly different asset pipeline - SVG sprites, Lottie animations managed by a separate tool - where string constants are generated by that tool rather than by `flutter_gen`. Until then, `flutter_gen` produces exactly what is needed with no extra tooling.

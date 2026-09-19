@@ -5,7 +5,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The label above a form control.
 ///
-/// 12/14px at weight 500 in the label ink — a shade lighter than body text,
+/// 12/14px at weight 500 in the label ink - a shade lighter than body text,
 /// so a column of labels reads as scaffolding and the values read as content.
 /// A required field is marked with a red asterisk after a space, and the
 /// whole label turns red when the field is in error.

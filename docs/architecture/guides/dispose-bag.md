@@ -1,4 +1,4 @@
-# ADR 0012 — `DisposeBag` and widget lifecycle management
+# ADR 0012 - `DisposeBag` and widget lifecycle management
 
 **Status:** Accepted · **Date:** 2026-09-03
 
@@ -29,13 +29,13 @@ class _TitleFormState extends State<TitleForm> {
 }
 ```
 
-This is correct but fragile in a specific way: adding a fourth controller requires changes in three places — the field declaration, `initState`, and `dispose`. A controller added in one place and forgotten in another compiles and runs, leaking silently. On a form with eight fields the `dispose` method becomes a list that is always one entry behind.
+This is correct but fragile in a specific way: adding a fourth controller requires changes in three places - the field declaration, `initState`, and `dispose`. A controller added in one place and forgotten in another compiles and runs, leaking silently. On a form with eight fields the `dispose` method becomes a list that is always one entry behind.
 
 Two alternatives were evaluated:
 
 **`AutomaticKeepAliveClientMixin` + teardown hook.** Flutter has no general "run on dispose" hook built into `State`. The mixin only preserves state across tab switches; it does not help with disposal.
 
-**A bag that tracks created resources and disposes them all at once.** A mixin that overrides `dispose()`, collects every controller and focus node that was created through it, and disposes all of them in a single `super.dispose()` call. Adding a field requires one line, not three. Forgetting `dispose` is structurally impossible — the bag disposes everything it created.
+**A bag that tracks created resources and disposes them all at once.** A mixin that overrides `dispose()`, collects every controller and focus node that was created through it, and disposes all of them in a single `super.dispose()` call. Adding a field requires one line, not three. Forgetting `dispose` is structurally impossible - the bag disposes everything it created.
 
 ## Decision
 
@@ -92,11 +92,11 @@ mixin DisposeBag<T extends StatefulWidget> on State<T> {
 }
 ```
 
-The `late final` initializer runs the first time the field is read, which in practice is the first `build`. This is equivalent to `initState` initialization for resources that are used in `build` — they are created before they are first needed and disposed when the widget leaves the tree.
+The `late final` initializer runs the first time the field is read, which in practice is the first `build`. This is equivalent to `initState` initialization for resources that are used in `build` - they are created before they are first needed and disposed when the widget leaves the tree.
 
 ### What `DisposeBag` deliberately does not cover
 
-**Conditional ownership.** A controller the parent may have supplied — a `TextEditingController?` parameter that the widget creates only when the parent passes `null` — requires tracking whether this widget created it:
+**Conditional ownership.** A controller the parent may have supplied - a `TextEditingController?` parameter that the widget creates only when the parent passes `null` - requires tracking whether this widget created it:
 
 ```dart
 class _SearchFieldState extends State<SearchField> {
@@ -121,7 +121,7 @@ class _SearchFieldState extends State<SearchField> {
 }
 ```
 
-`DisposeBag` cannot express "dispose this only if I created it." That logic stays hand-written. Reaching for `DisposeBag` there and unconditionally disposing a parent-owned controller is a bug — the parent's controller becomes invalid mid-session.
+`DisposeBag` cannot express "dispose this only if I created it." That logic stays hand-written. Reaching for `DisposeBag` there and unconditionally disposing a parent-owned controller is a bug - the parent's controller becomes invalid mid-session.
 
 **Subscriptions.** A `StreamSubscription` is not a `ChangeNotifier`. It has a `cancel()` method, not `dispose()`. Cubit stream subscriptions belong in the cubit's `close()`, not in the widget's `dispose()`. A `StreamSubscription` owned by a widget is rare enough that hand-writing its cancellation in `dispose()` is the right call rather than extending `DisposeBag` with a second interface.
 
@@ -138,7 +138,7 @@ class _AnimatedCardState extends State<AnimatedCard>
 
 ### Using `DisposeBag` in `khulla_ui`
 
-Widgets in `packages/khulla_ui` that own controllers use `DisposeBag` via the package's own import. `DisposeBag` lives in the app package (`lib/core/lifecycle/`), so if a `khulla_ui` primitive needs it the mixin would have to move to the design-system package or be duplicated. In practice, primitives in `khulla_ui` that need a controller accept one as a parameter (the conditional-ownership pattern) rather than creating their own — the app code controls the lifetime. A `khulla_ui` widget that creates and owns a controller internally is the exception; if it arises, moving `DisposeBag` to `khulla_ui` and having the app import it from there is the right migration.
+Widgets in `packages/khulla_ui` that own controllers use `DisposeBag` via the package's own import. `DisposeBag` lives in the app package (`lib/core/lifecycle/`), so if a `khulla_ui` primitive needs it the mixin would have to move to the design-system package or be duplicated. In practice, primitives in `khulla_ui` that need a controller accept one as a parameter (the conditional-ownership pattern) rather than creating their own - the app code controls the lifetime. A `khulla_ui` widget that creates and owns a controller internally is the exception; if it arises, moving `DisposeBag` to `khulla_ui` and having the app import it from there is the right migration.
 
 ## Consequences
 
@@ -151,12 +151,12 @@ Widgets in `packages/khulla_ui` that own controllers use `DisposeBag` via the pa
 
 **What this costs**
 
-- `late final` initializers run on first read, not on widget construction. A resource that must exist before the first `build` — e.g., a controller whose initial value is computed in the constructor — must still use `initState`. In practice this is rare: `textController(text: widget.initialValue)` covers the common case.
+- `late final` initializers run on first read, not on widget construction. A resource that must exist before the first `build` - e.g., a controller whose initial value is computed in the constructor - must still use `initState`. In practice this is rare: `textController(text: widget.initialValue)` covers the common case.
 - The mixin is not part of Flutter or a widely known third-party package. A new contributor will encounter `with DisposeBag` and need to look it up. The implementation is short enough (≈30 lines) that reading it resolves the confusion immediately.
 - `DisposeBag` disposes every registered resource unconditionally. Registering a resource you do not own is a bug. The rule is: only call `textController()`, `focusNode()`, or `addDisposable()` for resources this widget created. Passing in an externally-owned resource goes in the hand-written disposal path.
 
 ## Revisiting
 
-The trigger is a Flutter API change that makes `ChangeNotifier.dispose()` insufficient for some resource type — e.g., a future `SelectionController` with a different teardown contract. Add a typed factory method to `DisposeBag` and update the one file. No call site changes required.
+The trigger is a Flutter API change that makes `ChangeNotifier.dispose()` insufficient for some resource type - e.g., a future `SelectionController` with a different teardown contract. Add a typed factory method to `DisposeBag` and update the one file. No call site changes required.
 
-The trigger to retire `DisposeBag` is Flutter shipping a built-in equivalent — a `@mustDispose` annotation or an `AutoDispose` mixin in the framework. At that point the migration is mechanical: replace `with DisposeBag` with the framework equivalent and delete the local mixin.
+The trigger to retire `DisposeBag` is Flutter shipping a built-in equivalent - a `@mustDispose` annotation or an `AutoDispose` mixin in the framework. At that point the migration is mechanical: replace `with DisposeBag` with the framework equivalent and delete the local mixin.

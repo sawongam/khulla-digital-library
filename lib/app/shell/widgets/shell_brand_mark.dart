@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -12,7 +12,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// Sits above the navigation rail in the shell's left column, beside
 /// [AppTopBar] on the right. The icon column matches [AppNavRail]
-/// destination rows exactly — same slot width, same gap, same left inset.
+/// destination rows exactly - same slot width, same gap, same left inset.
 class ShellBrandHeader extends StatelessWidget {
   const ShellBrandHeader({required this.extended, super.key});
 
@@ -53,14 +53,14 @@ class ShellBrandHeader extends StatelessWidget {
 
 /// Product mark drawn for the shell header and the collapsed rail.
 ///
-/// Extended: the horizontal wordmark plus the product tagline — the wordmark
+/// Extended: the horizontal wordmark plus the product tagline - the wordmark
 /// already carries the name, so no duplicate title line.
 ///
 /// Collapsed: the submark centred in the rail width, because at 64px there is
 /// no room for the wordmark.
 ///
 /// When the library has uploaded its own mark under Settings, it replaces
-/// the Khulla mark here — this slot is the library's own branding, not
+/// the Khulla mark here - this slot is the library's own branding, not
 /// Khulla's, once one is set.
 class ShellBrandMark extends StatelessWidget {
   const ShellBrandMark({required this.extended, super.key});

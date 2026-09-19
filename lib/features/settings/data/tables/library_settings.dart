@@ -1,9 +1,9 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 
-/// The library's own record — one row, for the whole file.
+/// The library's own record - one row, for the whole file.
 ///
 /// A single-row table rather than a key-value bag, because these values are
 /// typed and read together: the app needs the name and the currency on the
@@ -20,7 +20,7 @@ class LibrarySettings extends Table {
 
   /// ISO-4217 code for the currency every fine and fee is displayed in.
   ///
-  /// It changes how amounts are *rendered*, never how they are stored — a
+  /// It changes how amounts are *rendered*, never how they are stored - a
   /// fine is an integer number of hundredths whatever this says. Switching it
   /// does not convert existing amounts, and nothing here should ever imply it
   /// does.
@@ -38,10 +38,10 @@ class LibrarySettings extends Table {
 
   TextColumn get address => text().nullable().withLength(max: 400)();
 
-  /// Free text — not a structured weekly schedule.
+  /// Free text - not a structured weekly schedule.
   TextColumn get openingHours => text().nullable().withLength(max: 200)();
 
-  /// Prefix for auto-generated copy barcodes — the counter follows.
+  /// Prefix for auto-generated copy barcodes - the counter follows.
   TextColumn get barcodePrefix => text().withDefault(const Constant('KH-'))();
 
   /// Next integer appended after [barcodePrefix] when a copy gets no barcode.
@@ -64,7 +64,7 @@ class LibrarySettings extends Table {
       integer().withDefault(const Constant(1))();
 
   /// Opaque reference to the uploaded library mark, resolved through
-  /// `lib/core/storage/logo_store.dart` — an absolute file path on native,
+  /// `lib/core/storage/logo_store.dart` - an absolute file path on native,
   /// base64-encoded bytes on web (which has nowhere to keep a file). Never
   /// interpreted directly outside that pair.
   TextColumn get logoRef => text().nullable()();

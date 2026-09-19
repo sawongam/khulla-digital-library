@@ -18,7 +18,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// where the form needs the room, and it reads as "this closes the whole
 /// thing" rather than as one more control in the header.
 ///
-/// It opens over 500ms and closes over 300ms — the one deliberately slow
+/// It opens over 500ms and closes over 300ms - the one deliberately slow
 /// movement in the product, and asymmetric because dismissal should never
 /// feel like waiting.
 ///
@@ -40,7 +40,7 @@ class AppSideSheet extends StatelessWidget {
   /// The panel heading, already localized.
   final String title;
 
-  /// The scrolling body — typically a [Column] of [AppFormSection]s.
+  /// The scrolling body - typically a [Column] of [AppFormSection]s.
   final Widget child;
 
   /// Tooltip on the close control.

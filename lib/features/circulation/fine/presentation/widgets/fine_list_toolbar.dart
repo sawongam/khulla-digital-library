@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/circulation/shared/domain/fine_status.dart';
 import 'package:khulla/features/circulation/shared/presentation/circulation_labels.dart';

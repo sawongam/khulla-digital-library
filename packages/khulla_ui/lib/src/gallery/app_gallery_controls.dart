@@ -252,7 +252,7 @@ class _AppGalleryControlsState extends State<AppGalleryControls> {
               ],
             ),
             AppGalleryRow(
-              label: 'filters — hairline at rest, brand wash when set',
+              label: 'filters - hairline at rest, brand wash when set',
               children: [
                 AppFilterChip(
                   label: 'Overdue',

@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
@@ -7,13 +7,13 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Mixes a brand color, and hands it back on confirm.
 ///
 /// The choice is applied on confirm rather than live under the picker: the
-/// dialog would be repainting itself — its own buttons, its own field borders
-/// — on every drag frame, which makes judging a color impossible. The preview
+/// dialog would be repainting itself - its own buttons, its own field borders
+/// - on every drag frame, which makes judging a color impossible. The preview
 /// strip stands in for that instead.
 class SettingsBrandColorDialog extends StatefulWidget {
   const SettingsBrandColorDialog({required this.initial, super.key});
 
-  /// The color the picker opens on — whatever the brand is now.
+  /// The color the picker opens on - whatever the brand is now.
   final Color initial;
 
   /// Opens the dialog. Resolves to the chosen color, or null on cancel.
@@ -68,7 +68,7 @@ class _SettingsBrandColorDialogState extends State<SettingsBrandColorDialog> {
 /// What the color will actually look like in the product: a filled button, a
 /// tinted row and the deep emphasis ink, drawn from the derived ramp rather
 /// than from the raw seed. A swatch alone hides the two failures that matter
-/// — ink that vanishes on the fill, and a tint that turns muddy.
+/// - ink that vanishes on the fill, and a tint that turns muddy.
 class _Preview extends StatelessWidget {
   const _Preview({required this.seed});
 

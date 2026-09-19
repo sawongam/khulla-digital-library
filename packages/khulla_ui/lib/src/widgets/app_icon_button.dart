@@ -38,7 +38,7 @@ class AppIconButton extends StatelessWidget {
   /// Called on press. Null disables the control, keeping the tooltip.
   final VoidCallback? onPressed;
 
-  /// Overrides the glyph colour — [AppStatusTone.danger] for a destructive
+  /// Overrides the glyph colour - [AppStatusTone.danger] for a destructive
   /// row action, for instance. Defaults to [ColorScheme.onSurfaceVariant].
   final AppStatusTone? tone;
 
@@ -49,10 +49,10 @@ class AppIconButton extends StatelessWidget {
   /// beside a primary button and should read as a control.
   final bool outlined;
 
-  /// Marks the control as the active choice — a toggled view switch.
+  /// Marks the control as the active choice - a toggled view switch.
   final bool selected;
 
-  /// Draws an unread dot over the glyph's trailing corner — notifications
+  /// Draws an unread dot over the glyph's trailing corner - notifications
   /// waiting, a filter panel with something set.
   final bool badge;
 
@@ -128,12 +128,12 @@ class AppIconButton extends StatelessWidget {
 
 /// The three icon-button sizes, paired with [AppButton]'s heights.
 enum AppIconButtonSize {
-  /// 35px — inside a table row, where the row is only ~60px tall.
+  /// 35px - inside a table row, where the row is only ~60px tall.
   small,
 
-  /// 40px — the default, matching a small button.
+  /// 40px - the default, matching a small button.
   medium,
 
-  /// 44px — a toolbar or a page header.
+  /// 44px - a toolbar or a page header.
   large,
 }

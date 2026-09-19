@@ -42,14 +42,14 @@ class AppNavRail extends StatefulWidget {
   /// Whether to show labels beside the glyphs.
   final bool extended;
 
-  /// Pinned above the destinations — the product mark.
+  /// Pinned above the destinations - the product mark.
   final Widget? leading;
 
-  /// Pinned under the destinations, above [footer] — the theme toggle, a
+  /// Pinned under the destinations, above [footer] - the theme toggle, a
   /// sign-out row.
   final Widget? trailing;
 
-  /// The bottom-most slot, drawn full-bleed inside the rail's padding — a
+  /// The bottom-most slot, drawn full-bleed inside the rail's padding - a
   /// promo card, a storage meter.
   final Widget? footer;
 
@@ -116,7 +116,7 @@ class _AppNavRailState extends State<AppNavRail> {
     final rail = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Optional slot above the destinations — product mark, search, or
+        // Optional slot above the destinations - product mark, search, or
         // a workspace switcher. The shell draws its brand header above the
         // rail instead, so this stays null in production.
         if (head != null)

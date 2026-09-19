@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/guide/domain/guide_article.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// Only drawn on a large window, where the column it occupies is room the
 /// text was never going to use. Below that it would be a second list above
-/// the article — the reader already has one, on the guide's landing page.
+/// the article - the reader already has one, on the guide's landing page.
 class GuideContentsPanel extends StatelessWidget {
   const GuideContentsPanel({
     required this.article,

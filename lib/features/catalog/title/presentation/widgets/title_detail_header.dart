@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/catalog/shared/presentation/catalog_labels.dart';
 import 'package:khulla/features/catalog/title/domain/models/title.dart'
@@ -27,7 +27,7 @@ class TitleDetailHeader extends StatelessWidget {
   final catalog.Title title;
 
   /// Opens the title's form. Null for a role that may read the catalogue but
-  /// not change it — the button is absent rather than disabled, because a
+  /// not change it - the button is absent rather than disabled, because a
   /// control that can never be pressed is furniture.
   final VoidCallback? onEdit;
 

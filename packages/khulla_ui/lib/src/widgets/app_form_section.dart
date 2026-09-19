@@ -8,14 +8,14 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// calls for: [AppSpacing.sm] between fields, [AppSpacing.lg] before the next
 /// section.
 ///
-/// Grouping is what makes a long editor readable — *Identification*,
-/// *Availability*, *Fines* — so prefer three short sections to one column of
+/// Grouping is what makes a long editor readable - *Identification*,
+/// *Availability*, *Fines* - so prefer three short sections to one column of
 /// twelve fields.
 ///
 /// Given a wide slot it splits in two: the heading and its explanation on the
 /// left, the fields on the right. That is what lets a form live at the same
 /// page width as a table instead of a narrow 720px ribbon down the middle of
-/// a desktop window — and it shortens the page, because the explanation no
+/// a desktop window - and it shortens the page, because the explanation no
 /// longer costs two lines above every group. The fields column is still
 /// capped: a text input the width of a monitor is not easier to fill in.
 /// {@endtemplate}
@@ -38,7 +38,7 @@ class AppFormSection extends StatelessWidget {
   /// Supporting line under [title].
   final String? description;
 
-  /// One action for the section — *Add another copy*.
+  /// One action for the section - *Add another copy*.
   final Widget? trailing;
 
   /// Slot width at or above which the heading moves beside the fields.

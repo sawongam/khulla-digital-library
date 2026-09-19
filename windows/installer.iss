@@ -1,4 +1,4 @@
-; Khulla Digital Library — Inno Setup installer
+; Khulla Digital Library - Inno Setup installer
 ; Builds the familiar per-user installer that wraps the Flutter Windows release.
 ; Version is injected from CI via /DMyAppVersion=, with a local fallback.
 

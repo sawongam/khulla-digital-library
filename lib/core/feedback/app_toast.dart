@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla_ui/khulla_ui.dart';
 import 'package:toastification/toastification.dart';
@@ -140,7 +140,7 @@ class _AppToastCard extends StatelessWidget {
   /// The catalog glyph for a toast type.
   ///
   /// `ToastificationType.icon` hands back a Material `IconData`, which the app
-  /// does not draw — see `AppIcons`.
+  /// does not draw - see `AppIcons`.
   static AppIconSpec _glyphFor(ToastificationType type) => switch (type) {
     ToastificationType.success => AppIcons.success,
     ToastificationType.warning => AppIcons.warning,
@@ -237,7 +237,7 @@ class _AppToastCard extends StatelessWidget {
     if (style == ToastificationStyle.simple || _isMutedInfo) {
       return null;
     }
-    // A toast floats over the page, so it takes the overlay depth — the same
+    // A toast floats over the page, so it takes the overlay depth - the same
     // one a dialog and a side sheet use.
     return context.appShadows.overlay;
   }

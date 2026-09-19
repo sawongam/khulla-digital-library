@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 import 'package:khulla/core/database/app_database.dart';
@@ -56,7 +56,7 @@ Future<ReferenceSeed> seedReferenceData(AppDatabase db) async {
   return (formatId: formatId, memberTypeId: memberTypeId);
 }
 
-/// One lendable title and an available copy — the smallest checkout scenario.
+/// One lendable title and an available copy - the smallest checkout scenario.
 Future<TitleWithCopySeed> seedTitleWithCopy(
   AppDatabase db, {
   required String formatId,

@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
-/// English seed labels matching `app_en.arb` — bootstrap has no l10n context.
+/// English seed labels matching `app_en.arb` - bootstrap has no l10n context.
 String seedFormatName(String code) => switch (code) {
   'book' => 'Book',
   'journal' => 'Journal',

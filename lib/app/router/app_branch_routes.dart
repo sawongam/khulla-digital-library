@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -51,14 +51,14 @@ import 'package:khulla/features/users/presentation/pages/user_list_page.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// One [StatefulShellBranch] per shell destination, in the order
-/// `shellDestinations` declares them — plus the manual, which has no rail
+/// `shellDestinations` declares them - plus the manual, which has no rail
 /// entry and so sits after them all. Its index is never targeted by the rail;
 /// it is reached through `context.go`, which activates whichever branch holds
 /// the matched route.
 ///
 /// Extracted from AppRouter so the router file stays composition (the
 /// single `GoRouter`, the out-of-shell routes, the redirect) while each
-/// branch keeps its own page tree with its `BlocProvider` wiring — providers
+/// branch keeps its own page tree with its `BlocProvider` wiring - providers
 /// are created here, never with `getIt` in a widget.
 StatefulShellBranch dashboardBranch() => StatefulShellBranch(
   routes: [
@@ -285,7 +285,7 @@ StatefulShellBranch usersBranch() => StatefulShellBranch(
 /// The manual. Last, to match the rail: it sits under the work rather than
 /// above it.
 ///
-/// Neither page holds a cubit — the guide is built from localizations on
+/// Neither page holds a cubit - the guide is built from localizations on
 /// every build, so both builders hand over plain pages. An unknown `:topic`
 /// segment is not a routing failure: [guideTopicFromSlug] answers null and
 /// the article page renders its own not-found state.
@@ -315,7 +315,7 @@ StatefulShellBranch guideBranch() => StatefulShellBranch(
 /// The settings tree. [auth] is the live cubit, not a snapshot: where the
 /// section opens depends on the role, and the redirect reads it at redirect
 /// time because a role can change under a window left open. The component
-/// gallery is a development surface — [includeDesignGallery] is false in the
+/// gallery is a development surface - [includeDesignGallery] is false in the
 /// release build, so there is no way to reach it by typing the URL either.
 StatefulShellBranch settingsBranch({
   required AuthCubit auth,

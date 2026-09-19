@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/error/app_exception.dart';
@@ -11,7 +11,7 @@ part 'auth_state.freezed.dart';
 /// Where the app stands before it can show anything.
 enum AuthStatus {
   /// The catalogue has not been asked yet. The router holds still rather than
-  /// guessing — sending a signed-in operator to sign-in for one frame is
+  /// guessing - sending a signed-in operator to sign-in for one frame is
   /// worse than a moment of splash.
   unknown,
 
@@ -48,7 +48,7 @@ abstract class AuthState with _$AuthState {
 
   /// How far the signed-in account reaches into [permission].
   ///
-  /// [PermissionLevel.none] whenever nobody is signed in — there is no
+  /// [PermissionLevel.none] whenever nobody is signed in - there is no
   /// permission to lack more safely than by lacking all of them.
   PermissionLevel levelFor(StaffPermission permission) =>
       staff == null ? PermissionLevel.none : role.levelOf(permission);

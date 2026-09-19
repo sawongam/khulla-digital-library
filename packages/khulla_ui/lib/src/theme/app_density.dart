@@ -5,7 +5,7 @@
 ///
 /// This is the *only* density axis in the design system, and it is not a
 /// layout axis: nothing reflows when it changes. One step up in type size,
-/// control height, icon size and gap — a 1600px monitor gets a 14px body,
+/// control height, icon size and gap - a 1600px monitor gets a 14px body,
 /// 44px fields and 48px table headers where a laptop gets 12/40/40. Layout
 /// decisions belong to `FormFactor` instead.
 ///

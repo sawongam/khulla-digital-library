@@ -58,7 +58,7 @@ class AppRipple extends StatefulWidget {
   /// The cursor shown while enabled.
   final MouseCursor cursor;
 
-  /// Reports hover, for a control that repaints on it — a table row, a
+  /// Reports hover, for a control that repaints on it - a table row, a
   /// navigation item.
   final ValueChanged<bool>? onHoverChanged;
 

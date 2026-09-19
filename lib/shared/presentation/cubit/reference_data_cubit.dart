@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -11,7 +11,7 @@ import 'package:khulla/shared/presentation/cubit/reference_data_state.dart';
 /// App-wide cache of catalogue reference rows: title formats and member types.
 ///
 /// Forms and filters read from here so every screen sees the same active
-/// options without re-querying on each open. A [lazySingleton] — it outlives
+/// options without re-querying on each open. A [lazySingleton] - it outlives
 /// any one page and is never closed.
 ///
 /// Delegates to [ReferenceDataRepository]. Reads emit failures into
@@ -25,7 +25,7 @@ class ReferenceDataCubit extends Cubit<ReferenceDataState> {
 
   /// Loads both format and member-type lists for the first paint.
   ///
-  /// A failure is emitted into state and swallowed — the shell can show
+  /// A failure is emitted into state and swallowed - the shell can show
   /// [ReferenceDataState.error] while the operator keeps working elsewhere.
   Future<void> loadReferenceData() async {
     emit(state.copyWith(status: LoadStatus.loading, error: null));

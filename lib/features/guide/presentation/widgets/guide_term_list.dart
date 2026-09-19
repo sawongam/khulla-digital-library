@@ -1,12 +1,12 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/guide/domain/guide_block.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// A vocabulary list: the word on one side, what it means here on the other.
 ///
-/// It stacks to one column on a phone rather than squeezing two — a
+/// It stacks to one column on a phone rather than squeezing two - a
 /// definition wrapped to three words a line is harder to read than the term
 /// sitting above it.
 class GuideTermList extends StatelessWidget {

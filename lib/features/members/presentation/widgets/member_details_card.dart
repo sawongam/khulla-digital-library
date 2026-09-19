@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/format/app_date_format.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
@@ -10,8 +10,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// Membership and contact fields the detail header does not repeat.
 ///
-/// Two [SectionCard]s — membership (card, category, standing, dates) and
-/// contact — rendered from ready-made strings.
+/// Two [SectionCard]s - membership (card, category, standing, dates) and
+/// contact - rendered from ready-made strings.
 class MemberDetailsCard extends StatelessWidget {
   const MemberDetailsCard({required this.member, super.key});
 
@@ -123,7 +123,7 @@ class MemberDetailsCard extends StatelessWidget {
   }
 }
 
-/// The four figures a desk decides on — copies out, how many are late, what
+/// The four figures a desk decides on - copies out, how many are late, what
 /// is owed, and lifetime borrowings.
 class MemberDetailStats extends StatelessWidget {
   const MemberDetailStats({required this.member, super.key});

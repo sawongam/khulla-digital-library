@@ -1,9 +1,9 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:package_info_plus/package_info_plus.dart';
 
-/// The app version at runtime, read back from the platform — never generated.
+/// The app version at runtime, read back from the platform - never generated.
 ///
 /// `version:` in `pubspec.yaml` is the single source of truth: the Flutter
 /// tool bakes it into every build (Android `versionName`/`versionCode`, the

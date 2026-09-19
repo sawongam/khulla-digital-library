@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -14,7 +14,7 @@ import 'package:khulla/shared/presentation/cubit/reference_data_cubit.dart';
 /// Root [BlocProvider]s for the widget tree.
 ///
 /// App-wide cubits are resolved from the service locator here and nowhere
-/// else — a widget deeper in the tree reads them with `context.read`, never
+/// else - a widget deeper in the tree reads them with `context.read`, never
 /// with `getIt`, so it stays testable by wrapping it in a provider.
 class AppBlocProviders extends StatelessWidget {
   const AppBlocProviders({required this.child, super.key});

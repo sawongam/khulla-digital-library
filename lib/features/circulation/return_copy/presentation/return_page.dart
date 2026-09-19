@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -18,7 +18,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The returns desk: scan, price, confirm.
 ///
-/// A return is several writes in one gesture — the copy goes back on the
+/// A return is several writes in one gesture - the copy goes back on the
 /// shelf, the loan closes, a fine may be raised, and a hold behind the title
 /// may become ready. That is why the confirm button is one button at the
 /// bottom of a summary, rather than an action per row.

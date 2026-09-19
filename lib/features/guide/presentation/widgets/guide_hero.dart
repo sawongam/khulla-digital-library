@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// it.
 ///
 /// The one place in the product that carries a filled brand surface. It earns
-/// it by being the only screen a reader arrives at without a task — every
+/// it by being the only screen a reader arrives at without a task - every
 /// other page in the app opens onto work, and hairlines are what keep those
 /// readable.
 class GuideHero extends StatelessWidget {

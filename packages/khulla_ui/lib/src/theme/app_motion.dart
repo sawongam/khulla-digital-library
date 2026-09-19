@@ -32,7 +32,7 @@ class AppMotion extends ThemeExtension<AppMotion> {
   /// A hover, a selection, a tint swap.
   final Duration color;
 
-  /// Direct manipulation — a press, a drag, a value ticking under the finger.
+  /// Direct manipulation - a press, a drag, a value ticking under the finger.
   final Duration short;
 
   /// A menu, popover or dialog appearing.
@@ -42,7 +42,7 @@ class AppMotion extends ThemeExtension<AppMotion> {
   /// focus nudge, an accordion.
   final Duration layout;
 
-  /// Substituting one piece of content for another — a count sliding, a
+  /// Substituting one piece of content for another - a count sliding, a
   /// total swapping. Slightly longer than [layout] so the incoming glyph
   /// can settle.
   final Duration long;

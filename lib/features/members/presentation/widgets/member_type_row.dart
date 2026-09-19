@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/members/domain/models/member_type.dart';
 import 'package:khulla/features/members/presentation/member_labels.dart';
@@ -10,7 +10,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// badges, the loan-rule overrides it carries, and its edit/archive or
 /// restore actions.
 ///
-/// Dumb by design — taps call back out so the dialog owns the cubit writes
+/// Dumb by design - taps call back out so the dialog owns the cubit writes
 /// and their toasts.
 class MemberTypeRow extends StatelessWidget {
   const MemberTypeRow({

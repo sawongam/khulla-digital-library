@@ -11,7 +11,7 @@ import 'package:khulla_ui/src/theme/app_palette.dart';
 /// once surface tint is involved. These are plain [BoxShadow] lists instead,
 /// so a card, a menu and a sheet can be given the same depth by name.
 ///
-/// The scale is deliberately shallow — the largest is a 15px blur at 10%
+/// The scale is deliberately shallow - the largest is a 15px blur at 10%
 /// black. Depth here comes from the hairline; the shadow only stops a white
 /// surface from cutting out of the canvas. Material's default elevation
 /// shadows are several times darker and will make this UI look like a

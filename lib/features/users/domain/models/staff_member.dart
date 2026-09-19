@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
@@ -12,7 +12,7 @@ part 'staff_member.freezed.dart';
 /// Deliberately carries no password hash. A screen never needs one, and a
 /// model that holds it is a model that eventually gets logged, put in a state
 /// object, or dumped into an export. Verification takes place behind
-/// `StaffRepository`, which reads the hash and never lets it out — see
+/// `StaffRepository`, which reads the hash and never lets it out - see
 /// `StaffCredentials`.
 @freezed
 abstract class StaffMember with _$StaffMember {
@@ -31,7 +31,7 @@ abstract class StaffMember with _$StaffMember {
   /// Whether this account may sign in today.
   bool get canSignIn => status == UserStatus.active;
 
-  /// Whether this account holds every permission — the account first-run
+  /// Whether this account holds every permission - the account first-run
   /// setup creates.
   bool get isAdministrator => role == UserRole.administrator;
 

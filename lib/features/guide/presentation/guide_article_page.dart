@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:go_router/go_router.dart';
 import 'package:khulla/core/router/routes.dart';
@@ -15,7 +15,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// One article of the manual.
 ///
 /// The contents panel sits *outside* the scroll view rather than at the top
-/// of it, which is what makes it stay put while the prose moves — the same
+/// of it, which is what makes it stay put while the prose moves - the same
 /// reason the shell's top bar lives in the shell. Below a large window there
 /// is no column to spare for it, and the reader has the landing page's list
 /// instead.
@@ -47,7 +47,7 @@ class _GuideArticlePageState extends State<GuideArticlePage> {
   void didUpdateWidget(GuideArticlePage oldWidget) {
     super.didUpdateWidget(oldWidget);
     // The branch keeps this page alive, so arriving from a second search
-    // result — or the pager's previous/next — is a widget update rather
+    // result - or the pager's previous/next - is a widget update rather
     // than a fresh mount. The scroll offset would otherwise stay where the
     // last article left it, greeting the reader with its footer.
     if (widget.topic != oldWidget.topic) {
@@ -84,7 +84,7 @@ class _GuideArticlePageState extends State<GuideArticlePage> {
     );
   }
 
-  /// A new article opens at its top — it is never a continuation of the
+  /// A new article opens at its top - it is never a continuation of the
   /// scroll the reader just left.
   void _scrollToTop() {
     if (!_scroll.hasClients) return;
@@ -95,7 +95,7 @@ class _GuideArticlePageState extends State<GuideArticlePage> {
   ///
   /// Read from the laid-out boxes rather than from a table of offsets: the
   /// sections are different heights, the window resizes, and the prose
-  /// reflows — every one of which would invalidate a cached offset.
+  /// reflows - every one of which would invalidate a cached offset.
   void _updateActive(GuideArticle article) {
     String? nearest;
     for (final section in article.sections) {

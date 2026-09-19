@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -23,7 +23,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The fines ledger: what is owed, what was taken, what was written off.
 ///
-/// Every amount on this screen is a [Money] rendered through `display()` —
+/// Every amount on this screen is a [Money] rendered through `display()` -
 /// never interpolated, which would print the paisa, and never formatted by
 /// hand, which would put the currency symbol somewhere the library's settings
 /// did not ask for. [FineListCubit] drives search, status filters and the

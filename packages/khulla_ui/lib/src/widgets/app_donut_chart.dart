@@ -3,7 +3,7 @@
 
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// A ring showing how one total splits — collection by status, revenue by
+/// A ring showing how one total splits - collection by status, revenue by
 /// source, copies by condition.
 ///
 /// A donut, never a pie: the hole is where the total goes, and the total is

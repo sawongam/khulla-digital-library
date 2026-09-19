@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -10,7 +10,7 @@ import 'package:khulla/shared/presentation/cubit/library_branding_state.dart';
 /// App-wide cache of the library's uploaded mark, read by the shell's brand
 /// mark widget.
 ///
-/// A [lazySingleton] — it outlives any one page and is never closed. A
+/// A [lazySingleton] - it outlives any one page and is never closed. A
 /// failure to read it is not shown anywhere: the shell falls back to the
 /// default Khulla mark, which is not worse than an error banner in the
 /// chrome for something this decorative.

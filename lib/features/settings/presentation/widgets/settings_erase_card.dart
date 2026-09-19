@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// The erase entry: one quiet ledger row, not an alarm panel.
 ///
-/// There is no warning icon and no red wash — the page already says what the
+/// There is no warning icon and no red wash - the page already says what the
 /// library is, so restating it in red reads as decoration. The danger lives
 /// in exactly one place: the outlined destructive button, which is the
 /// design system's own idiom for a destructive control on a page. The
