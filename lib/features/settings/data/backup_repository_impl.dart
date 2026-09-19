@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:file_selector/file_selector.dart' show XTypeGroup, openFile;
 import 'package:injectable/injectable.dart';
