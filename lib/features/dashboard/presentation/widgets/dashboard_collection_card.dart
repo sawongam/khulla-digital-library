@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/dashboard/presentation/widgets/dashboard_section_card.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Where every copy in the collection is right now.
 ///
 /// The donut carries the total in its hole because that is the figure an
-/// operator reads first — "how many copies do we have" — and the slices
+/// operator reads first - "how many copies do we have" - and the slices
 /// answer the follow-up without a second card.
 class DashboardCollectionCard extends StatelessWidget {
   const DashboardCollectionCard({required this.slices, super.key});

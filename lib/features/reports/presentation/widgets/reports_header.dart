@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khulla/features/reports/presentation/cubit/reports_cubit.dart';

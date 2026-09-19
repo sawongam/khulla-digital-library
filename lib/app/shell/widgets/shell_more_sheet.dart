@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -20,7 +20,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// A bottom bar holds four destinations before the labels start eating each
 /// other; this app has eight. Rather than dropping the four that did not fit,
-/// the bar keeps the daily ones and this sheet carries the whole list —
+/// the bar keeps the daily ones and this sheet carries the whole list -
 /// including the sub-sections, which the bar could never have shown at all.
 ///
 /// The sheet reads as a plain menu: quiet rows, one icon weight, dividers
@@ -61,7 +61,7 @@ class _MoreList extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         // The rail carries the account chip in its footer; a phone has no
-        // rail, so who is signed in lives here instead — otherwise a compact
+        // rail, so who is signed in lives here instead - otherwise a compact
         // window can never reach the profile.
         if (staff != null) ...[
           _SheetTap(
@@ -109,7 +109,7 @@ class _MoreList extends StatelessWidget {
         Divider(height: 1, color: context.appColors.hairline),
         SizedBox(height: spacing.xs),
         // Phones never see the rail footer, and the account menu that carries
-        // the guide and the about panel on a window lives in it — so both
+        // the guide and the about panel on a window lives in it - so both
         // hang here instead, below the sections and above the version line.
         _SheetTap(
           onTap: () => context.go(Routes.guide),
@@ -226,7 +226,7 @@ class _AccountRow extends StatelessWidget {
   }
 }
 
-/// One menu row: a quiet glyph, a label, and the brand wash when active —
+/// One menu row: a quiet glyph, a label, and the brand wash when active -
 /// nothing else. Sub-sections indent so they read under their parent.
 class _MenuRow extends StatelessWidget {
   const _MenuRow({

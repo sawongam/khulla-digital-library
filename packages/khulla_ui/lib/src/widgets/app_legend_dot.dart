@@ -7,8 +7,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// much of it there is.
 ///
 /// Kept a separate widget from the charts so a legend can sit wherever the
-/// layout needs it — beside a donut, under a bar chart, inside a card header
-/// — instead of being trapped in the chart's own box.
+/// layout needs it - beside a donut, under a bar chart, inside a card header
+/// - instead of being trapped in the chart's own box.
 class AppLegendDot extends StatelessWidget {
   const AppLegendDot({
     required this.label,

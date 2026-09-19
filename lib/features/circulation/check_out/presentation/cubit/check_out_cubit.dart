@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -160,7 +160,7 @@ class CheckOutCubit extends Cubit<CheckOutState> {
   ///
   /// One-shot direct resolution for the `?card=` deep link. Loads
   /// [EffectiveLoanRules] for their type on success. Failures emit
-  /// into state and swallow — the operator stays on the same field.
+  /// into state and swallow - the operator stays on the same field.
   Future<void> lookupMember(String query) async {
     emit(
       state.copyWith(

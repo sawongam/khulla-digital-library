@@ -701,7 +701,7 @@
     "helpGuideStep3Body": "In Catalogue, create a Title for each work - author, ISBN, subject, format. Then add a Copy for every physical item on the shelf, each with its own barcode and call number. One title, many copies: that is what lets three people borrow the same book at once.",
     "helpGuideStep4Title": "Print labels and barcodes",
     "helpGuideStep4Body": "Catalogue → Labels and barcodes prints spine labels and barcode stickers for new copies, so a handheld scanner can read them at the desk instead of someone typing a call number.",
-    "helpGuideStep5Title": "—Register members",
+    "helpGuideStep5Title": "-Register members",
     "helpGuideStep5Body": "Members holds every borrower - student, teacher or public - with a membership type that decides how many items they may hold and for how long.",
     "helpGuideStep6Title": "Work the circulation desk",
     "helpGuideStep6Body": "Check out pairs a member with a copy and opens a loan. Return closes it and raises any overdue fine. Reservations queues a title that is already out, and Fines records what was paid or waived.",

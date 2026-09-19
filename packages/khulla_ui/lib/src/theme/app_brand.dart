@@ -9,7 +9,7 @@ import 'package:khulla_ui/src/theme/app_palette.dart';
 /// Six roles, not one color: the solid fill, the ink that sits on it, the
 /// hover/pressed step, the deep emphasis ink, the pale opaque wash, and the
 /// [accent] every hover, active and selected surface composites from. They
-/// travel together so the whole product moves as one when the brand changes —
+/// travel together so the whole product moves as one when the brand changes -
 /// a primary button and the navigation rail cannot end up different hues.
 ///
 /// [teal] is the shipped ramp and keeps the hand-tuned constants from the

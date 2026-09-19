@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/form/inputs/confirmed_password.dart';
 import 'package:khulla/core/form/inputs/email.dart';
@@ -13,7 +13,7 @@ import 'package:khulla/l10n/l10n.dart';
 ///
 /// A field shows its message only once it has been edited: an error under a
 /// form nobody has typed in yet reads as an accusation, not as help. That is
-/// what [messageFor] encodes — a pure input has nothing to say.
+/// what [messageFor] encodes - a pure input has nothing to say.
 extension EmailErrorX on Email {
   String? messageFor(AppLocalizations l10n) => isPure || isValid
       ? null

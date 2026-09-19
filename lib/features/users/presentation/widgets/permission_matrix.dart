@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:math';
 
@@ -11,13 +11,13 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Every permission against every role.
 ///
 /// A grid rather than four lists, because the question an administrator asks
-/// is comparative — "who else can waive a fine" — and four lists make that a
+/// is comparative - "who else can waive a fine" - and four lists make that a
 /// memory exercise. The grid scrolls horizontally on a narrow window rather
 /// than dropping columns: a matrix missing a role is worse than one you have
 /// to push sideways.
 ///
-/// Three marks, not two. A permission is held at a level — a desk assistant
-/// looks a book up without editing it — and a matrix that flattened that
+/// Three marks, not two. A permission is held at a level - a desk assistant
+/// looks a book up without editing it - and a matrix that flattened that
 /// back into a tick would promise access the app does not grant, or deny one
 /// it does. It reads the same `rolePermissions` the router and every button
 /// read, so what is shown here is what is enforced.

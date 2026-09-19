@@ -5,7 +5,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The gallery's states section: loading, empty and error.
 ///
-/// Stateless — the skeleton pulse and the spinners run on their own, and the
+/// Stateless - the skeleton pulse and the spinners run on their own, and the
 /// empty/error actions are no-ops.
 class AppGalleryStates extends StatelessWidget {
   const AppGalleryStates({super.key});

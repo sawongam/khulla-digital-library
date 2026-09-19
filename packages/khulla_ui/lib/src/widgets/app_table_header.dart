@@ -12,7 +12,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// A sorted column keeps its glyph visible; an unsorted sortable column
 /// reveals it on hover, so a twelve-column table is not a wall of arrows.
 ///
-/// Sorting is *reported*, never performed — see [AppTableSort].
+/// Sorting is *reported*, never performed - see [AppTableSort].
 class AppTableHeader<T> extends StatelessWidget {
   const AppTableHeader({
     required this.columns,
@@ -154,7 +154,7 @@ class _HeaderCellState<T> extends State<_HeaderCell<T>> {
   }
 }
 
-/// One caret beside a sortable column's label — the direction the column is
+/// One caret beside a sortable column's label - the direction the column is
 /// sorted in, inverted from the stacked pair that used to highlight the
 /// active chevron in a column of two.
 class _SortGlyph extends StatelessWidget {

@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 // Seeds mock books (titles + copies) into a Khulla catalogue file.
 //
@@ -13,11 +13,11 @@
 // pulls in Flutter through the database connection, which plain `dart run`
 // cannot load. The INSERT shapes below mirror `TitleRepositoryImpl.saveTitle`
 // and `LocalCopyDataSource.insertCopy` (ids, minor-unit prices,
-// library barcode counter); search needs no column — the `titles_fts_*`
+// library barcode counter); search needs no column - the `titles_fts_*`
 // triggers keep the FTS index current on every write. Required columns are
 // validated with PRAGMA before any write, so a future schema change fails
 // loudly instead of corrupting data. Copy barcodes always come from the library's own settings row, exactly
-// as unattended check-in copies would — the script consumes the real sequence.
+// as unattended check-in copies would - the script consumes the real sequence.
 //
 // The file must already exist with the app schema: open the app once first,
 // which runs migrations and seeds reference rows. By default the script
@@ -230,7 +230,7 @@ void _clearSeed(String dbPath) {
     );
   } on SqliteException catch (error) {
     stderr.writeln(
-      'Clear failed (a mock copy may be on loan — return it first): $error',
+      'Clear failed (a mock copy may be on loan - return it first): $error',
     );
     exit(1);
   } finally {
@@ -291,7 +291,7 @@ void _requireSchema(Database db) {
     if (info.isEmpty) {
       stderr.writeln(
         'Table "$table" is missing. This is not a migrated Khulla '
-        'catalogue — open the app once first.',
+        'catalogue - open the app once first.',
       );
       exit(2);
     }
@@ -301,7 +301,7 @@ void _requireSchema(Database db) {
     for (final column in required[table]!) {
       if (!columns.contains(column)) {
         stderr.writeln(
-          'Column "$table.$column" is missing. The app schema moved on — '
+          'Column "$table.$column" is missing. The app schema moved on - '
           'update script/seed_mock_books.dart to match.',
         );
         exit(2);

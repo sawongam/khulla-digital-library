@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/money/money.dart';
 import 'package:khulla/features/dashboard/presentation/widgets/dashboard_section_card.dart';
@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// What overdue copies have cost members, month by month.
 ///
-/// A line rather than bars: the shape of the curve is the point — a library
+/// A line rather than bars: the shape of the curve is the point - a library
 /// wants to see fines *falling* after it changes a loan rule, which is a
 /// trend, not a set of monthly comparisons.
 class DashboardFinesCard extends StatelessWidget {

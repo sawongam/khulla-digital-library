@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:developer' as developer;
 
@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart';
 /// Set [verbose] at startup. Debug and info are silent in production so they
 /// never leak into release logs; warn and error always print.
 ///
-/// Khulla ships no telemetry — nothing here leaves the device. A library's
+/// Khulla ships no telemetry - nothing here leaves the device. A library's
 /// circulation records are exactly the kind of data that must not be shipped
 /// to a third party by default. If a deployment does want crash reporting,
 /// [error] is the single seam to forward from, and it should be opt-in.

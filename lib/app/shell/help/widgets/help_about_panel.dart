@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter/services.dart';
 import 'package:khulla/core/config/app_info.dart';
@@ -21,7 +21,7 @@ class HelpAboutPanel extends StatelessWidget {
   /// Opens [url] in the operator's browser.
   ///
   /// A desk machine with no browser registered, or a locked-down kiosk, will
-  /// refuse the launch — so the fallback copies the address rather than
+  /// refuse the launch - so the fallback copies the address rather than
   /// failing silently, and the toast says which of the two happened.
   static Future<void> openLink(BuildContext context, String url) async {
     final l10n = context.l10n;

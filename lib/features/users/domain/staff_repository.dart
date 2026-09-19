@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/users/domain/models/staff_member.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
@@ -7,7 +7,7 @@ import 'package:khulla/features/users/domain/user_status.dart';
 
 /// Staff accounts and the sign-in that authenticates against them.
 abstract interface class StaffRepository {
-  /// Whether the library has been set up — that is, whether any staff account
+  /// Whether the library has been set up - that is, whether any staff account
   /// exists. False sends the operator to first-run onboarding.
   Future<bool> hasAnyStaff();
 
@@ -48,7 +48,7 @@ abstract interface class StaffRepository {
 
   /// Sets a new password when [recoveryCode] matches an unused code for the
   /// account at [email], and returns that account. Null when the email, code,
-  /// or account status does not allow it — same one-null as [signIn].
+  /// or account status does not allow it - same one-null as [signIn].
   Future<StaffMember?> resetPasswordWithRecoveryCode({
     required String email,
     required String recoveryCode,
@@ -57,7 +57,7 @@ abstract interface class StaffRepository {
 
   /// Edits name, email and role for an existing account.
   ///
-  /// [actingStaffId] is the signed-in administrator making the change — used
+  /// [actingStaffId] is the signed-in administrator making the change - used
   /// to refuse an account demoting itself out of the administrator role, and
   /// to refuse a change that would leave the library with no active
   /// administrator. Throws a `DuplicateRecordException` when [email] is
@@ -83,7 +83,7 @@ abstract interface class StaffRepository {
 
   /// Sets a new password for [id], chosen and typed by an administrator.
   ///
-  /// There is no email to send a reset link to in an offline-first app — the
+  /// There is no email to send a reset link to in an offline-first app - the
   /// administrator hands the new password to the account holder directly, the
   /// same way the very first administrator's password is set at onboarding.
   Future<void> adminResetPassword({

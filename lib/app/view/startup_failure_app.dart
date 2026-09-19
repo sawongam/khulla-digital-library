@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/app/app.dart' show App;
 import 'package:khulla/app/view/app.dart' show App;
@@ -11,7 +11,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Shown instead of [App] when the database could not be opened.
 ///
 /// A library's catalogue is its only copy of its records, so the failure modes
-/// here are ones an operator has to act on — a file locked by another copy of
+/// here are ones an operator has to act on - a file locked by another copy of
 /// the app, a disk that is full, a database written by a newer build. A red
 /// screen or a silent crash tells them none of that; this does, in their own
 /// language, with a retry for the transient cases.

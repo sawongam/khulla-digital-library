@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/catalog/copy/domain/models/copy.dart';
 import 'package:khulla/features/catalog/title/presentation/widgets/title_copy_row.dart';
@@ -26,7 +26,7 @@ class TitleCopiesCard extends StatelessWidget {
   final List<Copy> copies;
 
   /// Opens the add-copies dialog. Null for a role that may read the catalogue
-  /// but not change it — the button is absent rather than disabled.
+  /// but not change it - the button is absent rather than disabled.
   final VoidCallback? onAddCopy;
 
   /// Per-copy maintenance, passed down to each row. Null for a role that may

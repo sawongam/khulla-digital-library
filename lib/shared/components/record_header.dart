@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla_ui/khulla_ui.dart';
 
@@ -11,7 +11,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// unmistakably what everything beneath is about.
 ///
 /// The split between [facts] and [badges] is the other half of the fix. A
-/// badge is a standing — *Overdue*, *Suspended*, *Reference only* — and it
+/// badge is a standing - *Overdue*, *Suspended*, *Reference only* - and it
 /// earns its color and its pill. A lifespan, a card number, a format or a
 /// copy count is a fact, and rendering it as a badge spends the same emphasis
 /// on something nobody needs to react to. Facts go in one muted line;
@@ -29,17 +29,17 @@ class RecordHeader extends StatelessWidget {
     super.key,
   });
 
-  /// The record's name — the page's focal point.
+  /// The record's name - the page's focal point.
   final String title;
 
   /// The line under the name: a subtitle, an author, a role.
   final Widget? subtitle;
 
-  /// Initials for the leading avatar. Null draws no avatar — a book has no
+  /// Initials for the leading avatar. Null draws no avatar - a book has no
   /// face, and a two-letter circle beside a title is decoration.
   final String? initials;
 
-  /// A control before the identity block — typically a back chevron on a
+  /// A control before the identity block - typically a back chevron on a
   /// detail screen the operator drilled into from a list.
   final Widget? leading;
 
@@ -50,7 +50,7 @@ class RecordHeader extends StatelessWidget {
   /// Standings worth reacting to. Keep it short; four pills is a toolbar.
   final List<Widget> badges;
 
-  /// A free line under the block — a member's note, a shelving remark.
+  /// A free line under the block - a member's note, a shelving remark.
   final String? note;
 
   /// The record's actions: the primary control, and an overflow menu.
@@ -117,7 +117,7 @@ class RecordHeader extends StatelessWidget {
     final compact = context.formFactor.isCompact;
 
     // A bare Row gives a non-flex child unbounded main-axis width, so a
-    // Wrap inside one never actually wraps — it has to sit where its own
+    // Wrap inside one never actually wraps - it has to sit where its own
     // parent already bounds its width (Column's cross axis, or a Flexible
     // inside the wide Row below), or a long action label overflows a phone.
     final actionsRow = Wrap(
@@ -147,7 +147,7 @@ class RecordHeader extends StatelessWidget {
               Expanded(child: lead),
               if (actions.isNotEmpty) ...[
                 SizedBox(width: spacing.lg),
-                // Intrinsic width only — a [Flexible] here would share the
+                // Intrinsic width only - a [Flexible] here would share the
                 // row with [Expanded] and park the buttons in the middle.
                 actionsRow,
               ],

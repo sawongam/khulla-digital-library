@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -69,7 +69,7 @@ class AppShell extends StatelessWidget {
     final auth = context.watch<AuthCubit>().state;
     final role = auth.staff?.role ?? UserRole.readOnly;
     final destinations = shellDestinations(l10n, role);
-    // Every branch stays in `destinations` at its router index — dropping an
+    // Every branch stays in `destinations` at its router index - dropping an
     // entry here instead would desync the rail's `onDestinationSelected`
     // from `navigationShell.goBranch`. `visibleIndices` is the list of
     // original indices a role may actually see; the rail below maps through
@@ -112,8 +112,8 @@ class AppShell extends StatelessWidget {
     );
 
     if (compact) {
-      // A primary destination can be hidden like any other — a role that
-      // cannot open the catalogue does not get a catalogue tab — so the bar's
+      // A primary destination can be hidden like any other - a role that
+      // cannot open the catalogue does not get a catalogue tab - so the bar's
       // slots are numbered over what this role actually sees. `compactSlots`
       // maps a slot back to its branch index; anything past the four slots,
       // and any section that is not showing, lives behind *More*.
@@ -127,7 +127,7 @@ class AppShell extends StatelessWidget {
       final slot = compactSlots.indexOf(navigationShell.currentIndex);
 
       // A section that is already named by the highlighted tab, with nothing
-      // to offer beyond its name, gets no bar at all — the band of chrome was
+      // to offer beyond its name, gets no bar at all - the band of chrome was
       // pure repetition, and the dashboard starts a phone screen higher
       // without it. A section reached through *More* keeps its bar whatever
       // else is on it: the bottom bar says *More*, not where you are.
@@ -145,7 +145,7 @@ class AppShell extends StatelessWidget {
               // page draws first rather than being paid twice.
               SizedBox(height: MediaQuery.paddingOf(context).top),
             // The page's own `AppPageBody` would otherwise re-inset for a
-            // status bar that the bar above has already cleared — the gap
+            // status bar that the bar above has already cleared - the gap
             // between the header and the content.
             Expanded(
               child: MediaQuery.removePadding(
@@ -157,8 +157,8 @@ class AppShell extends StatelessWidget {
           ],
         ),
         bottomNavigationBar: AppNavBar(
-          // The current section may have no slot of its own — a role reading
-          // reports is inside *More* — and the bar then highlights *More*.
+          // The current section may have no slot of its own - a role reading
+          // reports is inside *More* - and the bar then highlights *More*.
           selectedIndex: slot >= 0 ? slot : compactSlots.length,
           onDestinationSelected: (selected) {
             if (selected < compactSlots.length) {

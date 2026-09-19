@@ -17,14 +17,14 @@ class AppChartPoint {
     this.tone,
   });
 
-  /// The x-axis label — a month, a weekday, a category.
+  /// The x-axis label - a month, a weekday, a category.
   final String label;
 
   /// The measurement. Never negative in this product: every figure a library
   /// charts is a count or an amount.
   final double value;
 
-  /// Overrides the series tone for this point alone — the highlighted bar,
+  /// Overrides the series tone for this point alone - the highlighted bar,
   /// the slice being explained.
   final AppStatusTone? tone;
 }

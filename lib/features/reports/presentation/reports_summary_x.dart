@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:intl/intl.dart';
 import 'package:khulla/core/money/money.dart';
@@ -12,7 +12,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 final DateFormat _monthFormat = DateFormat('MMM');
 
 /// Maps a raw [ReportsSummary] to the formatted view models the report's
-/// widgets draw — l10n and money formatting happen here, not in the
+/// widgets draw - l10n and money formatting happen here, not in the
 /// repository, which returns facts.
 extension ReportsSummaryX on ReportsSummary {
   List<AppChartSeries> circulationSeries(AppLocalizations l10n) {
@@ -190,7 +190,7 @@ extension ReportsSummaryX on ReportsSummary {
   };
 }
 
-/// Every month present in any of [series], earliest first — borrowed and
+/// Every month present in any of [series], earliest first - borrowed and
 /// returned queries can cover different months, so joining by index would
 /// misalign counts. Missing months read as zero via [_countFor].
 List<DateTime> _unionMonths(List<List<ReportsMonthCount>> series) {

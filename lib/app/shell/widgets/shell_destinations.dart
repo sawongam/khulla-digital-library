@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/router/routes.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// window and the bottom bar on a phone, and [children] gives the rail the
 /// sub-sections a branch contains without the router being asked twice.
 ///
-/// The list itself is never filtered by role — every branch stays at its
+/// The list itself is never filtered by role - every branch stays at its
 /// fixed index, because the rail's `onDestinationSelected` calls
 /// `navigationShell.goBranch(index)` with that same index. `AppShell` is
 /// where a role that lacks [permission] skips an entry, using its original
@@ -32,7 +32,7 @@ class ShellDestination {
   /// The section's name.
   final String label;
 
-  /// The section's glyph. One glyph serves both states — selection reads
+  /// The section's glyph. One glyph serves both states - selection reads
   /// through colour, not through a heavier weight.
   final AppIconSpec icon;
 
@@ -48,7 +48,7 @@ class ShellDestination {
   final bool primary;
 
   /// The permission a signed-in role must be able to *view* for this section
-  /// to appear at all. Null means every role sees it — the dashboard, and
+  /// to appear at all. Null means every role sees it - the dashboard, and
   /// settings, which holds this device's own theme.
   ///
   /// Seeing a section is not being able to change it: the controls inside ask
@@ -74,7 +74,7 @@ class ShellChild {
 /// Whether [route] is the selected entry for [location] among
 /// [siblingRoutes].
 ///
-/// Routes nest — `/users` contains `/users/roles` — so a plain prefix test
+/// Routes nest - `/users` contains `/users/roles` - so a plain prefix test
 /// marks every ancestor as selected and two rows light up at once. Only the
 /// longest, most specific match reads as selected; the ancestors stay visible
 /// through the expanded group itself.
@@ -108,7 +108,7 @@ bool isSelectedShellRoute(
 ///
 /// The manual is the one branch with no entry here: it opens from the
 /// account menu (and the phone's *More* sheet) rather than the rail, so it
-/// needs no rail index — only a branch, so it renders inside the shell.
+/// needs no rail index - only a branch, so it renders inside the shell.
 List<ShellDestination> shellDestinations(
   AppLocalizations l10n,
   UserRole role,
@@ -211,7 +211,7 @@ List<ShellDestination> shellDestinations(
           ),
         ],
         // The theme is this device's preference rather than the library's
-        // record, so it stays with every role — including the one that may
+        // record, so it stays with every role - including the one that may
         // change nothing else.
         ShellChild(
           label: l10n.navSettingsAppearance,

@@ -4,7 +4,7 @@
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// {@template app_detail_row}
-/// One label/value pair in a detail pane — *ISBN*, *Shelf*, *Member since*.
+/// One label/value pair in a detail pane - *ISBN*, *Shelf*, *Member since*.
 ///
 /// Side by side where there is room, stacked below [FormFactor.medium], so a
 /// long value never squeezes its label to two characters on a phone. It reads
@@ -35,7 +35,7 @@ class AppDetailRow extends StatelessWidget {
   /// What the value is.
   final String label;
 
-  /// The value itself — text, a badge, a link row.
+  /// The value itself - text, a badge, a link row.
   final Widget child;
 
   /// Width reserved for [label] in the side-by-side layout.

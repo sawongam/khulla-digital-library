@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:khulla/core/database/app_database.dart';
@@ -318,7 +318,7 @@ void main() {
       ),
       isNotNull,
     );
-    // Unrelated to the account being reset — the administrator's own
+    // Unrelated to the account being reset - the administrator's own
     // password never moves.
     expect(
       await repository.signIn(email: admin.email, password: 'correct-horse'),

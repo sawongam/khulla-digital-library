@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/catalog/shared/presentation/catalog_labels.dart';
 import 'package:khulla/features/catalog/title/domain/models/title.dart'
@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// [AppDetailRow] stacks its label above its value when the slot is narrow,
 /// so the same card works in a half-width column beside the copies list and
 /// full width on a phone. Publication facts and library facts share one
-/// surface rather than two uneven cards — shelf and lending are short lines
+/// surface rather than two uneven cards - shelf and lending are short lines
 /// that do not need their own panel.
 class TitleDetailsCard extends StatelessWidget {
   const TitleDetailsCard({required this.title, super.key});

@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -74,12 +74,12 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
     }
   }
 
-  /// Deletes the member. Rethrows on failure — the confirming dialog toasts.
+  /// Deletes the member. Rethrows on failure - the confirming dialog toasts.
   Future<void> removeMember(String id) async {
     await _members.removeMember(id);
   }
 
-  /// Archives the member. Rethrows on failure — the confirming dialog toasts.
+  /// Archives the member. Rethrows on failure - the confirming dialog toasts.
   Future<void> archiveMember(String id) async {
     await _members.archiveMember(id);
   }

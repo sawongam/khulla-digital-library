@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <!--
+  <head>
+    <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
 
@@ -11,100 +11,126 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="$FLUTTER_BASE_HREF">
+    <base href="$FLUTTER_BASE_HREF" />
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Khulla Digital Library — an open-source library management system.">
-  <meta name="theme-color" content="#0F6E68">
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta
+      name="description"
+      content="Try Khulla in your browser: a free, open-source library management system for schools and community libraries. Catalogue, circulation, members, fines and reports."
+    />
+    <meta name="theme-color" content="#0F6E68" />
 
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Khulla Digital Library">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <!-- iOS meta tags & icons -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Khulla Digital Library" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
 
-  <title>Khulla Digital Library</title>
-  <link rel="manifest" href="manifest.json">
+    <title>Khulla Digital Library: Web Demo</title>
+    <link rel="manifest" href="manifest.json" />
 
-  <style>
-    /*
+    <style>
+      /*
       Flutter web paints nothing until the engine and the app bundle have both
       loaded, which on a cold cache is long enough to read as a broken page.
       This placeholder holds the brand until the first frame, then removes
-      itself. Keep it dependency-free and inline — a spinner that needs its own
+      itself. Keep it dependency-free and inline - a spinner that needs its own
       network round trip defeats the point.
     */
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background-color: #F1F3F3;
-    }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background-color: #f1f3f3;
+      }
 
-    #loading {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      color: #14181A;
-    }
+      #loading {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        color: #14181a;
+      }
 
-    #loading .mark {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      background-color: #0F6E68;
-      color: #FFFFFF;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: 600;
-      animation: pulse 1.6s ease-in-out infinite;
-    }
+      #loading .mark {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        background-color: #0f6e68;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 600;
+        animation: pulse 1.6s ease-in-out infinite;
+      }
 
-    #loading .label {
-      font-size: 13px;
-      letter-spacing: 0.02em;
-      opacity: 0.6;
-    }
+      #loading .label {
+        font-size: 13px;
+        letter-spacing: 0.02em;
+        opacity: 0.6;
+      }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.45; }
-    }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.45;
+        }
+      }
 
-    @media (prefers-reduced-motion: reduce) {
-      #loading .mark { animation: none; }
-    }
+      @media (prefers-reduced-motion: reduce) {
+        #loading .mark {
+          animation: none;
+        }
+      }
 
-    @media (prefers-color-scheme: dark) {
-      html, body { background-color: #101314; }
-      #loading { color: #F2F4F4; }
-    }
-  </style>
-</head>
-<body>
-  <div id="loading">
-    <div class="mark">K</div>
-    <div class="label">Loading your library…</div>
-  </div>
+      @media (prefers-color-scheme: dark) {
+        html,
+        body {
+          background-color: #101314;
+        }
+        #loading {
+          color: #f2f4f4;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      Khulla needs JavaScript to run in the browser. To download it for Windows,
+      Linux or Android, visit
+      <a href="https://khulladigitallibrary.com/">khulladigitallibrary.com</a>.
+    </noscript>
+    <div id="loading">
+      <div class="mark">K</div>
+      <div class="label">Loading your library…</div>
+    </div>
 
-  <script>
-    window.addEventListener('flutter-first-frame', function () {
-      var loading = document.getElementById('loading');
-      if (loading) loading.remove();
-    });
-  </script>
+    <script>
+      window.addEventListener("flutter-first-frame", function () {
+        var loading = document.getElementById("loading");
+        if (loading) loading.remove();
+      });
+    </script>
 
-  <script src="flutter_bootstrap.js" async></script>
-</body>
+    <script src="flutter_bootstrap.js" async></script>
+  </body>
 </html>

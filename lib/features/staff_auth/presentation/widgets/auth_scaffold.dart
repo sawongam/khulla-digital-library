@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/staff_auth/presentation/widgets/auth_brand_panel.dart';
 import 'package:khulla/shared/widgets/app_logo.dart';
@@ -7,8 +7,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The page chrome sign-in and onboarding share.
 ///
-/// Both live **outside** the app shell — there is no rail, no top bar and no
-/// section to be in until someone is signed in — so this is the only page
+/// Both live **outside** the app shell - there is no rail, no top bar and no
+/// section to be in until someone is signed in - so this is the only page
 /// frame they get.
 ///
 /// It adapts on one axis. Given room, the window splits: the brand panel

@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Material applies a **minimum** 48px box to those slots (see
 /// `InputDecorator`), and a minimum propagates down: an `AppIcon` sized 16
 /// inside it is asked for at least 48px, and because the underlying SVG is
-/// drawn with `BoxFit.contain` it happily grows to fill — which is how a
+/// drawn with `BoxFit.contain` it happily grows to fill - which is how a
 /// search field ends up with a magnifier the size of the field itself.
 ///
 /// Centring the child inside that box breaks the chain: the affix still

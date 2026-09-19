@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/catalog/label/domain/models/label_queue_entry.dart';
 import 'package:khulla/features/catalog/label/domain/models/label_size.dart';
@@ -11,7 +11,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The layout card: sticker size plus which lines print on it.
 ///
-/// Dumb by design — every toggle calls back out to the cubit.
+/// Dumb by design - every toggle calls back out to the cubit.
 class LabelLayoutCard extends StatelessWidget {
   const LabelLayoutCard({
     required this.size,

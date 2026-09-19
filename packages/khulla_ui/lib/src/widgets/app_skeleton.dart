@@ -6,8 +6,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// {@template app_skeleton}
 /// A pulsing placeholder block for content that is on its way.
 ///
-/// Use it where the shape of what is loading is already known — a table of
-/// rows, a detail pane of fields — so the layout does not jump when the read
+/// Use it where the shape of what is loading is already known - a table of
+/// rows, a detail pane of fields - so the layout does not jump when the read
 /// returns. Where the shape is unknown, `AppSpinner` is honest and this is
 /// not.
 ///

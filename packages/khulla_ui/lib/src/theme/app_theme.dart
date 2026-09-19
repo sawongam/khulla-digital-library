@@ -9,7 +9,7 @@ import 'package:khulla_ui/src/theme/app_palette.dart';
 ///
 /// One thing changes with the window and nothing else does: **density**. Type
 /// size, control height, icon size and gap step up by one notch at 1600px.
-/// Colors, radii and the shape language are identical at every width — a
+/// Colors, radii and the shape language are identical at every width - a
 /// component must not change *what it is* when the window resizes, only how
 /// much room it takes.
 ///
@@ -17,7 +17,7 @@ import 'package:khulla_ui/src/theme/app_palette.dart';
 /// the design language rather than merely differing from it: the ink splash
 /// (replaced by the design system's own press feedback), elevation shadows
 /// (replaced by [AppShadows]) and the input decorator's focus behaviour
-/// (replaced by a padding nudge — see `AppTextField`).
+/// (replaced by a padding nudge - see `AppTextField`).
 abstract final class AppTheme {
   /// The light theme at [density], colored by [brand]. This is the shipped
   /// theme.
@@ -64,7 +64,7 @@ abstract final class AppTheme {
     );
 
     // The resting border is the same hairline on every state. Focus is not
-    // signalled by recoloring it — see AppTextField.
+    // signalled by recoloring it - see AppTextField.
     InputBorder fieldBorder(Color color) => OutlineInputBorder(
       borderRadius: BorderRadius.circular(radius.container),
       borderSide: BorderSide(color: color),

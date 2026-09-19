@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// One routine data operation: what it does, and the control that starts it.
 ///
-/// Routine only — the erase entry has its own card with the danger carried
+/// Routine only - the erase entry has its own card with the danger carried
 /// by its button rather than a wash around it.
 class SettingsActionCard extends StatelessWidget {
   const SettingsActionCard({
@@ -24,7 +24,7 @@ class SettingsActionCard extends StatelessWidget {
   final VoidCallback onAction;
   final AppIconSpec icon;
 
-  /// Shows the action button's spinner and disables it — a card whose
+  /// Shows the action button's spinner and disables it - a card whose
   /// action restarts the app on success has nowhere else to put that state.
   final bool isLoading;
 

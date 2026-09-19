@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/money/money.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
@@ -14,7 +14,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// the desk may lend at all come from the member's category, so the screen
 /// asks for the card before it asks for a barcode.
 ///
-/// Typing lists matches and the desk picks one — nothing is selected
+/// Typing lists matches and the desk picks one - nothing is selected
 /// automatically, except an exact card-number hit, which is a scan.
 class CheckOutMemberCard extends StatelessWidget {
   const CheckOutMemberCard({
@@ -47,14 +47,14 @@ class CheckOutMemberCard extends StatelessWidget {
   final String? memberCard;
   final String? memberCategory;
 
-  /// What they already owe — the thing a desk needs to see before lending
+  /// What they already owe - the thing a desk needs to see before lending
   /// again, not after.
   final Money outstandingFines;
 
   /// Two ready-made letters for the avatar.
   final String? initials;
 
-  /// Members matching the current query — the desk taps one to choose it.
+  /// Members matching the current query - the desk taps one to choose it.
   final List<Member> matches;
 
   /// Whether a search is in flight.

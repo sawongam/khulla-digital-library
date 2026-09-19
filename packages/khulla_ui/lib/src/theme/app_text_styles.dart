@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Every size in this system is a **pair**: a base value and a value one step
 /// up, taken at 1600px. 12→14 for body, 18→22 for a page header, 10→12 for a
 /// badge. Sizes are never written alone, and there are no intermediate rungs
-/// — a screen either reads at the base rung or at the wide one, and the whole
+/// - a screen either reads at the base rung or at the wide one, and the whole
 /// screen moves together.
 ///
 /// The scale is deliberately small. 12px body and 10px badges are what let a
@@ -28,7 +28,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
   /// The rung these styles were resolved at.
   final AppDensity density;
 
-  /// Body copy, table cells, field text — the default everything falls to.
+  /// Body copy, table cells, field text - the default everything falls to.
   TextStyle get body => _style(density.pick(12, 14), FontWeight.w400);
 
   /// Counts, money, and other figures that must not jitter as digits change.
@@ -45,7 +45,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
   /// Badges and field error messages. The smallest type in the system.
   TextStyle get micro => _style(density.pick(10, 12), FontWeight.w500);
 
-  /// Field labels, menu items, tab labels — interactive text at body size.
+  /// Field labels, menu items, tab labels - interactive text at body size.
   TextStyle get label => _style(density.pick(12, 14), FontWeight.w500);
 
   /// Button labels.
@@ -66,7 +66,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
   TextStyle get pageHeader =>
       _style(density.pick(18, 22), FontWeight.w500, tight: true);
 
-  /// A form dialog's title — the same rung as [title], one step heavier so it
+  /// A form dialog's title - the same rung as [title], one step heavier so it
   /// reads above section headings without jumping to [displaySmall].
   TextStyle get formTitle =>
       _style(density.pick(18, 20), FontWeight.w600, tight: true);
@@ -74,7 +74,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
   /// A card primitive's title, and a stat tile's figure.
   TextStyle get displaySmall => _style(24, FontWeight.w600, tight: true);
 
-  /// A sheet's form title — the largest type the product uses.
+  /// A sheet's form title - the largest type the product uses.
   TextStyle get displayMedium => _style(30, FontWeight.w500, tight: true);
 
   /// Builds the Material [TextTheme] these styles back.
@@ -101,7 +101,7 @@ class AppTextStyles extends ThemeExtension<AppTextStyles> {
   );
 
   /// Line height is 1.5 for reading and 1.2 for titles, which also take a
-  /// little negative tracking — at 18px and up, default spacing reads loose.
+  /// little negative tracking - at 18px and up, default spacing reads loose.
   static TextStyle _style(
     double size,
     FontWeight weight, {

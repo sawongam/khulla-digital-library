@@ -1,4 +1,4 @@
-# ADR 0027 — Sliver-based scrolling
+# ADR 0027 - Sliver-based scrolling
 
 **Status:** Accepted · **Date:** 2026-09-03
 
@@ -8,7 +8,7 @@ A library catalogue page needs to combine several scrolling sections: a filter b
 
 ### The `shrinkWrap` problem
 
-`shrinkWrap: true` forces a `ListView` or `GridView` to lay out every child upfront so it can report its total height to the parent. On a catalogue of ten thousand titles, this means ten thousand item widgets are built and laid out before the first frame — regardless of how many are visible. Flutter's lazy list building (the entire reason `ListView.builder` exists) is defeated. The result is a screen that takes seconds to open and janks on every scroll because the full layout cost was paid upfront and must be paid again on every rebuild.
+`shrinkWrap: true` forces a `ListView` or `GridView` to lay out every child upfront so it can report its total height to the parent. On a catalogue of ten thousand titles, this means ten thousand item widgets are built and laid out before the first frame - regardless of how many are visible. Flutter's lazy list building (the entire reason `ListView.builder` exists) is defeated. The result is a screen that takes seconds to open and janks on every scroll because the full layout cost was paid upfront and must be paid again on every rebuild.
 
 `NeverScrollableScrollPhysics()` compounds the problem: it disables the inner list's own scroll, delegating all scroll events to the outer `SingleChildScrollView`. The outer scroll view must now track the combined height of all sections including the fully-laid-out list. On a wide screen with two columns and five thousand titles, this is tens of thousands of pixels of layout state held in memory at all times.
 
@@ -16,11 +16,11 @@ The performance failure is not hypothetical. A school library with 3,000 titles 
 
 ### The one legitimate `shrinkWrap` case
 
-A short, bounded list inside a fixed-height container where the child count is small and known at build time — an autocomplete dropdown with at most ten results, a "recently returned" shelf with five items — is fine with `shrinkWrap: true`. The cost is bounded: five items laid out unconditionally is not a performance concern. The rule is "small and known", not "could be any length."
+A short, bounded list inside a fixed-height container where the child count is small and known at build time - an autocomplete dropdown with at most ten results, a "recently returned" shelf with five items - is fine with `shrinkWrap: true`. The cost is bounded: five items laid out unconditionally is not a performance concern. The rule is "small and known", not "could be any length."
 
 ### Slivers
 
-`CustomScrollView` with slivers is the correct model for any scroll view that combines multiple sections where at least one section is an arbitrarily-long list. Each section is a sliver. Slivers lay out lazily: only the items near the viewport are built and painted. A `SliverList` of ten thousand items builds only the items that are visible plus a small buffer. Adding a filter bar above the list is a `SliverToBoxAdapter` wrapping a normal widget — it does not affect the list's lazy building.
+`CustomScrollView` with slivers is the correct model for any scroll view that combines multiple sections where at least one section is an arbitrarily-long list. Each section is a sliver. Slivers lay out lazily: only the items near the viewport are built and painted. A `SliverList` of ten thousand items builds only the items that are visible plus a small buffer. Adding a filter bar above the list is a `SliverToBoxAdapter` wrapping a normal widget - it does not affect the list's lazy building.
 
 ## Decision
 
@@ -31,7 +31,7 @@ Use **`CustomScrollView` with slivers** for any scrollable page that combines mu
 ```dart
 CustomScrollView(
   slivers: [
-    // A normal widget in the scroll view — wraps anything that is not itself a sliver
+    // A normal widget in the scroll view - wraps anything that is not itself a sliver
     SliverToBoxAdapter(
       child: CatalogFilterBar(
         activeFilters: state.filters,
@@ -47,13 +47,13 @@ CustomScrollView(
       ),
     ),
 
-    // The main list — lazy, builds only visible items
+    // The main list - lazy, builds only visible items
     SliverList.builder(
       itemCount: state.titles.length,
       itemBuilder: (context, index) => TitleListTile(title: state.titles[index]),
     ),
 
-    // A grid variant — same model
+    // A grid variant - same model
     // SliverGrid.builder(
     //   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
     //     maxCrossAxisExtent: 200,
@@ -63,14 +63,14 @@ CustomScrollView(
     //   itemBuilder: (context, index) => TitleCoverCard(title: state.titles[index]),
     // ),
 
-    // A footer — loading indicator, end-of-results message, etc.
+    // A footer - loading indicator, end-of-results message, etc.
     SliverToBoxAdapter(
       child: state.isLoading
           ? const Center(child: CircularProgressIndicator())
           : const SliverPadding(padding: EdgeInsets.zero),
     ),
 
-    // Bottom safe area — so content is not hidden behind the nav bar
+    // Bottom safe area - so content is not hidden behind the nav bar
     const SliverSafeArea(sliver: SliverToBoxAdapter(child: SizedBox())),
   ],
 )
@@ -85,7 +85,7 @@ A filter bar or section header that should stick to the top as the user scrolls 
 Rather than wrapping a `SliverList` in a `SliverToBoxAdapter` + `Padding`:
 
 ```dart
-// Wrong — forces the list into a box, re-introduces the shrinkWrap problem
+// Wrong - forces the list into a box, re-introduces the shrinkWrap problem
 SliverToBoxAdapter(
   child: Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -93,7 +93,7 @@ SliverToBoxAdapter(
   ),
 ),
 
-// Correct — padding applied at the sliver level, list stays lazy
+// Correct - padding applied at the sliver level, list stays lazy
 SliverPadding(
   padding: context.appSpacing.insetPageHorizontal,
   sliver: SliverList.builder(
@@ -126,7 +126,7 @@ else
   ),
 ```
 
-`SliverFillRemaining` expands to fill the remaining viewport height — useful for centered empty/loading states that should not collapse to zero height.
+`SliverFillRemaining` expands to fill the remaining viewport height - useful for centered empty/loading states that should not collapse to zero height.
 
 ### `CustomScrollView` vs `ListView` / `GridView`
 
@@ -138,13 +138,13 @@ For a page with a single list and no other scrolling sections, a plain `ListView
 
 - A catalogue page with 10,000 titles opens in one frame. Only the visible items are built; scroll performance is smooth regardless of list length.
 - Sections above and below the list (filter bar, footer, loading indicator) do not force the list to lay out all items.
-- Sticky headers, parallax app bars, and other scroll-linked effects are composable with the same model — add a sliver, no scroll controller gymnastics.
+- Sticky headers, parallax app bars, and other scroll-linked effects are composable with the same model - add a sliver, no scroll controller gymnastics.
 - `SliverFillRemaining` gives empty and loading states the right amount of space without manual height calculations.
 
 **What this costs**
 
 - `SliverToBoxAdapter` is more verbose than putting a widget directly in a `Column`. The naming is not intuitive for developers coming from web or iOS layouts.
-- `CustomScrollView` + slivers is a Flutter-specific model. Contributors who have not worked with it before need to learn three or four sliver types before they are comfortable. The learning curve is real but the ceiling is low — `SliverList`, `SliverGrid`, `SliverToBoxAdapter`, `SliverPadding`, and `SliverFillRemaining` cover 90% of cases.
+- `CustomScrollView` + slivers is a Flutter-specific model. Contributors who have not worked with it before need to learn three or four sliver types before they are comfortable. The learning curve is real but the ceiling is low - `SliverList`, `SliverGrid`, `SliverToBoxAdapter`, `SliverPadding`, and `SliverFillRemaining` cover 90% of cases.
 - Mixing slivers and box widgets requires `SliverToBoxAdapter`. Forgetting the wrapper produces a runtime type error (`A non-sliver widget was used where a sliver was expected`) that is clear but only appears at runtime, not at analysis time.
 
 ## Revisiting

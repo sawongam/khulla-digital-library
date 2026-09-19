@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +15,7 @@ import 'package:khulla/features/circulation/shared/domain/reservation_status.dar
 import '../helpers/catalog_fixtures.dart';
 import '../helpers/test_database.dart';
 
-/// [ReservationExpiryScheduler] against a real database — the periodic timer
+/// [ReservationExpiryScheduler] against a real database - the periodic timer
 /// itself is trivial; what matters is that a single tick actually expires a
 /// hold past its pickup window and tells the reservation list to refresh.
 void main() {
@@ -54,7 +54,7 @@ void main() {
       );
       final ready = await repository.markHoldReady(hold.id);
 
-      // Backdated directly — `markHoldReady` sets `expiresAt` from today's
+      // Backdated directly - `markHoldReady` sets `expiresAt` from today's
       // loan rules, and there is no repository call that ages a hold on
       // purpose.
       await (db.update(

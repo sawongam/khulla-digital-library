@@ -14,7 +14,7 @@ const int kAppDropdownVisibleRows = 5;
 /// field, keyboard handling, and the menu lifecycle.
 ///
 /// Split from the labelled facade so the field chrome and the overlay logic
-/// can be read — and tested — independently.
+/// can be read - and tested - independently.
 class AppDropdownFieldControl<T> extends StatefulWidget {
   const AppDropdownFieldControl({
     required this.value,

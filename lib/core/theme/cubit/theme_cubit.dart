@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// All are read from [ThemeStorage] on startup and persisted on every change,
 /// so the choice survives a restart. They are device settings, not library
-/// ones — nothing here reaches the catalogue file.
+/// ones - nothing here reaches the catalogue file.
 @lazySingleton
 class ThemeCubit extends Cubit<ThemeState> {
   ThemeCubit(this._storage)
@@ -49,7 +49,7 @@ class ThemeCubit extends Cubit<ThemeState> {
 
   /// Adopts a color the operator mixed rather than one of the presets.
   ///
-  /// A mixed color that lands exactly on a preset is stored as that preset —
+  /// A mixed color that lands exactly on a preset is stored as that preset -
   /// otherwise the swatch row would show nothing selected while sitting next
   /// to an identical color.
   Future<void> setCustomBrand(Color seed) async {

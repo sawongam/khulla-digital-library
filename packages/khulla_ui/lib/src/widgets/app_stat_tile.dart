@@ -11,7 +11,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// already a surface, and a row of four of them reads as decoration competing
 /// with the numbers it is supposed to introduce.
 ///
-/// Set [framed] to false to drop the card and let a host draw the surface —
+/// Set [framed] to false to drop the card and let a host draw the surface -
 /// that is how [AppStatStrip] turns a row of figures into one instrument
 /// panel divided by hairlines rather than four separate floating cards.
 class AppStatTile extends StatelessWidget {
@@ -30,13 +30,13 @@ class AppStatTile extends StatelessWidget {
     super.key,
   });
 
-  /// What the figure counts — *Books borrowed*, *Overdue returns*.
+  /// What the figure counts - *Books borrowed*, *Overdue returns*.
   final String label;
 
   /// The figure itself, already formatted and localized.
   final String value;
 
-  /// The line under the figure — the period it covers, or what the delta is
+  /// The line under the figure - the period it covers, or what the delta is
   /// measured against.
   final String? caption;
 
@@ -52,7 +52,7 @@ class AppStatTile extends StatelessWidget {
   /// The delta's sign. Only the sign is read; the text comes from [trend].
   final num trendValue;
 
-  /// Whether a fall is the improvement — overdue, fines, damaged copies.
+  /// Whether a fall is the improvement - overdue, fines, damaged copies.
   final bool trendInverted;
 
   /// Makes the tile a link to the screen that explains the figure.
@@ -61,8 +61,8 @@ class AppStatTile extends StatelessWidget {
   /// Renders the figure as a skeleton while the query is in flight.
   final bool isLoading;
 
-  /// Whether the tile draws its own card. False when a host surface — an
-  /// [AppStatStrip] — already provides one.
+  /// Whether the tile draws its own card. False when a host surface - an
+  /// [AppStatStrip] - already provides one.
   final bool framed;
 
   @override

@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/dashboard/presentation/models/dashboard_ranked_entry.dart';
 import 'package:khulla/features/dashboard/presentation/widgets/dashboard_section_card.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// A ranked list — most borrowed titles, most active members.
+/// A ranked list - most borrowed titles, most active members.
 ///
 /// One widget for both, because the two lists differ only in what they count.
 /// The rank is drawn as a numeral rather than implied by position: a card
@@ -28,7 +28,7 @@ class DashboardRankedCard extends StatelessWidget {
   /// Supporting line under the heading.
   final String? subtitle;
 
-  /// The card's single control — a period picker, a *view all* link.
+  /// The card's single control - a period picker, a *view all* link.
   final Widget? trailing;
 
   @override

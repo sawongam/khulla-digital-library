@@ -7,8 +7,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// An equal-column grid whose column count follows the window class: one on a
 /// phone, four on a maximised desktop window by default.
 ///
-/// For a **bounded** set of cards — a dashboard's stat row, a settings page's
-/// option cards — where the child count is known and small. A collection that
+/// For a **bounded** set of cards - a dashboard's stat row, a settings page's
+/// option cards - where the child count is known and small. A collection that
 /// comes back from a query goes in a `SliverGrid` instead, so the viewport
 /// only builds the tiles it can see.
 /// {@endtemplate}

@@ -21,17 +21,17 @@ enum AppButtonVariant {
   /// The neutral action next to a primary one: Cancel, Back, a filter.
   outline,
 
-  /// A quiet filled action on a grey surface — a toolbar's second control.
+  /// A quiet filled action on a grey surface - a toolbar's second control.
   secondary,
 
   /// Chrome-level actions with no surface of their own: a row's menu
   /// trigger, "Clear filters", a card's "View all".
   ghost,
 
-  /// A confirming action that is not the page's primary — "Mark returned".
+  /// A confirming action that is not the page's primary - "Mark returned".
   success,
 
-  /// A positive secondary action drawn as an outline — "Add a copy".
+  /// A positive secondary action drawn as an outline - "Add a copy".
   successOutline,
 
   /// Inline navigation inside a sentence. Reads as a link, not a control.

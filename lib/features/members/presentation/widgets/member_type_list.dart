@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/members/domain/models/member_type.dart';
 import 'package:khulla/features/members/presentation/widgets/member_type_row.dart';
@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The category rows inside the sheet body: an inline empty state
 /// when there is nothing yet, otherwise one [MemberTypeRow] per type.
 ///
-/// `canArchive` guards the last active category — archiving it would leave
+/// `canArchive` guards the last active category - archiving it would leave
 /// new members with nowhere to go.
 class MemberTypeList extends StatelessWidget {
   const MemberTypeList({

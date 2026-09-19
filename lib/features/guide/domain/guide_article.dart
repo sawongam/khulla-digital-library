@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/guide/domain/guide_block.dart';
 import 'package:khulla/features/guide/domain/guide_topic.dart';
@@ -51,7 +51,7 @@ class GuideSection {
     required this.blocks,
   });
 
-  /// A slug unique within the article — the scroll target.
+  /// A slug unique within the article - the scroll target.
   final String anchor;
 
   /// The heading.

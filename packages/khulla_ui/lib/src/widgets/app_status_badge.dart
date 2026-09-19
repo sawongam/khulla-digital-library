@@ -3,16 +3,16 @@
 
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// The standing pill — *Available*, *Overdue*, *Reserved*, *Active*.
+/// The standing pill - *Available*, *Overdue*, *Reserved*, *Active*.
 ///
 /// A quiet tag: secondary wash, hairline, ink for the label. Hue lives on an
-/// optional [icon], not on the whole pill — a table of saturated greens and
+/// optional [icon], not on the whole pill - a table of saturated greens and
 /// cyans reads as decoration, not as data.
 ///
 /// [AppStatusTone.danger] is the exception: overdue and lost keep a red wash
 /// so an alarm still interrupts the row.
 ///
-/// It is small on purpose — 10px semibold — because a status sits *inside* a
+/// It is small on purpose - 10px semibold - because a status sits *inside* a
 /// table cell, next to a title, and a badge that matches the body size
 /// competes with it.
 class AppStatusBadge extends StatelessWidget {

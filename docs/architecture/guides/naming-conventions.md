@@ -1,4 +1,4 @@
-# ADR 0033 — Naming conventions
+# ADR 0033 - Naming conventions
 
 **Status:** Accepted · **Date:** 2026-09-03
 
@@ -10,7 +10,7 @@ Naming conventions also determine searchability. `grep TitleCubit.loadTitles` re
 
 ## Decision
 
-The following conventions apply across the entire repository. They are a single reference — the authoritative source is this document.
+The following conventions apply across the entire repository. They are a single reference - the authoritative source is this document.
 
 ---
 
@@ -32,13 +32,13 @@ TitleState     → title_state.dart   (own file, same cubit/ folder)
 
 ### Class prefixes
 
-| Prefix | Where | Meaning |
-| --- | --- | --- |
-| `App` | `packages/khulla_ui` only | Design-system primitive. Reserved. |
-| `<FeatureName>` | Feature `presentation/widgets/` | Feature-scoped UI widget. |
-| *(none)* | `shared/widgets/`, `shared/components/` | Generic or multi-feature widget. |
+| Prefix          | Where                                   | Meaning                            |
+| --------------- | --------------------------------------- | ---------------------------------- |
+| `App`           | `packages/khulla_ui` only               | Design-system primitive. Reserved. |
+| `<FeatureName>` | Feature `presentation/widgets/`         | Feature-scoped UI widget.          |
+| _(none)_        | `shared/widgets/`, `shared/components/` | Generic or multi-feature widget.   |
 
-`App` is the one prefix with a hard rule: a class outside `packages/khulla_ui` must never start with `App`. A `AppMemberCard` in a feature widget folder is wrong on two counts — it is not a design-system primitive and it falsely implies it is.
+`App` is the one prefix with a hard rule: a class outside `packages/khulla_ui` must never start with `App`. A `AppMemberCard` in a feature widget folder is wrong on two counts - it is not a design-system primitive and it falsely implies it is.
 
 Feature widgets take the feature or resource name as a prefix, not `App`:
 
@@ -85,38 +85,38 @@ Every public cubit method is **verb + the noun it acts on**. The call site is re
 
 #### Reads
 
-| Pattern | Example | Use |
-| --- | --- | --- |
-| `load<Noun>s()` | `loadTitles()` | Fetch a collection; triggered by a page on entry |
-| `load<Noun>(id)` | `loadTitle(id)` | Fetch one record by identifier |
-| `refresh<Noun>s()` | `refreshTitles()` | Re-fetch when a separate pull-to-refresh exists |
-| `search<Noun>s(query)` | `searchTitles(query)` | Filter a collection |
+| Pattern                | Example               | Use                                              |
+| ---------------------- | --------------------- | ------------------------------------------------ |
+| `load<Noun>s()`        | `loadTitles()`        | Fetch a collection; triggered by a page on entry |
+| `load<Noun>(id)`       | `loadTitle(id)`       | Fetch one record by identifier                   |
+| `refresh<Noun>s()`     | `refreshTitles()`     | Re-fetch when a separate pull-to-refresh exists  |
+| `search<Noun>s(query)` | `searchTitles(query)` | Filter a collection                              |
 
 #### Writes
 
-| Pattern | Example |
-| --- | --- |
-| `add<Noun>(data)` | `addCopy(companion)` |
-| `save<Noun>(data)` | `saveTitle(form)` |
-| `remove<Noun>(id)` | `removeMember(id)` |
-| `duplicate<Noun>(id)` | `duplicateCopy(id)` |
-| `toggle<Noun><Flag>()` | `toggleTitleFeatured(id)` |
+| Pattern                   | Example                   |
+| ------------------------- | ------------------------- |
+| `add<Noun>(data)`         | `addCopy(companion)`      |
+| `save<Noun>(data)`        | `saveTitle(form)`         |
+| `remove<Noun>(id)`        | `removeMember(id)`        |
+| `duplicate<Noun>(id)`     | `duplicateCopy(id)`       |
+| `toggle<Noun><Flag>()`    | `toggleTitleFeatured(id)` |
 | `set<Noun><Field>(value)` | `setMemberStatus(status)` |
 
-#### Form submits — name the outcome, not the gesture
+#### Form submits - name the outcome, not the gesture
 
 ```
 checkOutCopy()    ✓
 returnCopy()      ✓
 renewLoan()       ✓
 saveMember()      ✓
-submit()          ✗  — which cubit? what outcome?
-confirm()         ✗  — same problem
+submit()          ✗  - which cubit? what outcome?
+confirm()         ✗  - same problem
 ```
 
 #### Field changes
 
-`<field>Changed(value)` — the field name carries the noun, so no extra noun is required:
+`<field>Changed(value)` - the field name carries the noun, so no extra noun is required:
 
 ```
 titleChanged(value)      ✓
@@ -131,8 +131,8 @@ updateField(value)       ✗
 Drop the noun only when the cubit owns a single unnamed thing and the verb is globally unambiguous:
 
 ```
-signOut()         ✓   AuthCubit — nothing else "signs out"
-restoreSession()  ✓   AuthCubit — nothing else "restores a session"
+signOut()         ✓   AuthCubit - nothing else "signs out"
+restoreSession()  ✓   AuthCubit - nothing else "restores a session"
 ```
 
 Private helpers follow the same rule. `_saveCopy` is correct; `_save` beside a renamed public method is the same ambiguity one level down.
@@ -172,7 +172,7 @@ shared/components/
 
 - Class name is **plural** (`Titles`, `Copies`, `Members`, `Loans`).
 - File is named for the class in `data/tables/`: `Titles` → `titles.dart`.
-- The generated data class is singular (`TitleData`, `CopyData`) — drift derives it from the table class name.
+- The generated data class is singular (`TitleData`, `CopyData`) - drift derives it from the table class name.
 
 ```
 features/catalog/title/data/tables/
@@ -213,7 +213,7 @@ local_title_data_source.dart       →  LocalTitleDataSource (@LazySingleton(as:
 
 - `data/mappers/<feature>_row_mappers.dart`.
 - Contains `extension` methods: `toDomain()` on the drift data class, `toCompanion()` where needed.
-- No class declaration — just extension methods on the generated row type.
+- No class declaration - just extension methods on the generated row type.
 
 ```
 features/catalog/title/data/mappers/title_row_mappers.dart
@@ -272,15 +272,15 @@ Assets.icons.book           ✓
 
 - `grep TitleCubit.loadTitles` returns exactly one definition. `grep .loadTitles(` returns every call site. Neither returns noise.
 - File location is derivable from the class name alone. A reviewer looking for `TitleListTile` opens `features/catalog/title/presentation/widgets/title_list_tile.dart` without searching.
-- The `App` prefix reservation makes design-system violations visible in code review without opening a file — a class outside `khulla_ui` starting with `App` is wrong by inspection.
+- The `App` prefix reservation makes design-system violations visible in code review without opening a file - a class outside `khulla_ui` starting with `App` is wrong by inspection.
 - Cubit method names at the call site are self-documenting: `context.read<CheckoutCubit>().checkOutCopy()` describes an outcome; `context.read<CheckoutCubit>().submit()` describes a gesture.
 
 **What this costs**
 
-- Strict one-class-per-file produces more files than a looser convention. A cubit and its state are two files in a `cubit/` folder, not one. This is deliberate — the filename is part of the navigation system. The file count is manageable; the ambiguity of "which cubit is in this file?" is not.
+- Strict one-class-per-file produces more files than a looser convention. A cubit and its state are two files in a `cubit/` folder, not one. This is deliberate - the filename is part of the navigation system. The file count is manageable; the ambiguity of "which cubit is in this file?" is not.
 - Feature-prefix for widgets means renaming a feature renames its widget files too. This is correct: the prefix signals scope, and a widget that no longer belongs to one feature should be promoted to `shared/` at that point.
-- The verb+noun method rule occasionally produces slightly awkward names (`toggleTitleFeatured`, `duplicateCopy`). These are always preferred over the bare verb — the awkwardness is a signal that the cubit may be doing too much, not that the rule is wrong.
+- The verb+noun method rule occasionally produces slightly awkward names (`toggleTitleFeatured`, `duplicateCopy`). These are always preferred over the bare verb - the awkwardness is a signal that the cubit may be doing too much, not that the rule is wrong.
 
 ## Revisiting
 
-Naming conventions evolve with the codebase. A new resource type or architectural layer that has no clear mapping to these rules gets its own sub-section added here. The trigger is a code review where two developers independently reach different answers for the same naming question — that gap belongs in this document.
+Naming conventions evolve with the codebase. A new resource type or architectural layer that has no clear mapping to these rules gets its own sub-section added here. The trigger is a code review where two developers independently reach different answers for the same naming question - that gap belongs in this document.

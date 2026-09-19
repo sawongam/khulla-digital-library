@@ -6,10 +6,10 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// {@template app_content_constraint}
 /// Centres [child] and caps its width.
 ///
-/// Two caps, because Khulla has two kinds of page. Reading content — prose, a
-/// form, a title's detail pane — caps at [AppBreakpoints.contentMaxWidth],
+/// Two caps, because Khulla has two kinds of page. Reading content - prose, a
+/// form, a title's detail pane - caps at [AppBreakpoints.contentMaxWidth],
 /// past which a line is too long to track. Dense content that genuinely uses
-/// the room — a catalogue table, the dashboard — caps at
+/// the room - a catalogue table, the dashboard - caps at
 /// [AppBreakpoints.wideContentMaxWidth] via [AppContentConstraint.wide].
 ///
 /// Neither stretches to the window: a form spread across a 2560px monitor is
@@ -29,7 +29,7 @@ class AppContentConstraint extends StatelessWidget {
       wide = true;
 
   /// Caps at an explicit [maxWidth]. Reach for this only when neither
-  /// standard cap fits — a two-pane layout sizing its own detail pane.
+  /// standard cap fits - a two-pane layout sizing its own detail pane.
   const AppContentConstraint.custom({
     required this.maxWidth,
     required this.child,

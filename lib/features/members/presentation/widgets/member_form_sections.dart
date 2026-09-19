@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/members/domain/blood_group.dart';
 import 'package:khulla/features/members/domain/gender.dart';
@@ -150,7 +150,7 @@ class MemberFormContactSection extends StatelessWidget {
   }
 }
 
-/// Occupation, institution/school and ID verification — free text.
+/// Occupation, institution/school and ID verification - free text.
 class MemberFormAdditionalSection extends StatelessWidget {
   const MemberFormAdditionalSection({
     required this.occupation,
@@ -197,7 +197,7 @@ class MemberFormAdditionalSection extends StatelessWidget {
   }
 }
 
-/// Emergency contact — name and phone.
+/// Emergency contact - name and phone.
 class MemberFormEmergencySection extends StatelessWidget {
   const MemberFormEmergencySection({
     required this.emergencyContactName,

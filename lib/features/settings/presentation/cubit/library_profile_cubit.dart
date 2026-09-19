@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:typed_data';
 
@@ -13,7 +13,7 @@ import 'package:khulla/shared/models/load_status.dart';
 
 /// Library identity settings: name, contact details, currency and barcodes.
 ///
-/// Page-scoped `@injectable` cubit. [loadProfile] is a read — failures emit
+/// Page-scoped `@injectable` cubit. [loadProfile] is a read - failures emit
 /// into [LibraryProfileState.error]. [saveProfile] emits and rethrows.
 @injectable
 class LibraryProfileCubit extends Cubit<LibraryProfileState> {

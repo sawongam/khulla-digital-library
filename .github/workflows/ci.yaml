@@ -44,7 +44,7 @@ jobs:
 
           if git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1; then
             echo "::error file=pubspec.yaml::$tag is already released." \
-                 "Bump version: in pubspec.yaml — merging this as it stands publishes nothing."
+                 "Bump version: in pubspec.yaml - merging this as it stands publishes nothing."
             exit 1
           fi
 
@@ -61,7 +61,7 @@ jobs:
         with:
           bootstrap: pub
 
-      # Analysis does not compile — this is what catches a change that passes
+      # Analysis does not compile - this is what catches a change that passes
       # `dart analyze` but breaks the release build.
       - name: Build web (prod flavor)
         run: flutter build web --release -t lib/main_prod.dart

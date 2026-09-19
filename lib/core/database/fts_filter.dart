@@ -1,12 +1,12 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 
 /// A search box's text as a `WHERE` condition over a trigram FTS5 [table].
 ///
 /// Every whitespace-separated term must appear somewhere in [columns], in
-/// any order — `potter rowling` finds the title whose author is Rowling.
+/// any order - `potter rowling` finds the title whose author is Rowling.
 /// Terms of three characters or more go through `MATCH` and the trigram
 /// index. Shorter ones cannot, since a trigram index has nothing to look up
 /// for them, so they fall back to `LIKE` over the same table's text.

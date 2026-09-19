@@ -15,7 +15,7 @@ unlinked_spec.ds
 app.*.symbols
 app.*.map.json
 
-# FVM — commit .fvmrc; the SDK symlink and cache stay local.
+# FVM - commit .fvmrc; the SDK symlink and cache stay local.
 .fvm/
 
 # ── Generated code ──────────────────────────────────────────────────────────

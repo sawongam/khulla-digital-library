@@ -4,7 +4,7 @@
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// {@template app_segmented_control}
-/// A small set of mutually exclusive choices, all visible at once — *All /
+/// A small set of mutually exclusive choices, all visible at once - *All /
 /// On loan / Overdue*, or a list/grid view switch.
 ///
 /// A brand pill on a grey track: the track is the secondary surface with a

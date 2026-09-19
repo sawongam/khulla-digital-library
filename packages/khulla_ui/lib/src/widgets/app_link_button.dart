@@ -3,7 +3,7 @@
 
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// A link has no box: no height, no padding, no ripple — only the underline
+/// A link has no box: no height, no padding, no ripple - only the underline
 /// on hover that every link on the web has.
 ///
 /// Rendered by [AppButton] for [AppButtonVariant.link], and usable directly

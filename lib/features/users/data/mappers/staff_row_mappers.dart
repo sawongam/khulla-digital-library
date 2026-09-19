@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 import 'package:khulla/core/database/app_database.dart';
@@ -30,7 +30,7 @@ extension StaffRowX on StaffRow {
 extension StaffMemberX on StaffMember {
   /// The row to write, given an already-computed [passwordHash].
   ///
-  /// Hashing is the repository's job, not the mapper's — a mapper that could
+  /// Hashing is the repository's job, not the mapper's - a mapper that could
   /// hash would be a mapper that could be handed a plaintext password.
   StaffCompanion toCompanion({required String passwordHash}) => StaffCompanion(
     id: Value(id),

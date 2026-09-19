@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 /// The sticker stocks the library keeps on the shelf behind the desk.
 ///
@@ -9,7 +9,7 @@
 /// the enum so the print pipeline can lay out the sheet without a second
 /// table of stock dimensions.
 enum LabelSize {
-  /// Spine labels — barcode and shelf mark only.
+  /// Spine labels - barcode and shelf mark only.
   small(width: 190, height: 105, mmWidth: 38, mmHeight: 21),
 
   /// The default accession sticker: title, barcode, shelf mark.

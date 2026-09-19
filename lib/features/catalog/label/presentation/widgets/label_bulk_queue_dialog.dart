@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khulla/core/error/app_exception.dart';
@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// A pasted list of barcodes, queued in one go.
 ///
 /// For a stack of copies that arrived with a printed accession list rather
-/// than a handheld scanner — typing or scanning one at a time is the wrong
+/// than a handheld scanner - typing or scanning one at a time is the wrong
 /// tool when there are fifty of them. Resolves to a [LabelBulkQueueResult] so
 /// the scan card can toast how many matched; null if cancelled.
 class LabelBulkQueueDialog extends StatefulWidget {
@@ -22,7 +22,7 @@ class LabelBulkQueueDialog extends StatefulWidget {
   /// Shows the dialog over [context].
   ///
   /// `showDialog` mounts into the root navigator's overlay, above the
-  /// page-scoped [LabelCubit] — so the instance is read here, where it *is*
+  /// page-scoped [LabelCubit] - so the instance is read here, where it *is*
   /// in scope, and re-provided into the dialog's subtree.
   static Future<LabelBulkQueueResult?> show(BuildContext context) {
     final cubit = context.read<LabelCubit>();

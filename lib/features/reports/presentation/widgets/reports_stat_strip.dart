@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/reports/domain/models/reports_summary.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The four headline figures: borrowed, returned, new members, fines raised.
 ///
 /// Every tile carries its trend against the previous window and the same
-/// "last month" caption. Fines invert the trend — up is bad there.
+/// "last month" caption. Fines invert the trend - up is bad there.
 class ReportsStatStrip extends StatelessWidget {
   const ReportsStatStrip({required this.summary, super.key});
 

@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:go_router/go_router.dart';
 import 'package:khulla/features/guide/domain/guide_block.dart';
@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// An ordered walkthrough, drawn as a rail of numbered discs.
 ///
 /// The connecting line between the discs is what makes it read as a sequence
-/// rather than a list of unrelated tips — and the last step deliberately has
+/// rather than a list of unrelated tips - and the last step deliberately has
 /// none, so the walkthrough visibly ends.
 ///
 /// A step that names a screen offers it as a link. That is the difference

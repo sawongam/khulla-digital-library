@@ -7,7 +7,7 @@
 # The exclude list is repeated in full rather than inherited: an including
 # file's `analyzer.exclude` replaces the included one's rather than merging,
 # and `flutter pub get` appends the platform directories here if they are
-# missing — which would silently drop the generated-file globs.
+# missing - which would silently drop the generated-file globs.
 include:
   - analysis_options_base.yaml
   - package:bloc_lint/recommended.yaml

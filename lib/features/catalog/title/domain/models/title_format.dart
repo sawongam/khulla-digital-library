@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'title_format.freezed.dart';
 
-/// An editable catalogue format — book, journal, audiobook, and so on.
+/// An editable catalogue format - book, journal, audiobook, and so on.
 @freezed
 abstract class TitleFormat with _$TitleFormat {
   const factory TitleFormat({

@@ -9,7 +9,7 @@ import 'package:khulla_ui/src/theme/app_palette.dart';
 /// A closed set rather than a free color picker: every ramp here has been
 /// looked at against the ink, the hairlines and the status colors, and a
 /// picker would happily hand the product a yellow primary with white text on
-/// it. Adding one is a seed in the palette plus an entry here — the rest of
+/// it. Adding one is a seed in the palette plus an entry here - the rest of
 /// the ramp is derived by [AppBrand.fromSeed].
 ///
 /// The name is not the label. This enum carries no user-facing text; the app

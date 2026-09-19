@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:typed_data';
 
@@ -14,7 +14,7 @@ import 'package:printing/printing.dart';
 /// Builds the label sheet PDF and hands it to the operating system.
 ///
 /// A4 with fixed margins; the queued stickers flow across as many pages as
-/// they need. Barcodes are real Code 128 — the preview's drawn bars answer
+/// they need. Barcodes are real Code 128 - the preview's drawn bars answer
 /// layout questions, this answers the scanner's.
 ///
 /// Returns whether the sheet reached the OS print dialog. A dismissed dialog
