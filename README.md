@@ -61,14 +61,14 @@ An open-source library management system, built as a **local-first Flutter app**
       <sub><b>Barcodes</b> — print & scan</sub>
     </td>
     <td width="50%" align="center">
-      <em><a href="https://khulla-digital-library.github.io/khulla-digital-library/">Try the live demo →</a><br />no install, data stays in your browser</em>
+      <em><a href="https://sawongam.github.io/khulla-digital-library/">Try the live demo →</a><br />no install, data stays in your browser</em>
     </td>
   </tr>
 </table>
 
 ## Download
 
-Ready-to-run builds are attached to every release: **[latest release](https://github.com/khulla-digital-library/khulla-digital-library/releases/latest)**.
+Ready-to-run builds are attached to every release: **[latest release](https://github.com/sawongam/khulla-digital-library/releases/latest)**.
 
 | Platform | File | How to run it |
 | --- | --- | --- |
@@ -87,7 +87,7 @@ Verify a download against `SHA256SUMS.txt` attached to the same release. The ins
 - **Android:** sideloading with installs from unknown sources allowed.
 - **Web:** a current Chromium, Firefox or Safari.
 
-You can also **[try it in a browser](https://khulla-digital-library.github.io/khulla-digital-library/)** — a demo with no server behind it, where the catalogue lives in that browser's storage and clearing site data wipes it.
+You can also **[try it in a browser](https://sawongam.github.io/khulla-digital-library/)** — a demo with no server behind it, where the catalogue lives in that browser's storage and clearing site data wipes it.
 
 Your catalogue is a SQLite file on your own machine, so uninstalling does not delete it and nothing is uploaded anywhere. Take a backup from **Settings → Backup** before moving between machines; on a new machine, choose Restore during setup to adopt that backup.
 
@@ -114,7 +114,7 @@ Releases are built by CI for the four released targets. macOS and iOS compile fr
 **Prerequisites** — [FVM](https://fvm.app) to pin the Flutter SDK, plus platform toolchains: Visual Studio with the *Desktop development with C++* workload for Windows; `clang`, `cmake`, `ninja-build`, `libgtk-3-dev` for Linux; Xcode for macOS/iOS; Java 17 plus the Android SDK for the APK.
 
 ```sh
-git clone https://github.com/khulla-digital-library/khulla-digital-library.git
+git clone https://github.com/sawongam/khulla-digital-library.git
 cd khulla-digital-library
 
 dart pub global activate fvm   # once, if you do not have FVM yet
