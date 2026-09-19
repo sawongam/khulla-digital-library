@@ -5,7 +5,7 @@
 abstract final class AppUrls {
   /// Public source repository.
   static const String repository =
-      'https://github.com/khulla-digital-library/khulla-digital-library';
+      'https://github.com/sawongam/khulla-digital-library';
 
   /// Where to file a bug or request a feature.
   static const String issues = '$repository/issues';

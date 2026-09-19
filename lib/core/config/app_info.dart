@@ -31,7 +31,7 @@ abstract final class AppInfo {
 
   /// Where the source lives.
   static const String repositoryUrl =
-      'https://github.com/khulla-digital-library/khulla-digital-library';
+      'https://github.com/sawongam/khulla-digital-library';
 
   /// Where a bug or a request goes.
   static const String issuesUrl = '$repositoryUrl/issues';
