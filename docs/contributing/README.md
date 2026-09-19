@@ -18,6 +18,10 @@ If a pull request bumps `.fvmrc`, run `fvm install` before `make bootstrap`.
 
 Verify your setup with `make check`.
 
+## Licence and the CLA
+
+Khulla is AGPL-3.0-only and also sold under a commercial licence (see [COMMERCIAL-LICENSE.md](../../COMMERCIAL-LICENSE.md)). A pull request can only be merged once its author has agreed to the [Contributor License Agreement](../../CLA.md) — the pull request template has the line to include. You keep the copyright in your work.
+
 ## Before you open a pull request
 
 ```sh
@@ -39,7 +43,7 @@ The architecture guide is [`docs/architecture/`](../architecture/README.md). It 
 - **No hard-coded user-facing strings.** Every label goes in `lib/l10n/arb/app_en.arb` and is read via `context.l10n`.
 - **`App`-prefixed class names are reserved** for the design system. Feature widgets take the feature's name as a prefix instead.
 - **Schema changes are append-only migrations.** Never edit a migration that has shipped — someone's catalogue was built by running exactly that SQL.
-- **Every handwritten Dart file starts with the Khulla copyright header.** `make copyright` adds it to new files; `make check` fails without it. Generated files are exempt.
+- **Every handwritten Dart file starts with the Khulla copyright header** — `SPDX-License-Identifier: AGPL-3.0-only`, or `MIT` under `packages/khulla_ui`. `make copyright` adds it to new files; `make check` fails without it. Generated files are exempt.
 
 ## Branches and commits
 

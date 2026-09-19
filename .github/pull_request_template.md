@@ -10,6 +10,11 @@
 
 <!-- The screens to open, the steps to take, the numbers to compare. -->
 
+## Contributor License Agreement
+
+<!-- Required once per contributor. Leave this line in to agree. -->
+I have read the Contributor License Agreement in `CLA.md` and I agree to it for this and all my future contributions to Khulla Digital Library.
+
 ## Checklist
 
 - [ ] `make check` passes locally (format, copyright, analyze, test)
