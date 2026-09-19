@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/format/app_date_format.dart';
@@ -10,7 +10,7 @@ import 'package:khulla/features/circulation/shared/domain/loan_status.dart';
 
 part 'loan.freezed.dart';
 
-/// One checkout — open while [returnedAt] is null.
+/// One checkout - open while [returnedAt] is null.
 @freezed
 abstract class Loan with _$Loan {
   const factory Loan({

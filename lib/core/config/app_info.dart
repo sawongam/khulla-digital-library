@@ -1,9 +1,9 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/config/app_version.dart';
 
-/// Facts about the product itself — who made it, where it lives.
+/// Facts about the product itself - who made it, where it lives.
 ///
 /// None of it is localized: a person's name and a URL read the same in every
 /// language, and translating any of them would break the thing it points at.
@@ -31,11 +31,11 @@ abstract final class AppInfo {
 
   /// Where the source lives.
   static const String repositoryUrl =
-      'https://github.com/khulla-digital-library/khulla-digital-library';
+      'https://github.com/sawongam/khulla-digital-library';
 
   /// Where a bug or a request goes.
   static const String issuesUrl = '$repositoryUrl/issues';
 
   /// The licence the source is released under.
-  static const String license = 'MIT';
+  static const String license = 'AGPL-3.0-only';
 }

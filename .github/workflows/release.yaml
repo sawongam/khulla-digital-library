@@ -1,7 +1,7 @@
 name: Release
 
 # Landing on `prod` is what ships. Every push to it builds all four targets and
-# publishes them as a release at the version in pubspec.yaml — no tag to push by
+# publishes them as a release at the version in pubspec.yaml - no tag to push by
 # hand, no second step to forget. The workflow creates the `v<version>` tag.
 #
 # So bumping `version:` in pubspec.yaml is part of the pull request, not an
@@ -9,7 +9,7 @@ name: Release
 # says so, rather than overwriting the release people already downloaded.
 #
 # Run it by hand ("Run workflow" in the Actions tab) on any branch to get the
-# same four builds as downloadable artifacts with nothing published — that is
+# same four builds as downloadable artifacts with nothing published - that is
 # how a tester gets a build of unreleased work.
 on:
   push:
@@ -41,7 +41,7 @@ jobs:
         run: |
           # pubspec.yaml is the single source of truth: the Flutter tool bakes
           # `version:` into every build, and the app reads it back at runtime
-          # via package_info_plus — so the number in the release, the tag and
+          # via package_info_plus - so the number in the release, the tag and
           # the About line cannot disagree.
           version="$(grep -E '^version:' pubspec.yaml | sed -E 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')"
           tag="v$version"
@@ -54,7 +54,7 @@ jobs:
               echo "build=true"
               echo "release=false"
             } >> "$GITHUB_OUTPUT"
-            echo "Manual run — building \`$version-dev.${GITHUB_SHA::7}\` as artifacts. Nothing is published." \
+            echo "Manual run - building \`$version-dev.${GITHUB_SHA::7}\` as artifacts. Nothing is published." \
               >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
@@ -189,7 +189,7 @@ jobs:
 
       # One universal APK rather than per-ABI splits: a tester sideloading from
       # a release page should not have to know what a CPU architecture is.
-      # Signed with debug keys (see android/app/build.gradle.kts) — fine for
+      # Signed with debug keys (see android/app/build.gradle.kts) - fine for
       # sideloading, not for Play. docs/contributing/releasing.md says how to
       # add a real signing key when that day comes.
       - name: Build
@@ -258,7 +258,7 @@ jobs:
           sha256sum * > SHA256SUMS.txt
           ls -lh
 
-      # Creates the tag as well as the release — nobody tags by hand, and the
+      # Creates the tag as well as the release - nobody tags by hand, and the
       # tag is what tells the next push to prod that this version has shipped.
       - uses: softprops/action-gh-release@v2
         with:
@@ -272,7 +272,7 @@ jobs:
 
             | Platform | File | How to run it |
             | --- | --- | --- |
-            | Windows | `khulla-${{ needs.version.outputs.version }}-windows-x64-setup.exe` | **Recommended.** Run the installer — adds Start Menu entry + uninstaller (no admin required). SmartScreen will warn about an unknown publisher — *More info* → *Run anyway*. |
+            | Windows | `khulla-${{ needs.version.outputs.version }}-windows-x64-setup.exe` | **Recommended.** Run the installer - adds Start Menu entry + uninstaller (no admin required). SmartScreen will warn about an unknown publisher - *More info* → *Run anyway*. |
             | Windows (portable) | `khulla-${{ needs.version.outputs.version }}-windows-x64.zip` | Unzip anywhere, run `khulla.exe`. No install needed. |
             | Android | `khulla-${{ needs.version.outputs.version }}-android.apk` | Sideload it; allow installs from your browser or file manager. |
             | Web | `khulla-${{ needs.version.outputs.version }}-web.tar.gz` | Serve the extracted folder from any static host. |
@@ -282,6 +282,6 @@ jobs:
 
             Khulla is local-first: your catalogue is a SQLite file on your own
             machine, and nothing is sent anywhere. Uninstalling the app does not
-            delete it — take a backup from **Settings → Backup** before moving
+            delete it - take a backup from **Settings → Backup** before moving
             between machines. The installer and the portable zip share the same
             data location, so you can switch between them.

@@ -6,15 +6,15 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The initials tile standing in for a person or a record.
 ///
 /// A rounded square, not a circle, and neutral by default. A column of
-/// tinted circles down the left of a list reads as status — which is what
-/// tint means everywhere else in this app — so the avatar stays quiet and
+/// tinted circles down the left of a list reads as status - which is what
+/// tint means everywhere else in this app - so the avatar stays quiet and
 /// leaves color to the badge beside it.
 ///
 /// It takes the initials rather than a name: deriving them is a locale
-/// question — a Nepali name does not split the way an English one does — and
+/// question - a Nepali name does not split the way an English one does - and
 /// that belongs to the feature that owns the record, not to the design system.
 ///
-/// [tone] exists for the rare avatar that genuinely carries standing — a
+/// [tone] exists for the rare avatar that genuinely carries standing - a
 /// suspended member. Do not vary it per record to make a list colorful.
 class AppAvatar extends StatelessWidget {
   const AppAvatar({
@@ -35,7 +35,7 @@ class AppAvatar extends StatelessWidget {
   /// Which wash and ink to paint.
   final AppStatusTone tone;
 
-  /// A glyph pinned to the bottom-trailing edge — a verified check, a
+  /// A glyph pinned to the bottom-trailing edge - a verified check, a
   /// suspended block. Null draws no badge.
   final AppIconSpec? badge;
 

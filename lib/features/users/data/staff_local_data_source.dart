@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/users/domain/models/staff_credentials.dart';
 import 'package:khulla/features/users/domain/models/staff_member.dart';
@@ -22,7 +22,7 @@ abstract interface class StaffLocalDataSource {
   /// full read: on a fresh install it has to answer before the first frame.
   Future<bool> hasAnyStaff();
 
-  /// Every account, oldest first — the order the desk was staffed in.
+  /// Every account, oldest first - the order the desk was staffed in.
   Future<List<StaffMember>> findAllStaff();
 
   /// One account, or null when the id names nothing.
@@ -77,7 +77,7 @@ abstract interface class StaffLocalDataSource {
   });
 
   /// Replaces the password digest for [staffId], outside the recovery-code
-  /// flow — an administrator setting it directly.
+  /// flow - an administrator setting it directly.
   Future<void> setPasswordHash({
     required String staffId,
     required String passwordHash,

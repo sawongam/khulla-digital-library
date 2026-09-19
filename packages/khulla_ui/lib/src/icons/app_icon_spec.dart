@@ -19,7 +19,7 @@ import 'package:solar_iconkit/solar_iconkit.dart';
 class AppIconSpec {
   /// Names a glyph by its Solar identifier.
   ///
-  /// [style] defaults to [SolarIconStyle.outline], the app's single weight —
+  /// [style] defaults to [SolarIconStyle.outline], the app's single weight -
   /// see `AppIcons` for why there is only one.
   const AppIconSpec(this.name, {this.style = SolarIconStyle.outline});
 

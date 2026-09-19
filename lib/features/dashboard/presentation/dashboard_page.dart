@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khulla/core/money/money.dart';
@@ -23,20 +23,20 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The shell's landing tab: what the library looks like right now.
 ///
 /// It is the app's densest page, and the only one laid out as two panes: the
-/// left column is *what happened* — the figures, the charts, the desk's
-/// activity — and the right rail is *what is still owed*, the worklist a
+/// left column is *what happened* - the figures, the charts, the desk's
+/// activity - and the right rail is *what is still owed*, the worklist a
 /// shift is judged by. Below `large` the rail folds under the column rather
 /// than squeezing beside it, because a 300px chart is worse than no chart.
 ///
 /// Surface is used as hierarchy rather than as decoration. The figures share
 /// one bordered strip; the three charts keep a card each, because a plot
-/// needs a bounded drawing area to be read against; and the lists — the
-/// worklist, the two rankings, the subject bars — sit on the page canvas
+/// needs a bounded drawing area to be read against; and the lists - the
+/// worklist, the two rankings, the subject bars - sit on the page canvas
 /// under their headings, since a list already has an edge and a border round
 /// it only adds another rectangle.
 ///
 /// The board is a single [CustomScrollView], so the page scrolls as one
-/// surface and no section nests a scrollable inside another — the rule that
+/// surface and no section nests a scrollable inside another - the rule that
 /// keeps a ten-thousand-title catalogue openable applies here too.
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});

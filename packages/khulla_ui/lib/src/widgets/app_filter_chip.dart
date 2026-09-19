@@ -6,7 +6,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// {@template app_filter_chip}
 /// One toggleable filter in a toolbar's chip row, with an optional count.
 ///
-/// A plain card — 1px hairline, small corners, no fill — that stays neutral
+/// A plain card - 1px hairline, small corners, no fill - that stays neutral
 /// at rest and, once applied, takes the brand wash. Hue is not the selected
 /// state: a row of green, cyan and orange chips reads as tags, not filters.
 ///
@@ -34,7 +34,7 @@ class AppFilterChip extends StatelessWidget {
   /// Called with the next state. Null disables the chip.
   final ValueChanged<bool>? onSelected;
 
-  /// How many records match, shown after the label. Null hides the count —
+  /// How many records match, shown after the label. Null hides the count -
   /// which is the right choice while the count is still loading, rather than
   /// showing a zero that is not yet true.
   final int? count;

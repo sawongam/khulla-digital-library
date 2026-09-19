@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// thumb.
 ///
 /// Flutter omits [PointerDeviceKind.mouse] from [dragDevices] by default, so
-/// on desktop and web a list can only be scrolled with the wheel — click-and-
+/// on desktop and web a list can only be scrolled with the wheel - click-and-
 /// drag does nothing, and any custom drag-to-pan surface silently refuses the
 /// mouse. Wire this once via `MaterialApp.scrollBehavior`.
 class AppScrollBehavior extends MaterialScrollBehavior {

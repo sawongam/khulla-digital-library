@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// a page or the top of a card.
 ///
 /// One action, not a row of equals: a section that needs more puts the rest
-/// behind [AppMenuButton]. Takes ready-made strings — the design system does
+/// behind [AppMenuButton]. Takes ready-made strings - the design system does
 /// not know what the section is or which locale it is in.
 /// {@endtemplate}
 class AppSectionHeader extends StatelessWidget {
@@ -26,7 +26,7 @@ class AppSectionHeader extends StatelessWidget {
   /// Section heading.
   final String title;
 
-  /// Secondary line under [title] — a count, a date range, a hint.
+  /// Secondary line under [title] - a count, a date range, a hint.
   final String? subtitle;
 
   /// The section's single action, typically an [AppButton] or

@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
@@ -17,7 +17,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// and a screen that lets an administrator invent a fifth mostly produces a
 /// role called "Librarian 2" whose permissions nobody can remember. The
 /// matrix below is the whole model, on one screen, with no scrolling between
-/// a role and the permission being read — there is no "add role" action for
+/// a role and the permission being read - there is no "add role" action for
 /// the same reason: a custom role is a feature request, not a default.
 class RoleListPage extends StatelessWidget {
   const RoleListPage({super.key});
@@ -82,7 +82,7 @@ class _RoleCard extends StatelessWidget {
     final l10n = context.l10n;
     final spacing = context.appSpacing;
     final colors = context.appColors;
-    // Anything the role can open counts, at either level — the card is a
+    // Anything the role can open counts, at either level - the card is a
     // reach-at-a-glance, and the matrix below it says how far.
     final granted = StaffPermission.values.where(role.canView).length;
 

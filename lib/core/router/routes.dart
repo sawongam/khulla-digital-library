@@ -1,14 +1,14 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 /// Centralized route paths for the app router.
 ///
-/// Navigate with `context.go(Routes.catalog)` — never a hard-coded string, so
+/// Navigate with `context.go(Routes.catalog)` - never a hard-coded string, so
 /// renaming a path is a single edit and every caller moves with it.
 ///
 /// Each shell section owns a small tree: the section's landing page at the
 /// branch root, and its lists, records and editors nested underneath. The
-/// nested form is deliberate — a detail page pushed under its list keeps the
+/// nested form is deliberate - a detail page pushed under its list keeps the
 /// back control working and leaves the shell's rail on screen, which is what
 /// a desk tool wants.
 ///
@@ -20,7 +20,7 @@ abstract final class Routes {
   static const String root = '/';
 
   /// First-run setup. Reached only when the catalogue holds no staff account,
-  /// and outside the shell — there is no library to navigate yet.
+  /// and outside the shell - there is no library to navigate yet.
   static const String onboarding = '/onboarding';
 
   /// Staff sign-in. Outside the shell, for the same reason.
@@ -35,7 +35,7 @@ abstract final class Routes {
       location == signIn ||
       location == recoverPassword;
 
-  /// Dashboard: the shift's starting point — counts, activity, quick actions.
+  /// Dashboard: the shift's starting point - counts, activity, quick actions.
   static const String dashboard = '/dashboard';
 
   /// Catalogue: titles, copies, labels.
@@ -129,7 +129,7 @@ abstract final class Routes {
   /// The component gallery, under settings. Registered by the dev build only.
   static const String designSystemSegment = 'design-system';
 
-  /// Library profile — name, branch, contact, currency.
+  /// Library profile - name, branch, contact, currency.
   static const String settingsLibrary = '$settings/$librarySegment';
 
   /// Loan periods, renewals, limits and fine rates.
@@ -141,7 +141,7 @@ abstract final class Routes {
   /// Export, restore, import, and the destructive reset.
   static const String settingsBackup = '$settings/$backupSegment';
 
-  /// The design-system gallery. Only reachable in the dev flavor — the
+  /// The design-system gallery. Only reachable in the dev flavor - the
   /// release build declares neither the route nor the door to it.
   static const String settingsDesignSystem = '$settings/$designSystemSegment';
 

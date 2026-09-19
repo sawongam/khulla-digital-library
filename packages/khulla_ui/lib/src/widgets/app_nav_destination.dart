@@ -27,7 +27,7 @@ class AppNavDestination {
   /// Short destination name. Doubles as the rail tooltip when collapsed.
   final String label;
 
-  /// A count pinned to the trailing edge of the rail item — items waiting at
+  /// A count pinned to the trailing edge of the rail item - items waiting at
   /// the desk, unread notices. Already formatted; null draws nothing.
   final String? badge;
 

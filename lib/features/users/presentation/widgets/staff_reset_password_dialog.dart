@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -20,7 +20,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Sets a new password for an existing account.
 ///
 /// There is no invitation link to resend and no reset email to send in an
-/// offline-first app — an administrator chooses the new password here and
+/// offline-first app - an administrator chooses the new password here and
 /// hands it to the account holder directly, the same way the very first
 /// administrator's password is chosen at onboarding.
 class StaffResetPasswordDialog extends StatelessWidget {

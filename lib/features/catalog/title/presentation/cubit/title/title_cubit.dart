@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -23,7 +23,7 @@ class TitleCubit extends Cubit<TitleState> {
 
   /// Fetches the current page of titles using [TitleState.query].
   ///
-  /// Failures are emitted into state and swallowed — the list screen already
+  /// Failures are emitted into state and swallowed - the list screen already
   /// watches [TitleState.error].
   Future<void> loadTitles() async {
     emit(

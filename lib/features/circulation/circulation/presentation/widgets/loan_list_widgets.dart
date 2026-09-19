@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/circulation/shared/domain/loan_status.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -7,7 +7,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The desk's headline figures: out, due today, late, and waiting holds.
 ///
-/// Tapping a counter selects the same rows its filter chip would — the tile
+/// Tapping a counter selects the same rows its filter chip would - the tile
 /// and the chip are two doors into one query.
 class LoanListStats extends StatelessWidget {
   const LoanListStats({

@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/features/users/domain/user_status.dart';
 
-/// Staff accounts — the people who run the library from behind the desk.
+/// Staff accounts - the people who run the library from behind the desk.
 ///
 /// This is the table that answers "has this library been set up yet?": a
 /// catalogue with no staff row has never been through first-run setup, and
@@ -32,7 +32,7 @@ class Staff extends Table {
   /// Uniqueness is enforced here rather than checked before the insert: two
   /// windows onto the same file can both find an address free and then both
   /// write it. Normalizing on the way in is what makes the constraint mean
-  /// what a person expects — `Ram@Lib.np` and `ram@lib.np` are one account.
+  /// what a person expects - `Ram@Lib.np` and `ram@lib.np` are one account.
   TextColumn get email => text().withLength(min: 3, max: 254).unique()();
 
   /// A salted bcrypt digest. Never the password itself, and never reversible.
@@ -48,7 +48,7 @@ class Staff extends Table {
   /// record is referenced by everything the person did at the desk.
   TextColumn get status => textEnum<UserStatus>()();
 
-  /// Auto-generated staff barcode — unique, shown on detail and for scans.
+  /// Auto-generated staff barcode - unique, shown on detail and for scans.
   TextColumn get barcode => text().nullable()();
 
   DateTimeColumn get createdAt => dateTime()();

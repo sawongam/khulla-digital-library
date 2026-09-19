@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/money/money.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_condition.dart';
@@ -67,7 +67,7 @@ abstract interface class CirculationRepository {
 
   Future<Fine> waiveFine(String fineId);
 
-  /// Assesses a one-off fine by hand — a lost/damaged copy or a membership
+  /// Assesses a one-off fine by hand - a lost/damaged copy or a membership
   /// fee. The automatic overdue fine on return does not go through here.
   Future<Fine> chargeFine({
     required String memberId,

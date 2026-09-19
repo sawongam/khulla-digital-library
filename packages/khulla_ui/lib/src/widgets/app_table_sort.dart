@@ -6,7 +6,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// {@template app_table_sort}
 /// Which column a table is sorted by, and in which direction.
 ///
-/// The table does not sort anything — with ten thousand titles the ordering
+/// The table does not sort anything - with ten thousand titles the ordering
 /// belongs in the query, not in a `List.sort` on the UI thread. This is the
 /// value a header reports and the cubit turns into an ORDER BY.
 /// {@endtemplate}

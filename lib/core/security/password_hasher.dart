@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:convert';
 
@@ -17,14 +17,14 @@ import 'package:khulla/core/error/app_exception.dart';
 /// nor slow.
 ///
 /// Pure Dart, so the same code runs on Windows, the web build and everything
-/// between — no FFI, no per-platform crypto backend to keep in step.
+/// between - no FFI, no per-platform crypto backend to keep in step.
 ///
-/// [hash] and [verify] are synchronous and deliberately expensive — a
+/// [hash] and [verify] are synchronous and deliberately expensive - a
 /// noticeable fraction of a second each. Call them from a cubit that is
 /// already showing a submitting state, never inside `build`.
 @lazySingleton
 class PasswordHasher {
-  /// bcrypt accepts at most this many UTF-8 bytes — longer input throws an
+  /// bcrypt accepts at most this many UTF-8 bytes - longer input throws an
   /// [ArgumentError] inside the package, past every guard.
   static const int maxPasswordBytes = 72;
 
@@ -48,7 +48,7 @@ class PasswordHasher {
 
   /// Whether [password] produced [hash].
   ///
-  /// Returns false rather than throwing on a malformed [hash] — a corrupted
+  /// Returns false rather than throwing on a malformed [hash] - a corrupted
   /// or hand-edited row must read as "wrong password", not as a crash on the
   /// sign-in screen.
   bool verify(String password, String hash) {

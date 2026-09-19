@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
@@ -25,7 +25,7 @@ class LocalStaffDataSource implements StaffLocalDataSource {
   static const Uuid _uuid = Uuid();
 
   /// Trimmed and lower-cased, so the unique index treats one address as one
-  /// account however it was typed. Applied on every read and every write —
+  /// account however it was typed. Applied on every read and every write -
   /// normalizing on only one side is how a lookup starts missing rows.
   static String normalizeEmail(String email) => email.trim().toLowerCase();
 

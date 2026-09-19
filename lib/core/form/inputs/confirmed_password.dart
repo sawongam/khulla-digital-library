@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:formz/formz.dart';
 
@@ -9,7 +9,7 @@ enum ConfirmedPasswordValidationError { empty, mismatch }
 ///
 /// Validates against the first one rather than against a rule of its own, so
 /// the input is rebuilt with `ConfirmedPassword.dirty(password: ..., value:
-/// ...)` whenever *either* field changes — a confirmation that matched the
+/// ...)` whenever *either* field changes - a confirmation that matched the
 /// old value must stop being valid the moment the first field is edited.
 class ConfirmedPassword
     extends FormzInput<String, ConfirmedPasswordValidationError> {

@@ -11,7 +11,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// a badge, a stat tile and a chart series with the same meaning match without
 /// anyone passing a color.
 enum AppStatusTone {
-  /// No standing of its own — a count, an inert tag, a disabled row.
+  /// No standing of its own - a count, an inert tag, a disabled row.
   neutral,
 
   /// Settled: returned on time, available, active.
@@ -26,7 +26,7 @@ enum AppStatusTone {
   /// Wrong now: overdue, lost, suspended, destructive.
   danger,
 
-  /// The brand accent — the primary action, the selected thing.
+  /// The brand accent - the primary action, the selected thing.
   brand,
 }
 
@@ -47,7 +47,7 @@ extension AppStatusToneColors on AppStatusTone {
 
   /// The wash a badge, an avatar or an icon chip sits on.
   ///
-  /// Hand-picked per brightness rather than blended from [foreground] — a
+  /// Hand-picked per brightness rather than blended from [foreground] - a
   /// blend that reads as a soft tint on white turns muddy on a dark canvas.
   Color background(BuildContext context) {
     final colors = context.appColors;

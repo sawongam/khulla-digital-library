@@ -9,25 +9,25 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// confirmation is [md]; a form is [xl], which is the width most of the
 /// product's dialogs use.
 enum AppDialogWidth {
-  /// 384px — a single short question.
+  /// 384px - a single short question.
   sm(384),
 
-  /// 448px — the confirmation default.
+  /// 448px - the confirmation default.
   md(448),
 
-  /// 512px — a short form.
+  /// 512px - a short form.
   lg(512),
 
-  /// 576px — the canonical form dialog.
+  /// 576px - the canonical form dialog.
   xl(576),
 
-  /// 672px — a two-column form.
+  /// 672px - a two-column form.
   xxl(672),
 
-  /// 768px — a form with a table or a preview in it.
+  /// 768px - a form with a table or a preview in it.
   xxxl(768),
 
-  /// 864px — the widest a dialog goes: long prose that needs a comfortable
+  /// 864px - the widest a dialog goes: long prose that needs a comfortable
   /// measure, or a two-column form beside a preview. Past this, the content
   /// wants a page rather than a panel over one.
   xxxxl(864);
@@ -45,7 +45,7 @@ enum AppDialogWidth {
 /// must never hand-roll a `Dialog`:
 ///
 /// * the **close chip floats outside the top-right corner**, shifts a little
-///   further out on hover and rotates its glyph 90° — this is the single most
+///   further out on hover and rotates its glyph 90° - this is the single most
 ///   recognisable interaction in the design language;
 /// * the body scrolls **inside** the dialog at a 90% viewport-height cap, so
 ///   a long form never pushes the footer off screen;
@@ -54,7 +54,7 @@ enum AppDialogWidth {
 ///   thumb on a phone.
 ///
 /// Use [AppDialog.show] for arbitrary content and [AppDialog.confirmDestructive]
-/// for the "delete this?" prompt — same chrome as [AppFormModal]: left-aligned
+/// for the "delete this?" prompt - same chrome as [AppFormModal]: left-aligned
 /// [AppTextStyles.displaySmall] title, body copy, [AppDialogWidth.sm], and a
 /// filled destructive confirm.
 /// {@endtemplate}
@@ -74,7 +74,7 @@ class AppDialog extends StatelessWidget {
   });
 
   /// The dialog's heading, already localized. Omit it for content that
-  /// carries its own heading — the about panel, say, which opens on the
+  /// carries its own heading - the about panel, say, which opens on the
   /// product's name.
   final String? title;
 
@@ -178,7 +178,7 @@ class AppDialog extends StatelessWidget {
     child: Text(label),
   );
 
-  /// An outlined destructive control — a page action, not a dialog confirm.
+  /// An outlined destructive control - a page action, not a dialog confirm.
   static Widget destructiveAction({
     required BuildContext context,
     required String label,
@@ -280,14 +280,14 @@ class AppDialog extends StatelessWidget {
 }
 
 /// A dialog's button row: the actions huddle at the trailing edge at every
-/// width — dismiss first, confirm last and flush right.
+/// width - dismiss first, confirm last and flush right.
 ///
 /// A phone footer stays a *row*: stacking two buttons costs a whole extra
 /// band of height on the screen that has the least of it. The one exception
 /// is a lone action on a narrow slot, which fills the footer on its own
 /// rather than floating a small button in a wide empty row.
 ///
-/// Pass the children in reading order — dismiss first, confirm last.
+/// Pass the children in reading order - dismiss first, confirm last.
 class AppDialogActions extends StatelessWidget {
   const AppDialogActions({required this.children, super.key});
 

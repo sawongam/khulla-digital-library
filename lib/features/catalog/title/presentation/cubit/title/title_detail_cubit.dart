@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -72,7 +72,7 @@ class TitleDetailCubit extends Cubit<TitleDetailState> {
     }
   }
 
-  /// Deletes the title. Rethrows on failure — the confirming dialog toasts.
+  /// Deletes the title. Rethrows on failure - the confirming dialog toasts.
   Future<void> removeTitle(String id) async {
     await _titles.removeTitle(id);
   }

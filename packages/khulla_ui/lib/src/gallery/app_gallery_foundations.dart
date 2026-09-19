@@ -5,7 +5,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The gallery's foundations section: type, color, shape and depth.
 ///
-/// Stateless and self-contained — the specimens name tokens, not product
+/// Stateless and self-contained - the specimens name tokens, not product
 /// concepts, so nothing here is localized.
 class AppGalleryFoundations extends StatelessWidget {
   const AppGalleryFoundations({super.key});
@@ -22,7 +22,7 @@ class AppGalleryFoundations extends StatelessWidget {
         AppGallerySection(
           title: 'Type',
           note:
-              'Every size is a pair — the second value applies from 1600px. '
+              'Every size is a pair - the second value applies from 1600px. '
               'There are no rungs between them.',
           children: [
             for (final (name, style) in <(String, TextStyle)>[
@@ -93,7 +93,7 @@ class AppGalleryFoundations extends StatelessWidget {
               ],
             ),
             AppGalleryRow(
-              label: 'tints — every interactive surface in the product',
+              label: 'tints - every interactive surface in the product',
               children: [
                 AppGallerySwatch(name: 'navRow', color: colors.tints.navRow),
                 AppGallerySwatch(

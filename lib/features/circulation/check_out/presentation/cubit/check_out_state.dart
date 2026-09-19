@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/error/app_exception.dart';
@@ -32,7 +32,7 @@ abstract class CheckOutState with _$CheckOutState {
 
   int get loanPeriodDays => rules?.loanPeriodDays ?? 0;
 
-  /// Open loans plus basket size — compared against [borrowingLimit].
+  /// Open loans plus basket size - compared against [borrowingLimit].
   int get copiesAfterCheckout => (member?.loansOut ?? 0) + basket.length;
 
   /// Whether confirming would exceed the member's borrowing limit.

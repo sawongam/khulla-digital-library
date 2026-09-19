@@ -27,7 +27,7 @@ class AppTableColumn<T> {
   });
 
   /// Stable key for this column, used to report sorting back to the caller.
-  /// Keep it the column's field name — `title`, `dueDate` — so the cubit can
+  /// Keep it the column's field name - `title`, `dueDate` - so the cubit can
   /// map it straight onto an ORDER BY without a translation table.
   final String id;
 
@@ -37,8 +37,8 @@ class AppTableColumn<T> {
   /// Builds the cell for one row.
   final Widget Function(BuildContext context, T item) cellBuilder;
 
-  /// Fixed width. Set it for columns whose content does not vary — a status
-  /// badge, a row-action button — and leave [flex] to the rest.
+  /// Fixed width. Set it for columns whose content does not vary - a status
+  /// badge, a row-action button - and leave [flex] to the rest.
   final double? width;
 
   /// Share of the leftover width, ignored when [width] is set.

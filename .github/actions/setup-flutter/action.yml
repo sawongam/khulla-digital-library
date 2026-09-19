@@ -19,7 +19,7 @@ inputs:
 runs:
   using: composite
   steps:
-    # .fvmrc is the single source of truth for the SDK version — CI must not
+    # .fvmrc is the single source of truth for the SDK version - CI must not
     # carry a second copy of it that can drift from what developers run.
     - name: Read the pinned Flutter version
       id: pinned
@@ -35,7 +35,7 @@ runs:
     # melos.yaml points sdkPath at .fvm/flutter_sdk, where FVM would have put
     # the SDK. The runner already has one, so link it rather than downloading a
     # second copy. Skipped on Windows, where Git Bash copies instead of linking
-    # — the Windows job builds with `flutter` directly and never calls melos.
+    # - the Windows job builds with `flutter` directly and never calls melos.
     - name: Point melos at the runner's SDK
       if: runner.os != 'Windows'
       shell: bash
@@ -78,7 +78,7 @@ runs:
       shell: bash
       run: flutter pub get
 
-    # Generated sources are not committed, so this is not optional — see the
+    # Generated sources are not committed, so this is not optional - see the
     # "Generated code" section of .gitignore. Same command as `make build`.
     - name: Generate code
       if: inputs.codegen == 'true'

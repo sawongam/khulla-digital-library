@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/guide/domain/guide_block.dart';
 import 'package:khulla_ui/khulla_ui.dart';
@@ -473,7 +473,7 @@ class _MockCards extends StatelessWidget {
   }
 }
 
-/// A surface inside the drawing — a card, a field, a table's box.
+/// A surface inside the drawing - a card, a field, a table's box.
 class _Panel extends StatelessWidget {
   const _Panel({required this.child, this.padding});
 

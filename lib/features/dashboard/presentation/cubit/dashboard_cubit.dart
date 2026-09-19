@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -11,7 +11,7 @@ import 'package:khulla/features/dashboard/presentation/cubit/dashboard_state.dar
 import 'package:khulla/features/dashboard/presentation/widgets/dashboard_header.dart';
 import 'package:khulla/shared/models/load_status.dart';
 
-/// One period's window, half-open — `[start, end)`.
+/// One period's window, half-open - `[start, end)`.
 typedef _Range = ({DateTime start, DateTime end});
 
 /// Loads the board's figures for a period, and reloads them when the
@@ -68,7 +68,7 @@ class DashboardCubit extends Cubit<DashboardState> {
     };
   }
 
-  /// The immediately preceding period of the same length — what a stat
+  /// The immediately preceding period of the same length - what a stat
   /// tile's trend compares against.
   _Range _previousRangeFor(_Range range) {
     final length = range.end.difference(range.start);

@@ -5,7 +5,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// {@template app_picker_field}
 /// A field that looks like [AppTextField] but opens something instead of
-/// taking keystrokes — a date picker, a member lookup, a shelf browser.
+/// taking keystrokes - a date picker, a member lookup, a shelf browser.
 ///
 /// It takes an already-formatted [value] string. Formatting a date or an
 /// amount is locale- and currency-dependent, and the design system does

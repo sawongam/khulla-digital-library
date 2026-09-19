@@ -1,11 +1,11 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 import 'package:khulla/core/database/converters/money_converter.dart';
 import 'package:khulla/core/money/money.dart';
 
-/// The library-wide lending policy — one row, for the whole file.
+/// The library-wide lending policy - one row, for the whole file.
 ///
 /// Member types may override individual columns; `NULL` there means inherit
 /// from here. Global-only knobs (`holdShelfDays`, overdue blocking, auto-renew)

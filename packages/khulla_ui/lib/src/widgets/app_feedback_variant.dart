@@ -10,10 +10,10 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// viewport, while the same message inside a dashboard card has one line to
 /// work with.
 enum AppFeedbackVariant {
-  /// Centered column with an icon — fills the space a collection would take.
+  /// Centered column with an icon - fills the space a collection would take.
   centered,
 
-  /// Left-aligned, no icon — sits inside a card that already has its own
+  /// Left-aligned, no icon - sits inside a card that already has its own
   /// chrome and cannot spare the vertical room.
   inline;
 
@@ -23,7 +23,7 @@ enum AppFeedbackVariant {
 
 /// Fills the parent and centers [child] for [AppFeedbackVariant.centered].
 ///
-/// Inline variants pass through unchanged — they sit inside a card that sizes
+/// Inline variants pass through unchanged - they sit inside a card that sizes
 /// to its content and has no spare vertical room to centre into.
 Widget wrapFeedbackVariant({
   required AppFeedbackVariant variant,

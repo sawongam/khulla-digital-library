@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:convert';
 import 'dart:typed_data';
@@ -16,7 +16,7 @@ import 'package:khulla/core/files/share_mobile_file.dart';
 /// share sheet instead.
 ///
 /// A field containing a comma, a quote or a newline is wrapped in quotes with
-/// its own quotes doubled — the one escaping rule CSV has. Returns null when
+/// its own quotes doubled - the one escaping rule CSV has. Returns null when
 /// the operator cancels the save dialog (or dismisses the sheet), the same
 /// as `saveTextFile`.
 Future<SavedTextFile?> saveCsvFile({

@@ -1,10 +1,10 @@
-; Khulla Digital Library — Inno Setup installer
+; Khulla Digital Library - Inno Setup installer
 ; Builds the familiar per-user installer that wraps the Flutter Windows release.
 ; Version is injected from CI via /DMyAppVersion=, with a local fallback.
 
 #define MyAppName "Khulla Digital Library"
 #define MyAppPublisher "Khulla Digital Library"
-#define MyAppURL "https://github.com/khulla-digital-library/khulla-digital-library"
+#define MyAppURL "https://github.com/sawongam/khulla-digital-library"
 #define MyAppExeName "khulla.exe"
 
 #ifndef MyAppVersion

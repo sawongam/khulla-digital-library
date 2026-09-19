@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// records built lazily beneath it.
 ///
 /// This is the form a catalogue uses. It returns a sliver, so it goes in a
-/// [CustomScrollView] alongside the page header and toolbar — never wrapped
+/// [CustomScrollView] alongside the page header and toolbar - never wrapped
 /// in a box, and never as a `shrinkWrap` list inside another scrollable,
 /// which would build all ten thousand rows before the first frame.
 ///
@@ -55,7 +55,7 @@ class AppSliverTable<T> extends StatelessWidget {
   final ValueChanged<AppTableSort>? onSort;
 
   /// Renders one record as a card on a compact window. When set, the header
-  /// is dropped there too — a card list has no columns to label.
+  /// is dropped there too - a card list has no columns to label.
   final Widget Function(BuildContext context, T item)? compactBuilder;
 
   /// Height of the heading row. Null resolves to the density's.

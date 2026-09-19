@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
@@ -72,13 +72,13 @@ class CopyRepositoryImpl implements CopyRepository {
     }
     if (existing.status == CopyStatus.onLoan) {
       throw const ConflictException(
-        'That copy is on loan — return it at the desk first.',
+        'That copy is on loan - return it at the desk first.',
       );
     }
     if (existing.status == CopyStatus.reserved &&
         status != CopyStatus.reserved) {
       throw const ConflictException(
-        'That copy is reserved for a hold — cancel or fulfil the hold first.',
+        'That copy is reserved for a hold - cancel or fulfil the hold first.',
       );
     }
     return await _dataSource.updateCopy(

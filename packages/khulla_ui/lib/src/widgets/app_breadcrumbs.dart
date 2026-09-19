@@ -11,7 +11,7 @@ class AppBreadcrumb {
   final String label;
 
   /// Where the step goes. The last crumb is the current page and carries no
-  /// callback — a breadcrumb that navigates to where you already are is a
+  /// callback - a breadcrumb that navigates to where you already are is a
   /// dead control that looks live.
   final VoidCallback? onTap;
 }

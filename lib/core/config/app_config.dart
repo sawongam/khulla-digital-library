@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/config/flavor.dart';
 
@@ -9,7 +9,7 @@ import 'package:khulla/core/config/flavor.dart';
 /// service locator so the database and other services can depend on it.
 ///
 /// Khulla stores its data on the device, so a flavor mostly decides *which*
-/// database file the app opens — running the dev build must never touch a
+/// database file the app opens - running the dev build must never touch a
 /// real library's catalogue.
 class AppConfig {
   const AppConfig({

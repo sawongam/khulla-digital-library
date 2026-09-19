@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -38,7 +38,7 @@ class StaffListCubit extends Cubit<StaffListState> {
   }
 
   /// Enables or disables [id]. Rethrows so the row menu can show the failure
-  /// as a toast — the lockout and self-disable rules live in the repository,
+  /// as a toast - the lockout and self-disable rules live in the repository,
   /// not here, so there is exactly one place that enforces them.
   Future<void> setStatus(String id, UserStatus status) async {
     final acting = actingStaffId;

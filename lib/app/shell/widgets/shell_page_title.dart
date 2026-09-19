@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/app/shell/widgets/shell_destinations.dart';
 import 'package:khulla/core/router/routes.dart';
@@ -40,7 +40,7 @@ ShellPageTitle shellPageTitle(
 }) {
   final destinations = shellDestinations(l10n, role);
 
-  // The manual is no rail destination — it opens from the account menu —
+  // The manual is no rail destination - it opens from the account menu -
   // so neither its landing page nor its articles match the loop below.
   // The articles are a topic enum rather than declared children, so they
   // are resolved here instead.

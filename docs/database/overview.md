@@ -1,6 +1,6 @@
 # How the database works in Khulla
 
-A walkthrough of every database file — what it does, why it is there, and how it all connects. For the day-to-day workflow (adding tables, writing queries, running migrations), see [guide.md](guide.md); for the visual schema, see [schema.md](schema.md).
+A walkthrough of every database file - what it does, why it is there, and how it all connects. For the day-to-day workflow (adding tables, writing queries, running migrations), see [guide.md](guide.md); for the visual schema, see [schema.md](schema.md).
 
 ---
 
@@ -12,7 +12,7 @@ The project uses **Drift**, a type-safe SQLite layer for Dart. It:
 - Runs SQLite on a **background isolate** (on native) so DB queries never freeze the UI
 - Runs SQLite compiled to **WebAssembly** (on web) stored in the browser
 
-The database is **fully local** — no backend server. Everything lives on the device. That's why it's called a "catalogue": it's a local library catalogue.
+The database is **fully local** - no backend server. Everything lives on the device. That's why it's called a "catalogue": it's a local library catalogue.
 
 ---
 
@@ -56,7 +56,7 @@ Widget / Cubit
 
 ---
 
-### 1. `lib/core/config/app_config.dart` — "Which database file do we use?"
+### 1. `lib/core/config/app_config.dart` - "Which database file do we use?"
 
 ```dart
 class AppConfig {
@@ -87,7 +87,7 @@ The `databaseName` flows all the way down into where the file is created on disk
 
 ---
 
-### 2. `lib/core/database/database_platform.dart` — "Choose the right platform implementation"
+### 2. `lib/core/database/database_platform.dart` - "Choose the right platform implementation"
 
 ```dart
 export 'database_platform_web.dart'
@@ -103,7 +103,7 @@ That's it. This is the only place in the whole data layer that branches on platf
 
 ---
 
-### 3. `lib/core/database/database_platform_io.dart` — "Native: where is the file? How is it configured?"
+### 3. `lib/core/database/database_platform_io.dart` - "Native: where is the file? How is it configured?"
 
 ```dart
 // Resolves the absolute path to the .sqlite file on disk
@@ -121,7 +121,7 @@ Future<String> resolveDatabasePath(String name) async {
 ```
 
 **Why Application Support and not Documents?**
-Application Support is where apps store their own managed data — the user isn't meant to browse it. Documents is what shows up in Files/Finder. A library catalogue isn't something the librarian should manually move around.
+Application Support is where apps store their own managed data - the user isn't meant to browse it. Documents is what shows up in Files/Finder. A library catalogue isn't something the librarian should manually move around.
 
 ```dart
 // Runs on every new SQLite connection, inside the background isolate
@@ -133,17 +133,17 @@ void configureNativeConnection(CommonDatabase database) {
     // e.g. exporting catalogue while a checkout is happening.
   } on SqliteException catch (error) {
     // If the filesystem doesn't support WAL (e.g. a network share),
-    // just log a warning and continue — don't crash.
+    // just log a warning and continue - don't crash.
     AppLogger.warn('Could not enable write-ahead logging...');
   }
 }
 ```
 
-**What is WAL?** Without WAL, a write locks the entire file — nobody can read while someone is writing. With WAL, reads and writes happen simultaneously. Crucial for a library app that might be exporting a catalogue while checking out a book.
+**What is WAL?** Without WAL, a write locks the entire file - nobody can read while someone is writing. With WAL, reads and writes happen simultaneously. Crucial for a library app that might be exporting a catalogue while checking out a book.
 
 ---
 
-### 4. `lib/core/database/database_platform_web.dart` — "Web: stubs"
+### 4. `lib/core/database/database_platform_web.dart` - "Web: stubs"
 
 ```dart
 // On web there's no file system, so this throws if ever called
@@ -161,7 +161,7 @@ On web, Drift handles storage via the browser (OPFS or IndexedDB). No file path 
 
 ---
 
-### 5. `lib/core/database/connection.dart` — "Build the actual database connection"
+### 5. `lib/core/database/connection.dart` - "Build the actual database connection"
 
 This is where all the pieces from the platform files come together into a real `DatabaseConnection` object.
 
@@ -187,7 +187,7 @@ DatabaseConnection openDatabaseConnection(AppConfig config) => driftDatabase(
 );
 ```
 
-**Why is this lazy?** The connection is *described* here but nothing actually opens. The file isn't touched until the first SQL statement runs. That's intentional — `bootstrap` forces the open with `warmUp()` so failures happen at a predictable time (startup) not mid-use.
+**Why is this lazy?** The connection is _described_ here but nothing actually opens. The file isn't touched until the first SQL statement runs. That's intentional - `bootstrap` forces the open with `warmUp()` so failures happen at a predictable time (startup) not mid-use.
 
 ```dart
 void _reportWebStorage(WasmDatabaseResult result) {
@@ -211,7 +211,7 @@ void _reportWebStorage(WasmDatabaseResult result) {
 
 ---
 
-### 6. `lib/core/database/app_database.dart` — "The main database class"
+### 6. `lib/core/database/app_database.dart` - "The main database class"
 
 This is the heart of it all. Let's go line by line.
 
@@ -224,7 +224,7 @@ This is the heart of it all. Let's go line by line.
     Members, Loans, Fines, Reservations,
   ],
   include: {
-    // FTS5 search indexes — virtual tables can only be declared in SQL.
+    // FTS5 search indexes - virtual tables can only be declared in SQL.
     'package:khulla/features/catalog/title/data/tables/titles_fts.drift',
     'package:khulla/features/members/data/tables/members_fts.drift',
   },
@@ -243,7 +243,7 @@ class AppDatabase extends _$AppDatabase {
 
 ```dart
   // Bumped by 1 for every schema change (table added, column added, etc.).
-  // Currently at 13 — drift_schemas/ records what each version looked like.
+  // Currently at 13 - drift_schemas/ records what each version looked like.
   @override
   int get schemaVersion => 13;
 ```
@@ -260,7 +260,7 @@ class AppDatabase extends _$AppDatabase {
 
     // Called EVERY TIME the database opens, before any query runs
     beforeOpen: (_) async {
-      // SQLite foreign keys are OFF by default — always, on every connection.
+      // SQLite foreign keys are OFF by default - always, on every connection.
       // Without this: deleting a member with active loans would silently
       // orphan those loan records instead of throwing an error.
       await customStatement('PRAGMA foreign_keys = ON');
@@ -271,10 +271,10 @@ class AppDatabase extends _$AppDatabase {
 ```dart
   // Forces the lazy connection to actually open the file RIGHT NOW.
   // bootstrap() calls this so that if the file is locked, corrupted, or
-  // from a newer build — we find out BEFORE the first screen renders,
+  // from a newer build - we find out BEFORE the first screen renders,
   // not when a librarian tries to check out a book.
   Future<void> warmUp() => customSelect('SELECT 1').get();
-  // "SELECT 1" is the simplest possible query — it just wakes up the connection.
+  // "SELECT 1" is the simplest possible query - it just wakes up the connection.
 ```
 
 ```dart
@@ -308,7 +308,7 @@ class AppDatabase extends _$AppDatabase {
       );
     }
 
-    // One fromNToM: step per shipped version bump — see app_database.dart
+    // One fromNToM: step per shipped version bump - see app_database.dart
     // for the full list, and guide.md for how to add the next one.
     // await stepByStep(from1To2: (m, schema) async { ... })(m, from, to);
     //
@@ -322,7 +322,7 @@ class AppDatabase extends _$AppDatabase {
 
 ---
 
-### 7. `lib/core/database/app_database.g.dart` — "Auto-generated code"
+### 7. `lib/core/database/app_database.g.dart` - "Auto-generated code"
 
 **Never edit this file manually.** It's generated by running `dart run build_runner build`.
 
@@ -352,7 +352,7 @@ Each registered table grows this file with a `$TitlesTable` column class, a
 
 ---
 
-### 8. `lib/core/database/converters/money_converter.dart` — "How money is stored"
+### 8. `lib/core/database/converters/money_converter.dart` - "How money is stored"
 
 ```dart
 class MoneyConverter extends TypeConverter<Money, int> {
@@ -371,6 +371,7 @@ class MoneyConverter extends TypeConverter<Money, int> {
 ```
 
 **How you use it on a table column:**
+
 ```dart
 class Fines extends Table {
   IntColumn get amount => integer().map(const MoneyConverter())();
@@ -386,7 +387,7 @@ Floating point math is imprecise. `2.99 + 1.01` might give `3.9999999999` in flo
 
 ---
 
-### 9. `lib/core/error/guard.dart` — "Safe database calls"
+### 9. `lib/core/error/guard.dart` - "Safe database calls"
 
 Every data source method wraps itself in `guardDatabase()`:
 
@@ -411,7 +412,7 @@ Future<T> guardDatabase<T>(Future<T> Function() action, {String? source}) async 
     return await action();
 
   } on AppException {
-    rethrow; // Already classified — pass it through unchanged
+    rethrow; // Already classified - pass it through unchanged
 
   } on DriftRemoteException catch (error, stackTrace) {
     // On native, the DB runs on a background ISOLATE.
@@ -427,23 +428,23 @@ Future<T> guardDatabase<T>(Future<T> Function() action, {String? source}) async 
 
 The `_classify()` function maps raw SQLite errors to friendly `AppException` types:
 
-| SQLite Error | AppException | What it means |
-|---|---|---|
-| `SQLITE_CONSTRAINT_UNIQUE` | `DuplicateRecordException` | "That ISBN already exists" |
-| `SQLITE_CONSTRAINT_FOREIGNKEY` | `ConflictException` | "Record still referenced" |
-| `SQLITE_CONSTRAINT_NOTNULL` | `InvalidInputException` | "Missing required field" |
-| `SQLITE_BUSY` / `SQLITE_LOCKED` | `DatabaseUnavailableException` | "DB in use by another process" |
-| `SQLITE_CORRUPT` | `DatabaseUnavailableException` | "Database file is damaged" |
-| `InvalidDataException` (Drift) | `InvalidInputException` | "Row rejected before hitting SQLite" |
-| Unrecognized driver code | `DatabaseFailureException` | "Something went wrong with the database" |
-| Non-database failure | `UnknownException` | "Something went wrong" |
+| SQLite Error                    | AppException                   | What it means                            |
+| ------------------------------- | ------------------------------ | ---------------------------------------- |
+| `SQLITE_CONSTRAINT_UNIQUE`      | `DuplicateRecordException`     | "That ISBN already exists"               |
+| `SQLITE_CONSTRAINT_FOREIGNKEY`  | `ConflictException`            | "Record still referenced"                |
+| `SQLITE_CONSTRAINT_NOTNULL`     | `InvalidInputException`        | "Missing required field"                 |
+| `SQLITE_BUSY` / `SQLITE_LOCKED` | `DatabaseUnavailableException` | "DB in use by another process"           |
+| `SQLITE_CORRUPT`                | `DatabaseUnavailableException` | "Database file is damaged"               |
+| `InvalidDataException` (Drift)  | `InvalidInputException`        | "Row rejected before hitting SQLite"     |
+| Unrecognized driver code        | `DatabaseFailureException`     | "Something went wrong with the database" |
+| Non-database failure            | `UnknownException`             | "Something went wrong"                   |
 
 **Why does this matter?**
 Cubits (your BLoC layer) only ever need to catch `AppException`. They never need to know about SQLite error codes or isolate boundaries. Clean separation of concerns.
 
 ---
 
-### 10. `lib/bootstrap.dart` — "The full startup sequence"
+### 10. `lib/bootstrap.dart` - "The full startup sequence"
 
 ```dart
 Future<void> bootstrap(AppConfig config) async {
@@ -521,6 +522,7 @@ class AppDatabase extends _$AppDatabase {
 ```
 
 **How to access the database anywhere:**
+
 ```dart
 // Option 1: via GetIt (for top-level use)
 final db = getIt<AppDatabase>();
@@ -542,8 +544,8 @@ class LocalTitleDataSource implements TitleLocalDataSource {
 
 ## How to add a table
 
-Tables live with the sub-feature that owns them — for example
-`features/catalog/title/data/tables/titles.dart` — and are registered in
+Tables live with the sub-feature that owns them - for example
+`features/catalog/title/data/tables/titles.dart` - and are registered in
 `@DriftDatabase(tables: [...])` in `app_database.dart`. The full workflow
 (defining the table, bumping `schemaVersion`, `make migrate`, filling in the
 step, `make build`, `make db-diagram`) is in [guide.md](guide.md).
@@ -591,7 +593,7 @@ Feature Data Sources
 
 ## Current schema
 
-The visual schema lives in [`schema.md`](schema.md) — a Mermaid ER diagram
+The visual schema lives in [`schema.md`](schema.md) - a Mermaid ER diagram
 generated from the latest drift snapshot. Regenerate it with
 `make db-diagram` after `make migrate` / `make build`.
 

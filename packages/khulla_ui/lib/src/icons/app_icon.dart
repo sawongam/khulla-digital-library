@@ -8,7 +8,7 @@ import 'package:solar_iconkit/solar_iconkit.dart';
 /// Renders an [AppIconSpec].
 ///
 /// This is the app's only icon widget. It is a thin wrapper over `SolarIcon`
-/// that always draws in the spec's weight — the app uses one. A call site
+/// that always draws in the spec's weight - the app uses one. A call site
 /// names *which* icon and nothing else; selection and active state are
 /// carried by [color], never by a heavier glyph. See `AppIcons`.
 ///
@@ -37,11 +37,11 @@ class AppIcon extends StatelessWidget {
   final Color? color;
 
   /// Read aloud by a screen reader. Leave null for a decorative icon that sits
-  /// beside its own label — the label is already announced.
+  /// beside its own label - the label is already announced.
   final String? semanticLabel;
 
   /// Mirror the glyph in a right-to-left locale. True for the directional
-  /// icons — chevrons, arrows, the back button — false for everything else.
+  /// icons - chevrons, arrows, the back button - false for everything else.
   final bool matchTextDirection;
 
   @override

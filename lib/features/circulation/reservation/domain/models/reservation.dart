@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/format/app_date_format.dart';
@@ -7,7 +7,7 @@ import 'package:khulla/features/circulation/shared/domain/reservation_status.dar
 
 part 'reservation.freezed.dart';
 
-/// One hold on a title — any copy can satisfy it.
+/// One hold on a title - any copy can satisfy it.
 @freezed
 abstract class Reservation with _$Reservation {
   const factory Reservation({

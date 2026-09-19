@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:math';
 
@@ -14,7 +14,7 @@ const int kCollectionPageSizeCompact = 30;
 /// How many table body rows to fetch for [tableBodyHeight].
 ///
 /// [tableBodyHeight] is the height of the scroll viewport in a collection
-/// list page — the [Expanded] slot on a desk window, not the full screen.
+/// list page - the [Expanded] slot on a desk window, not the full screen.
 /// The pinned header row is subtracted before dividing by row height.
 ///
 /// Rounds up so the last page of rows fills the viewport; rounding down leaves

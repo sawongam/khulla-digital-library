@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
@@ -26,7 +26,7 @@ class SavedReport {
   /// The tile's tone.
   final AppStatusTone tone;
 
-  /// What a tap on this report exports — carried on the entry itself so the
+  /// What a tap on this report exports - carried on the entry itself so the
   /// list and its export kinds cannot become index-misaligned.
   final ReportsExportKind kind;
 }

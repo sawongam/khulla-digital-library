@@ -5,7 +5,11 @@ name: Deploy web demo
 # browser's own storage, so every visitor gets their own empty library and
 # clearing site data wipes it.
 #
-# One-time setup: repository Settings → Pages → Source: "GitHub Actions".
+# One-time setup: repository Settings → Pages → Source: "GitHub Actions", and
+# Custom domain: app.khulladigitallibrary.com (with a CNAME record for `app`
+# pointing at <owner>.github.io). The public website is separate: its own
+# repository, khulla-digital-library-website, deployed by Cloudflare Pages to
+# khulladigitallibrary.com.
 on:
   push:
     branches: [prod]
@@ -32,22 +36,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/configure-pages@v5
+      - id: pages
+        uses: actions/configure-pages@v5
 
       - uses: ./.github/actions/setup-flutter
         with:
           bootstrap: pub
 
-      # Pages serves a project site from /<repo>/, so the build needs a base
-      # href to match. Routing uses the hash strategy (/#/catalog), which
-      # deep-links correctly on Pages with no rewrite rules — path URLs would
-      # need a server-side rewrite this host cannot do. See
+      # The base href follows wherever Pages serves the site: /<repo>/ on
+      # <owner>.github.io, or / once a custom domain is set in the repository's
+      # Pages settings (app.khulladigitallibrary.com). configure-pages reports
+      # that path, so switching domains needs no edit here - only a re-run.
+      # Routing uses the hash strategy (/#/catalog), which deep-links correctly
+      # on Pages with no rewrite rules - path URLs would need a server-side
+      # rewrite this host cannot do. See
       # docs/architecture/decisions/0005-gorouter-for-navigation.md.
       - name: Build
         run: |
           flutter build web --release \
             -t lib/main_prod.dart \
-            --base-href "/${{ github.event.repository.name }}/"
+            --base-href "${{ steps.pages.outputs.base_path }}/"
 
       - uses: actions/upload-pages-artifact@v3
         with:

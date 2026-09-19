@@ -3,7 +3,7 @@
 
 /// Bundled font family names registered in `khulla_ui` `pubspec.yaml`.
 abstract final class AppFonts {
-  /// [Poppins](https://fonts.google.com/specimen/Poppins) — bundled under
+  /// [Poppins](https://fonts.google.com/specimen/Poppins) - bundled under
   /// `packages/khulla_ui/assets/fonts/Poppins/`.
   ///
   /// Package fonts are registered as `packages/<package>/<family>` in the

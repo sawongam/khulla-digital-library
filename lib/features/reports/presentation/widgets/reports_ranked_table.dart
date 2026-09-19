@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
@@ -7,7 +7,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// One row of a ranked report table.
 typedef ReportsRankedRow = ({String name, String detail, int loans});
 
-/// A ranked report table — most borrowed titles, most active members.
+/// A ranked report table - most borrowed titles, most active members.
 ///
 /// The share bar beside each row is what makes it a report rather than a
 /// list: a title with 128 loans means nothing until you can see it is a
@@ -22,7 +22,7 @@ class ReportsRankedTable extends StatelessWidget {
   /// The rows, best first.
   final List<ReportsRankedRow> rows;
 
-  /// What the first column counts — a title, a member.
+  /// What the first column counts - a title, a member.
   final String nameLabel;
 
   @override

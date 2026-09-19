@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/catalog/copy/domain/models/copy.dart';
 import 'package:khulla/features/catalog/copy/presentation/widgets/copy_status_badge.dart';
@@ -7,7 +7,7 @@ import 'package:khulla/features/catalog/shared/domain/copy_status.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// One copy on a title's detail screen — barcode, shelf, notes, standing, and
+/// One copy on a title's detail screen - barcode, shelf, notes, standing, and
 /// who has it when it is out.
 ///
 /// A table with a "With" column full of dashes was worse than a short row
@@ -26,7 +26,7 @@ class TitleCopyRow extends StatelessWidget {
   final Copy copy;
 
   /// Per-copy maintenance. All three are null for a role that may read the
-  /// catalogue but not change it, and the row then draws no menu at all —
+  /// catalogue but not change it, and the row then draws no menu at all -
   /// a menu whose every entry is disabled is worse than no menu.
   final VoidCallback? onMarkLost;
   final VoidCallback? onMarkDamaged;

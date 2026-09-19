@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// controls lines up.
 ///
 /// Generic over the value so a caller keeps its own enum or domain type all
-/// the way to `onChanged` — no string round trip, no parsing back. [itemLabel]
+/// the way to `onChanged` - no string round trip, no parsing back. [itemLabel]
 /// is how a value becomes text, which keeps localization on the app side.
 ///
 /// Long lists open in a capped panel: a fixed search header when
@@ -17,7 +17,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// when they would overflow [menuMaxHeight]. Overflowing lists keep a
 /// scrollbar thumb visible so the extra rows are obvious without dragging.
 ///
-/// [footerActionLabel] pins a create action under the list — the caller
+/// [footerActionLabel] pins a create action under the list - the caller
 /// supplies the copy and what happens; this widget only closes the menu and
 /// fires [onFooterAction].
 /// {@endtemplate}
@@ -83,7 +83,7 @@ class AppDropdownField<T> extends StatelessWidget {
   /// Whether the control accepts input.
   final bool enabled;
 
-  /// Optional per-choice glyph — a status dot, a format icon.
+  /// Optional per-choice glyph - a status dot, a format icon.
   final AppIconSpec? Function(T value)? itemIcon;
 
   /// Whether the menu carries a fixed search header. Defaults to true once

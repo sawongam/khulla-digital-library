@@ -9,7 +9,7 @@ import 'package:khulla_ui/src/widgets/app_content_constraint.dart';
 
 /// Standard scaffold body: [SafeArea] plus optional [AppContentConstraint].
 ///
-/// Pass `wide: true` for dense content — a table, the dashboard — so it caps
+/// Pass `wide: true` for dense content - a table, the dashboard - so it caps
 /// at [AppBreakpoints.wideContentMaxWidth] instead of the reading width.
 class AppPageBody extends StatelessWidget {
   /// {@macro app_page_body}
@@ -43,7 +43,7 @@ class AppPageBody extends StatelessWidget {
   /// When true, wraps [child] in [AppContentConstraint].
   final bool constrained;
 
-  /// When true, the content cap is the wide one — for a table, a board, or
+  /// When true, the content cap is the wide one - for a table, a board, or
   /// the dashboard, which use the room a desktop window gives them. Ignored
   /// unless [constrained] is true.
   final bool wide;
@@ -57,7 +57,7 @@ class AppPageBody extends StatelessWidget {
   /// Standard page padding for full-height form screens.
   ///
   /// Set [includeViewInsets] only when the parent scaffold keeps
-  /// `resizeToAvoidBottomInset: false` — otherwise the scaffold already
+  /// `resizeToAvoidBottomInset: false` - otherwise the scaffold already
   /// accounts for the soft keyboard and adding it again double-counts.
   static EdgeInsets pagePadding(
     BuildContext context, {

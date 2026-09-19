@@ -3,7 +3,7 @@
 
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// A column chart for a bounded run of periods — a week of check-ins, eight
+/// A column chart for a bounded run of periods - a week of check-ins, eight
 /// months of revenue, six categories of stock.
 ///
 /// Painted rather than pulled from a charting package: everything this
@@ -11,7 +11,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// a dependency that ships pan, zoom, tooltips and its own theme costs more
 /// to keep matching the design system than the painter costs to own.
 ///
-/// Multiple series are grouped side by side per period, not stacked — a
+/// Multiple series are grouped side by side per period, not stacked - a
 /// stacked bar answers "how much in total" and every question this app asks
 /// is "how do these two compare".
 class AppBarChart extends StatelessWidget {
@@ -41,7 +41,7 @@ class AppBarChart extends StatelessWidget {
   /// axis labels entirely, which is the right call inside a small tile.
   final String? maxValueLabel;
 
-  /// The period to emphasise — today, the month being explained. Every other
+  /// The period to emphasise - today, the month being explained. Every other
   /// bar is dimmed rather than the highlight being brightened, so the chart
   /// keeps one accent instead of gaining a second.
   final int? highlightIndex;

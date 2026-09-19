@@ -7,7 +7,7 @@ import 'package:khulla_ui/src/theme/app_palette.dart';
 /// Semantic colors Material's [ColorScheme] has no role for.
 ///
 /// Three groups live here. The **ink ramp** (`ink100`…`ink600`) is the text
-/// scale, and it inverts with the theme — `ink100` is the darkest ink in
+/// scale, and it inverts with the theme - `ink100` is the darkest ink in
 /// light mode and the lightest in dark. The **status** colors carry meaning
 /// (`success`, `warning`, `info`, `danger`), each with the ink, the ink's
 /// contrast for a solid fill, and the wash a badge sits on. The **surface**
@@ -15,7 +15,7 @@ import 'package:khulla_ui/src/theme/app_palette.dart';
 /// builds depth out of 1px rules and low-alpha tints, not out of elevation.
 ///
 /// Every hover, active, selected and zebra surface in the product is an alpha
-/// tint of one of these — read them from [tints] rather than inventing an
+/// tint of one of these - read them from [tints] rather than inventing an
 /// alpha at a call site, or the table stops matching the navigation rail.
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
@@ -56,7 +56,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.onPaper,
   });
 
-  /// The light palette — the shipped theme.
+  /// The light palette - the shipped theme.
   ///
   /// [brand] is the only variable: everything else is fixed, so an operator
   /// picking a different brand moves the five brand roles and nothing else.
@@ -141,7 +141,7 @@ class AppColors extends ThemeExtension<AppColors> {
   /// The one saturated hue in the chrome: primary action, active navigation, focus ring, required marker.
   final Color brand;
 
-  /// The tint source. Never painted at full strength — every hover, active and selected surface is this color at 3–30% alpha.
+  /// The tint source. Never painted at full strength - every hover, active and selected surface is this color at 3–30% alpha.
   final Color accent;
 
   /// Primary text. Sits above `onSurface` for a page title or a figure.
@@ -213,7 +213,7 @@ class AppColors extends ThemeExtension<AppColors> {
   /// The wash an inert badge or a muted icon chip sits on.
   final Color neutralSoft;
 
-  /// The wash behind an active navigation row or a brand icon chip — [accent] at 20%.
+  /// The wash behind an active navigation row or a brand icon chip - [accent] at 20%.
   final Color brandSoft;
 
   /// Hovered / pressed brand.
@@ -383,7 +383,7 @@ class AppColors extends ThemeExtension<AppColors> {
 ///
 /// Reproduced as alpha over whatever surface is underneath, never as a
 /// pre-mixed opaque color: pre-mixing against white drifts the moment the
-/// surface below changes — inside a dialog, on a zebra row, in dark mode.
+/// surface below changes - inside a dialog, on a zebra row, in dark mode.
 extension type AppTints(AppColors _c) {
   /// Navigation row, hovered *and* active. One tint carries both states.
   Color get navRow => _c.accent.withValues(alpha: 0.2);
@@ -397,7 +397,7 @@ extension type AppTints(AppColors _c) {
   /// A hovered table row.
   Color get rowHover => _c.muted.withValues(alpha: 0.5);
 
-  /// A row the app is pointing the operator at — a just-created record.
+  /// A row the app is pointing the operator at - a just-created record.
   Color get rowHighlight => _c.brand.withValues(alpha: 0.1);
 
   /// The table header fill.

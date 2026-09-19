@@ -1,4 +1,4 @@
-# ADR 0025 — `freezed` state patterns
+# ADR 0025 - `freezed` state patterns
 
 **Status:** Accepted · **Date:** 2026-09-03
 
@@ -12,13 +12,13 @@ Writing these by hand is boilerplate-heavy and error-prone. A hand-written `copy
 
 ### Why not a sealed union
 
-Sealed unions (`@freezed class S { const factory S.initial() = _Initial; const factory S.loaded({…}) = _Loaded; … }`) fit state machines where each state is genuinely structurally different — a loading state that has no data and a loaded state that has data, with no overlap between variants.
+Sealed unions (`@freezed class S { const factory S.initial() = _Initial; const factory S.loaded({…}) = _Loaded; … }`) fit state machines where each state is genuinely structurally different - a loading state that has no data and a loaded state that has data, with no overlap between variants.
 
 Most states in this app are not like that. A form state transitions through `initial → loading → loaded/error` but carries `formz` inputs at every step. If the inputs lived only on the `loaded` variant, the cubit would have to copy them out before emitting `loading` and restore them after. That is manual field forwarding that `copyWith` exists to prevent. A sealed union forces you to redeclare every shared field in every variant, which is exactly the duplication the single-class shape avoids.
 
 ## Decision
 
-All cubit states are **single-class `freezed` types** — one `const factory`, all fields in one place, `copyWith` across all of them.
+All cubit states are **single-class `freezed` types** - one `const factory`, all fields in one place, `copyWith` across all of them.
 
 ### Canonical shape
 
@@ -51,14 +51,14 @@ Every field has a default. The state can be constructed with `const TitleFormSta
 ```dart
 @freezed
 abstract class CatalogState with _$CatalogState {
-  // 1. unnamed const factory — sort_unnamed_constructors_first is satisfied
+  // 1. unnamed const factory - sort_unnamed_constructors_first is satisfied
   const factory CatalogState({
     @Default(LoadStatus.initial) LoadStatus status,
     @Default(<Title>[])          List<Title> titles,
     AppException?                error,
   }) = _CatalogState;
 
-  // 2. private constructor — required for getters/methods below
+  // 2. private constructor - required for getters/methods below
   const CatalogState._();
 
   bool get isLoading => status.isLoading;
@@ -74,27 +74,27 @@ An `// ignore: sort_unnamed_constructors_first` would suppress the lint but requ
 `freezed`'s generated `copyWith` preserves fields that are not passed. To **clear** a nullable field, pass it explicitly:
 
 ```dart
-// Clears the error — correct
+// Clears the error - correct
 emit(state.copyWith(status: LoadStatus.loading, error: null));
 
-// Does NOT clear the error — error keeps its current value
+// Does NOT clear the error - error keeps its current value
 emit(state.copyWith(status: LoadStatus.loading));
 ```
 
 This is the source of the `error: null` convention: every `copyWith` that sets status to `initial`, `loading`, or `loaded` also passes `error: null`. A failure passes the error. Everything else leaves it alone so a visible error is not silently wiped by an unrelated state transition.
 
-**Never add `clearX` boolean parameters.** A `clearError: true` workaround for this behaviour is a pattern that `copyWith` already handles — it just requires passing `error: null` explicitly. Extra boolean parameters on the state or the cubit method add API surface for a problem that has no solution at all.
+**Never add `clearX` boolean parameters.** A `clearError: true` workaround for this behaviour is a pattern that `copyWith` already handles - it just requires passing `error: null` explicitly. Extra boolean parameters on the state or the cubit method add API surface for a problem that has no solution at all.
 
 ### `@Default` for collection fields
 
-`@Default(<Title>[])` initializes a list field to an empty list. The angle-bracket type annotation is required — `@Default([])` is inferred as `List<dynamic>`. More importantly, `@Default([Title('some', 'value')])` does **not** compile: constant collection literals containing non-`const` values are not valid `const` expressions, and `@Default` requires a compile-time constant. Initial collection data is seeded by the cubit, not the state constructor:
+`@Default(<Title>[])` initializes a list field to an empty list. The angle-bracket type annotation is required - `@Default([])` is inferred as `List<dynamic>`. More importantly, `@Default([Title('some', 'value')])` does **not** compile: constant collection literals containing non-`const` values are not valid `const` expressions, and `@Default` requires a compile-time constant. Initial collection data is seeded by the cubit, not the state constructor:
 
 ```dart
 // In the cubit
 emit(state.copyWith(titles: loadedTitles));  // seeded after the query
 
 // Not in the state
-// @Default([Title(id: '…', name: '…')]) — does not compile
+// @Default([Title(id: '…', name: '…')]) - does not compile
 ```
 
 ### Getters that expose derived booleans
@@ -107,7 +107,7 @@ bool get hasError  => status.hasError;
 bool get isEmpty   => status.isLoaded && items.isEmpty;
 ```
 
-`isLoaded` is intentionally not exposed as a getter. A widget that checks `state.isLoaded` is usually about to check `state.isEmpty` or `state.hasError` separately — expose the meaningful combinations, not the raw enum value. A widget that needs `isLoaded` for a reason not covered by the three getters is a signal that a fourth getter is warranted, with a name that describes what the UI is deciding.
+`isLoaded` is intentionally not exposed as a getter. A widget that checks `state.isLoaded` is usually about to check `state.isEmpty` or `state.hasError` separately - expose the meaningful combinations, not the raw enum value. A widget that needs `isLoaded` for a reason not covered by the three getters is a signal that a fourth getter is warranted, with a name that describes what the UI is deciding.
 
 Form states expose `isValid` (delegates to `Formz.validate`) and `isSubmitting` (delegates to `FormzSubmissionStatus`). The naming mirrors the UI decision: "can I submit?" and "am I already submitting?", not "what is the raw status enum value?".
 
@@ -133,6 +133,6 @@ Form states expose `isValid` (delegates to `Formz.validate`) and `isSubmitting` 
 
 ## Revisiting
 
-The trigger to consider sealed unions for a specific state is a feature whose states are genuinely structurally different — a state machine where the `loading` variant truly carries no data and the `loaded` variant carries none of the `loading` variant's fields. An import flow with a multi-step preview-confirm-rollback structure might qualify. A single-feature switch to a sealed union does not affect any other state in the app.
+The trigger to consider sealed unions for a specific state is a feature whose states are genuinely structurally different - a state machine where the `loading` variant truly carries no data and the `loaded` variant carries none of the `loading` variant's fields. An import flow with a multi-step preview-confirm-rollback structure might qualify. A single-feature switch to a sealed union does not affect any other state in the app.
 
-The trigger to replace `freezed` is a Dart language feature that generates `copyWith`, `==` and `hashCode` natively — a `@value` annotation or a sealed data class syntax. Until that lands, `freezed` is the standard and the generated code is reliable enough that the `*.freezed.dart` files are never hand-edited.
+The trigger to replace `freezed` is a Dart language feature that generates `copyWith`, `==` and `hashCode` natively - a `@value` annotation or a sealed data class syntax. Until that lands, `freezed` is the standard and the generated code is reliable enough that the `*.freezed.dart` files are never hand-edited.

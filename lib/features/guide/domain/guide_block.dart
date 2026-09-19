@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla_ui/khulla_ui.dart';
 
@@ -68,7 +68,7 @@ class GuideCallout extends GuideBlock {
   });
 
   /// How loudly it reads. [AppStatusTone.danger] is reserved for the things
-  /// that lose records — restoring over a catalogue, resetting the database.
+  /// that lose records - restoring over a catalogue, resetting the database.
   final AppStatusTone tone;
 
   /// The one-line point.
@@ -83,8 +83,8 @@ class GuideCallout extends GuideBlock {
 
 /// A vocabulary list: the words a screen uses and what they mean here.
 ///
-/// Most of what confuses a new operator is not a button, it is a word — a
-/// *title* is not a *copy*, a *hold* is not a *loan* — so the terms get a
+/// Most of what confuses a new operator is not a button, it is a word - a
+/// *title* is not a *copy*, a *hold* is not a *loan* - so the terms get a
 /// block of their own rather than a parenthesis inside a paragraph.
 class GuideTerms extends GuideBlock {
   const GuideTerms(this.terms);
@@ -136,7 +136,7 @@ class GuideFaqEntry {
 /// It is a drawing, not a screenshot: a screenshot goes stale the week the
 /// button moves, ships as a light-mode PNG into a dark-mode window, and
 /// cannot be translated. The mock is built from the same tokens the real
-/// screen is, so it follows the theme, the density and the locale — and the
+/// screen is, so it follows the theme, the density and the locale - and the
 /// numbered markers on it are what the legend underneath refers to.
 class GuideScreenshot extends GuideBlock {
   const GuideScreenshot({
@@ -181,7 +181,7 @@ class GuideMockToolbar extends GuideMockPart {
   final String? action;
 }
 
-/// A row of figure tiles — the dashboard's counts, a report's headline.
+/// A row of figure tiles - the dashboard's counts, a report's headline.
 class GuideMockStats extends GuideMockPart {
   const GuideMockStats(this.labels, {super.marker});
 
@@ -205,7 +205,7 @@ class GuideMockTable extends GuideMockPart {
   /// How many body rows to draw.
   final int rows;
 
-  /// Tints the last row — an overdue loan, a blocked member — so the section
+  /// Tints the last row - an overdue loan, a blocked member - so the section
   /// can point at what a status colour means without inventing a record.
   final AppStatusTone? tone;
 }
@@ -229,7 +229,7 @@ class GuideMockList extends GuideMockPart {
   final int rows;
 }
 
-/// A row of cards — the settings landing, a section's option tiles.
+/// A row of cards - the settings landing, a section's option tiles.
 class GuideMockCards extends GuideMockPart {
   const GuideMockCards(this.labels, {super.marker});
 

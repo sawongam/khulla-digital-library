@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -18,7 +18,7 @@ abstract class SignInState with _$SignInState {
 
     /// Set when the catalogue answered but the address or password was wrong.
     /// Distinct from [error], which means the catalogue could not be read at
-    /// all — one is the operator's problem, the other is the machine's.
+    /// all - one is the operator's problem, the other is the machine's.
     @Default(false) bool credentialsRejected,
 
     /// Whether unused recovery codes exist, so the recover link is worth
@@ -34,7 +34,7 @@ abstract class SignInState with _$SignInState {
   const SignInState._();
 
   /// Whether the form may be submitted. Both fields have to be valid, which
-  /// on a sign-in form only rules out the obviously incomplete — the real
+  /// on a sign-in form only rules out the obviously incomplete - the real
   /// answer comes from the catalogue.
   bool get isValid => Formz.validate([email, password]);
 

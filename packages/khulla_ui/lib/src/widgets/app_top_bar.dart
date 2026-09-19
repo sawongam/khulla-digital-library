@@ -14,7 +14,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// It carries **only** the current section: its name, its trail, and what you
 /// can do to it. Account, search, notifications and the theme switch are
-/// app-wide chrome and live at the foot of the rail instead — putting them up
+/// app-wide chrome and live at the foot of the rail instead - putting them up
 /// here made the top of every screen say the same four things and left no
 /// room for the one thing that differs.
 ///
@@ -37,12 +37,12 @@ class AppTopBar extends StatelessWidget {
   /// The trail above the title. Null on a top-level section.
   final Widget? breadcrumbs;
 
-  /// What this section can do — *Add title*, an export menu. Keep it to one
+  /// What this section can do - *Add title*, an export menu. Keep it to one
   /// primary action plus an overflow: a bar of four equal buttons has no
   /// primary action at all.
   final List<Widget> actions;
 
-  /// A control before the title — the drawer button on a narrow window.
+  /// A control before the title - the drawer button on a narrow window.
   final Widget? leading;
 
   /// Whether to wrap the bar in [SafeArea]. The shell turns this off when the
@@ -80,7 +80,7 @@ class AppTopBar extends StatelessWidget {
 
     // A phone's bar is a single band: title on the left, actions on the
     // right. It gets the tighter vertical inset because the bottom bar
-    // already names the section — this row exists for what the section can
+    // already names the section - this row exists for what the section can
     // *do*, and every pixel it takes is a record the list cannot show.
     final compact = context.formFactor.isCompact;
 

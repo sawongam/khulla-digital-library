@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:drift/drift.dart';
 import 'package:khulla/core/database/app_database.dart';
@@ -213,7 +213,7 @@ class CirculationHoldQueue {
   );
 
   /// Moves the earliest waiting hold onto [copyId]; no-op when the queue is
-  /// empty — the caller already released the copy.
+  /// empty - the caller already released the copy.
   Future<void> promoteNextWaiting({
     required String titleId,
     required String copyId,

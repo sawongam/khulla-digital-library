@@ -7,7 +7,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Pair up to three independent fields side by side where the slot is wide
 /// enough, and stack them where it is not.
 ///
-/// Pair only fields that are genuinely independent — *Loan period*, *Fine per
+/// Pair only fields that are genuinely independent - *Loan period*, *Fine per
 /// day* and *Grace days*, not *Address line 1* and *Address line 2*, where
 /// side-by-side breaks the reading order a form depends on.
 ///
@@ -31,7 +31,7 @@ class AppFormRow extends StatelessWidget {
   final List<int>? flexes;
 
   /// Slot width below which the fields stack. When null, derived from the
-  /// child count — about 140px per field plus gaps.
+  /// child count - about 140px per field plus gaps.
   final double? stackBelow;
 
   @override

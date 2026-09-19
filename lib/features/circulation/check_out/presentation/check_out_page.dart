@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:async';
 
@@ -27,7 +27,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// [CheckOutCubit] owns the chosen member and the basket; `checkOutCopies()`
 /// names the outcome rather than the gesture, and a failed write answers as a
-/// toast — not as a screen state.
+/// toast - not as a screen state.
 class CheckOutPage extends StatefulWidget {
   const CheckOutPage({super.key});
 

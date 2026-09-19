@@ -1,9 +1,9 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/money/money.dart';
 
-/// Calendar date with no time-of-day — safe for due dates and shelf expiry.
+/// Calendar date with no time-of-day - safe for due dates and shelf expiry.
 DateTime dateOnly(DateTime value) =>
     DateTime(value.year, value.month, value.day);
 

@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -12,7 +12,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// open, the write was rejected, the credentials did not match. A field-level
 /// problem belongs under its field instead.
 ///
-/// Takes a resolved [message] or an [error] to resolve — the design system
+/// Takes a resolved [message] or an [error] to resolve - the design system
 /// deals in strings, so localization happens on this side of the line.
 class AuthErrorNotice extends StatelessWidget {
   const AuthErrorNotice({required this.message, super.key}) : error = null;

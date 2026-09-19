@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/features/users/domain/models/staff_member.dart';
 import 'package:khulla/features/users/domain/user_status.dart';
@@ -10,7 +10,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The staff register's columns: name, email, role, standing, and the
 /// edit/reset/enable menu.
 ///
-/// Dumb by design — every row action calls back out so the page owns the
+/// Dumb by design - every row action calls back out so the page owns the
 /// dialogs, the self-disable and last-administrator guards, and their
 /// toasts.
 List<AppTableColumn<StaffMember>> staffTableColumns(
@@ -138,7 +138,7 @@ List<AppTableColumn<StaffMember>> staffTableColumns(
 
 /// Search, the active/disabled chips, the clear action and the add button.
 ///
-/// The page owns the filter state locally — this only renders the controls.
+/// The page owns the filter state locally - this only renders the controls.
 class StaffListToolbar extends StatelessWidget {
   const StaffListToolbar({
     required this.statuses,

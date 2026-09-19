@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0-only
 
 import 'dart:typed_data';
 
@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// A preview of the library's uploaded mark, beside upload/remove controls.
 ///
-/// Purely presentational — picking the file and calling the cubit is the
+/// Purely presentational - picking the file and calling the cubit is the
 /// page's job, same split as every other form control here.
 class SettingsLogoField extends StatelessWidget {
   const SettingsLogoField({
