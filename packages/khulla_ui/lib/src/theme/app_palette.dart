@@ -13,18 +13,18 @@ import 'package:flutter/material.dart';
 /// reverse-engineered from the SaaS the product shares a design language
 /// with. Three ramps carry the whole system:
 ///
-/// * **brand** — one deep teal, taken from `assets/images/logos/submark_logo.png`.
+/// * **brand** - one deep teal, taken from `assets/images/logos/submark_logo.png`.
 ///   It is
 ///   the *only* saturated hue in the chrome. Destructive actions use the
 ///   separate [danger] red so an alarm never reads as brand.
-/// * **ink** — a text ramp that inverts in dark mode. `ink100` is the
+/// * **ink** - a text ramp that inverts in dark mode. `ink100` is the
 ///   darkest ink in light mode and the lightest in dark. The one exception is
 ///   [ink700], which is a *line* color and does not invert.
-/// * **neutral** — a fixed grey ramp that never inverts, for surfaces that
+/// * **neutral** - a fixed grey ramp that never inverts, for surfaces that
 ///   are deliberately light whatever the theme.
 ///
 /// The tints that carry every hover, active and selected surface come from
-/// [accent] at low alpha, not from the brand teal — compositing a light aqua
+/// [accent] at low alpha, not from the brand teal - compositing a light aqua
 /// over white stays airy where tinting the deep teal turns muddy.
 abstract final class AppPalette {
   // ── Brand ─────────────────────────────────────────────────────────────────
@@ -54,7 +54,7 @@ abstract final class AppPalette {
   // ── Brand seeds ───────────────────────────────────────────────────────────
   //
   // The alternative brands the operator can pick in Appearance. Each is only
-  // the solid fill — `AppBrand.fromSeed` derives the rest of the ramp — so a
+  // the solid fill - `AppBrand.fromSeed` derives the rest of the ramp - so a
   // seed is the one hex a new choice needs. [brand] is the shipped default and
   // is the seed of `AppBrand.teal`, whose ramp is hand-tuned rather than
   // derived.
@@ -139,7 +139,7 @@ abstract final class AppPalette {
 
   /// The line color: checkbox border, zebra base, sub-item connectors.
   ///
-  /// The one rung of the ink ramp that does **not** invert — it is a rule,
+  /// The one rung of the ink ramp that does **not** invert - it is a rule,
   /// not an ink, and a rule reads the same weight in either theme.
   static const Color ink700 = Color(0xFFCED4DA);
 
@@ -148,7 +148,7 @@ abstract final class AppPalette {
   /// Pure white.
   static const Color white100 = Color(0xFFFFFFFF);
 
-  /// The card fill in the primitive card variant — greyer than the page.
+  /// The card fill in the primitive card variant - greyer than the page.
   static const Color white200 = Color(0xFFF5F5F5);
 
   /// Separators and muted fills.
@@ -191,7 +191,7 @@ abstract final class AppPalette {
 
   // ── Status ────────────────────────────────────────────────────────────────
 
-  /// Danger ink — overdue, lost, destructive. The one alarm color, kept
+  /// Danger ink - overdue, lost, destructive. The one alarm color, kept
   /// distinct from [brand] so a delete never reads as a brand action.
   static const Color danger = Color(0xFFD92D20);
 
@@ -201,19 +201,19 @@ abstract final class AppPalette {
   /// The palest danger wash, for a surface that must be opaque.
   static const Color dangerTint = Color(0xFFFEE4E2);
 
-  /// Success ink — returned, available, active. Forest, not a lime pill.
+  /// Success ink - returned, available, active. Forest, not a lime pill.
   static const Color success = Color(0xFF2F6B4A);
 
   /// Success, one step deeper, for a border or a pressed fill.
   static const Color successStrong = Color(0xFF24573C);
 
-  /// Warning ink — due soon, expiring.
+  /// Warning ink - due soon, expiring.
   static const Color warning = Color(0xFFE08A00);
 
   /// Warning, one step lighter.
   static const Color warningSoftInk = Color(0xFFE68F3D);
 
-  /// Info ink — reserved, on hold, queued. Slate, not electric cyan.
+  /// Info ink - reserved, on hold, queued. Slate, not electric cyan.
   static const Color info = Color(0xFF4A7388);
 
   /// Premium / highlight accent.

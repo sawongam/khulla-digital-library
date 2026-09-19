@@ -11,7 +11,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// window. Hover and selection are tints of the same family, one step
 /// stronger each, so the three states never compete.
 ///
-/// The row's height comes from [AppMetrics.tableRowHeight] in the theme —
+/// The row's height comes from [AppMetrics.tableRowHeight] in the theme -
 /// one global token for every table in the app.
 class AppTableRow<T> extends StatefulWidget {
   const AppTableRow({
@@ -39,7 +39,7 @@ class AppTableRow<T> extends StatefulWidget {
   /// Whether this row is the picked one.
   final bool selected;
 
-  /// Draws a hairline under the row. Off by default — the zebra stripe is
+  /// Draws a hairline under the row. Off by default - the zebra stripe is
   /// the separator. Turn it on only for a short table inside a card, where
   /// there are too few rows for a stripe to read as a pattern.
   final bool divided;

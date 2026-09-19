@@ -26,7 +26,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// One page rather than a landing screen plus a list, because the loans table
 /// *is* what a librarian came here to look at. [LoanListCubit] supplies the
-/// counts, the open-loan query and the holds figure for the stat strip — tapping
+/// counts, the open-loan query and the holds figure for the stat strip - tapping
 /// *Overdue* selects the same rows the chip does. Renew toasts at its call site;
 /// return routes to the returns desk.
 ///

@@ -23,7 +23,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The title editor, used for both a new work and an existing one.
 ///
-/// A modal rather than a route — see [AppFormModal]. [TitleFormCubit] loads
+/// A modal rather than a route - see [AppFormModal]. [TitleFormCubit] loads
 /// formats and the existing record, then `saveTitle()` writes the bibliographic
 /// fields and, on create, seeds the requested number of copies. Fields that are
 /// genuinely independent pair up through [AppFormRow], which stacks them again

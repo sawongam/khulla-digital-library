@@ -51,7 +51,7 @@ class GuideSection {
     required this.blocks,
   });
 
-  /// A slug unique within the article — the scroll target.
+  /// A slug unique within the article - the scroll target.
   final String anchor;
 
   /// The heading.

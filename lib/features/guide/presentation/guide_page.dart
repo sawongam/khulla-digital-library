@@ -17,7 +17,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// It holds no cubit because it reads nothing. The guide is built from
 /// [AppLocalizations] on every build, and the only state on the screen is the
-/// search query — which belongs to the field, not to the app.
+/// search query - which belongs to the field, not to the app.
 class GuidePage extends StatefulWidget {
   const GuidePage({super.key});
 
@@ -32,7 +32,7 @@ class _GuidePageState extends State<GuidePage> with DisposeBag {
   /// Sections matching the query, in the order the manual lists them.
   ///
   /// A plain substring match over a few hundred sentences already in memory.
-  /// Anything cleverer — stemming, ranking — would be guessing at which of
+  /// Anything cleverer - stemming, ranking - would be guessing at which of
   /// eight articles the reader meant, and the section titles are short enough
   /// that the list stays readable unranked.
   List<GuideSearchHit> _hits(List<GuideArticle> articles) {

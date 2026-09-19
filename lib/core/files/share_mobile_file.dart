@@ -19,7 +19,7 @@ bool get isMobileShareTarget =>
 /// Writes [bytes] to a temp file and opens the system share sheet for it.
 ///
 /// Returns the temp path once the sheet closes, or null when the operator
-/// dismisses the sheet — the same cancel contract as the `save*File`
+/// dismisses the sheet - the same cancel contract as the `save*File`
 /// helpers, so callers treat it as "no file was kept".
 Future<String?> shareMobileFile({
   required String filename,

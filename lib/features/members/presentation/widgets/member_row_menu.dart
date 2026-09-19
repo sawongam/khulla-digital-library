@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The members-permission half of a member row menu, shared by the list and
 /// the detail page: edit, renew, suspend/unsuspend, archive.
 ///
-/// Dumb by design — taps call back out so each page owns its cubit writes
+/// Dumb by design - taps call back out so each page owns its cubit writes
 /// and toasts. Callers add their own extras around it: the list prepends
 /// the circulation check-out action, the detail page appends delete.
 List<AppMenuAction> memberManageMenuActions(

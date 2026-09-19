@@ -17,8 +17,8 @@ import '../helpers/catalog_fixtures.dart';
 import '../helpers/test_database.dart';
 
 /// [BackupLocalDataSource] and the web backup functions against a real
-/// database. Both operate purely through the `AppDatabase` connection — no
-/// filesystem involved — so, unlike the native path, they run the same way
+/// database. Both operate purely through the `AppDatabase` connection - no
+/// filesystem involved - so, unlike the native path, they run the same way
 /// whether the underlying store is in-memory or on disk.
 void main() {
   late AppDatabase db;

@@ -4,7 +4,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-/// The web build has nowhere to persist a file, so the ref *is* the logo —
+/// The web build has nowhere to persist a file, so the ref *is* the logo -
 /// base64-encoded bytes, stored straight in `LibrarySettings.logoRef`.
 Future<String> saveLogo(Uint8List bytes, {required String extension}) async =>
     base64Encode(bytes);

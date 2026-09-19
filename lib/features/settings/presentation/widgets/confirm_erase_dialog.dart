@@ -14,8 +14,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The password gate in front of the erase.
 ///
-/// One dialog does both jobs — stating the consequences and demanding the
-/// operator's password — so there is no confirm-then-confirm stacking. A
+/// One dialog does both jobs - stating the consequences and demanding the
+/// operator's password - so there is no confirm-then-confirm stacking. A
 /// wrong password stays on the field as a field error with retries; only a
 /// verified password pops true, and the page erases behind it.
 class ConfirmEraseDialog extends StatefulWidget {

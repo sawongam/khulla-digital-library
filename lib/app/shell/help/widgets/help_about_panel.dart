@@ -21,7 +21,7 @@ class HelpAboutPanel extends StatelessWidget {
   /// Opens [url] in the operator's browser.
   ///
   /// A desk machine with no browser registered, or a locked-down kiosk, will
-  /// refuse the launch — so the fallback copies the address rather than
+  /// refuse the launch - so the fallback copies the address rather than
   /// failing silently, and the toast says which of the two happened.
   static Future<void> openLink(BuildContext context, String url) async {
     final l10n = context.l10n;

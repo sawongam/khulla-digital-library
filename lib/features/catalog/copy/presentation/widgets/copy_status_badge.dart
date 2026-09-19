@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// A copy's standing as a pill.
 ///
 /// The two-line wrapper exists so no screen has to remember that an overdue
-/// copy is `danger` and a reserved one is `info` — the mapping lives once, on
+/// copy is `danger` and a reserved one is `info` - the mapping lives once, on
 /// the enum, and every table row reads it through here.
 class CopyStatusBadge extends StatelessWidget {
   const CopyStatusBadge({

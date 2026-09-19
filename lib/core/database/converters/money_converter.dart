@@ -6,7 +6,7 @@ import 'package:khulla/core/money/money.dart';
 
 /// Stores a [Money] in the minor units it already is.
 ///
-/// The column stays a plain SQLite integer of paisa — `kMinorUnitsPerMajor` is
+/// The column stays a plain SQLite integer of paisa - `kMinorUnitsPerMajor` is
 /// fixed at 100, and a converter that divided here would reinterpret every
 /// amount already written. All this does is put the type back on the way out,
 /// so the generated row class carries `Money amount` instead of `int amount`.

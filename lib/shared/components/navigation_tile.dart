@@ -12,7 +12,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// them in a `NavigationGroup` and the hairline between rows does the work a
 /// border around each one was doing badly.
 ///
-/// The count is the reason a door is a row and not a nav item — it is what a
+/// The count is the reason a door is a row and not a nav item - it is what a
 /// librarian reads before deciding which list to open.
 class NavigationTile extends StatelessWidget {
   const NavigationTile({
@@ -30,7 +30,7 @@ class NavigationTile extends StatelessWidget {
   /// A line explaining what is behind the door.
   final String description;
 
-  /// How many records are in it, already formatted. Null hides the figure —
+  /// How many records are in it, already formatted. Null hides the figure -
   /// a door into a desk flow is not counting anything.
   final String? count;
 

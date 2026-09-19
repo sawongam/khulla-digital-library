@@ -56,7 +56,7 @@ Future<ReferenceSeed> seedReferenceData(AppDatabase db) async {
   return (formatId: formatId, memberTypeId: memberTypeId);
 }
 
-/// One lendable title and an available copy — the smallest checkout scenario.
+/// One lendable title and an available copy - the smallest checkout scenario.
 Future<TitleWithCopySeed> seedTitleWithCopy(
   AppDatabase db, {
   required String formatId,

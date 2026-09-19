@@ -6,14 +6,14 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The modal bottom sheet: 10px top corners, a grab handle, and keyboard-safe
 /// padding, over a scrim that dims hard.
 ///
-/// The handle is the whole dismiss affordance — a slim 32×4 pill 12px from
-/// the top edge — rather than a floating close button. On a phone the gesture
+/// The handle is the whole dismiss affordance - a slim 32×4 pill 12px from
+/// the top edge - rather than a floating close button. On a phone the gesture
 /// is the drag, and a chip in the corner is both a smaller target and a
 /// second way to say the same thing.
 ///
 /// Pass [actions] to pin a button row to the bottom of the sheet. Actions sit
-/// outside the scrolling body, so a sheet whose content grows — an extra field,
-/// a photo picker — never scrolls its confirm button out of reach.
+/// outside the scrolling body, so a sheet whose content grows - an extra field,
+/// a photo picker - never scrolls its confirm button out of reach.
 ///
 /// Use [AppBottomSheet.show] to present a sheet with this chrome. The sheet's
 /// corner radius and background also come from [ThemeData.bottomSheetTheme],
@@ -51,7 +51,7 @@ class AppBottomSheet extends StatelessWidget {
   ///
   /// [heightFactor] sets a fixed sheet height as a fraction of the screen
   /// (e.g. [defaultHeightFactor] or `0.8` for a tall picker). Omit for the
-  /// default intrinsic height — only suitable for short, non-scrolling content.
+  /// default intrinsic height - only suitable for short, non-scrolling content.
   static Future<T?> show<T>({
     required BuildContext context,
     required String title,

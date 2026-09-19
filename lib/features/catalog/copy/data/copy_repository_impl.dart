@@ -72,13 +72,13 @@ class CopyRepositoryImpl implements CopyRepository {
     }
     if (existing.status == CopyStatus.onLoan) {
       throw const ConflictException(
-        'That copy is on loan — return it at the desk first.',
+        'That copy is on loan - return it at the desk first.',
       );
     }
     if (existing.status == CopyStatus.reserved &&
         status != CopyStatus.reserved) {
       throw const ConflictException(
-        'That copy is reserved for a hold — cancel or fulfil the hold first.',
+        'That copy is reserved for a hold - cancel or fulfil the hold first.',
       );
     }
     return await _dataSource.updateCopy(

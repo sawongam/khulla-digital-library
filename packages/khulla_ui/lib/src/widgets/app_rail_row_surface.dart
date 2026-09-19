@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The bar is drawn *outside* the row's padding and clipped to nothing when
 /// the row is not selected, so selection never shifts the label. Selection
 /// is a warm tint plus a 4px half-height bar on the left edge, not a filled
-/// row — the tint matches hover so moving down the rail does not flash.
+/// row - the tint matches hover so moving down the rail does not flash.
 class AppRailRowSurface extends StatefulWidget {
   const AppRailRowSurface({
     required this.selected,

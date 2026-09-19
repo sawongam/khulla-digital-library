@@ -15,17 +15,17 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// screen reads as a card that ran out of content, and it wastes the room a
 /// desk machine has most of: vertical. Filling means the wrapper is an
 /// [Expanded] with its own scroll view inside, so the filters and the page
-/// count stay put while the rows move under them — the same reasoning that
+/// count stay put while the rows move under them - the same reasoning that
 /// put the top bar outside the page.
 ///
 /// Only the table is boxed. Wrapping the filters inside the same border
 /// makes the screen read as one heavy object; leaving them outside lets the
-/// border say exactly one thing — *here is the data*.
+/// border say exactly one thing - *here is the data*.
 ///
 /// The wrapper is a [DecoratedBox] around the table's scroll viewport rather
 /// than a [DecoratedSliver] around its rows, so the border fills the
 /// [Expanded] slot even when the current page has fewer records than fit.
-/// The list inside stays lazy — a catalogue of ten thousand titles must not
+/// The list inside stays lazy - a catalogue of ten thousand titles must not
 /// lay out ten thousand rows to draw a border.
 ///
 /// Wire [onPageSizeChanged] to the list cubit's `limitChanged` so the query
@@ -49,7 +49,7 @@ class CollectionPageView<T> extends StatefulWidget {
     super.key,
   });
 
-  /// A line about what the table holds — *1,284 titles*. It sits at the
+  /// A line about what the table holds - *1,284 titles*. It sits at the
   /// trailing end of the filter row, where a count belongs: beside the
   /// controls that change it.
   final String? summary;
@@ -57,7 +57,7 @@ class CollectionPageView<T> extends StatefulWidget {
   /// Search, filters and view controls, above the table.
   final Widget? toolbar;
 
-  /// Anything above the filters — a row of stat tiles, a banner. Keep it
+  /// Anything above the filters - a row of stat tiles, a banner. Keep it
   /// short: every pixel here is a row the table cannot show.
   final Widget? intro;
 

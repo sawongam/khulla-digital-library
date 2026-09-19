@@ -3,7 +3,7 @@
 
 import 'package:khulla/core/config/app_version.dart';
 
-/// Facts about the product itself — who made it, where it lives.
+/// Facts about the product itself - who made it, where it lives.
 ///
 /// None of it is localized: a person's name and a URL read the same in every
 /// language, and translating any of them would break the thing it points at.

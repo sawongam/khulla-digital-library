@@ -1,8 +1,8 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
 // SPDX-License-Identifier: AGPL-3.0-only
 
-// Generates docs/database/schema.md — a Mermaid ER diagram plus per-table
-// notes — from the latest drift schema snapshot. Run with `make db-diagram`.
+// Generates docs/database/schema.md - a Mermaid ER diagram plus per-table
+// notes - from the latest drift schema snapshot. Run with `make db-diagram`.
 //
 // The snapshot (drift_schemas/app_database/drift_schema_v<N>.json) is written
 // by `make migrate`, so the diagram always matches the schema the migration
@@ -334,7 +334,7 @@ String _renderMarkdown(
       'by `tools/db_diagram.dart`. Regenerate with `make db-diagram`.',
     )
     ..writeln()
-    ..writeln('## ER diagram — schema v$version')
+    ..writeln('## ER diagram - schema v$version')
     ..writeln()
     ..writeln('Renders on GitHub and in VS Code Markdown preview.')
     ..writeln()

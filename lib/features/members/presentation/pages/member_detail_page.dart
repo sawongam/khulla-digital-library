@@ -28,7 +28,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// One borrower's record: their standing, what they are holding, what they
 /// owe, and everything they have read.
 ///
-/// The four figures at the top are the ones a desk decides on — copies out,
+/// The four figures at the top are the ones a desk decides on - copies out,
 /// how many are late, what is owed, and how much they have borrowed over the
 /// life of the card. [MemberDetailCubit] loads the member, open loans, fine
 /// rows and loan history. Check-out and edit are live.
@@ -232,9 +232,9 @@ class MemberDetailPage extends StatelessWidget {
 
         final twoPane = context.formFactor.isAtLeast(FormFactor.expanded);
         // A member's record reads under the members permission; changing it
-        // needs that permission at `manage`. Fines are their own permission —
+        // needs that permission at `manage`. Fines are their own permission -
         // a desk assistant sees what is owed without being able to settle it
-        // — and the checkout button is circulation's.
+        // - and the checkout button is circulation's.
         final canManage = context.canManage(StaffPermission.members);
         final canSettleFines = context.canManage(StaffPermission.fines);
         final canWorkTheDesk = context.canManage(StaffPermission.circulation);

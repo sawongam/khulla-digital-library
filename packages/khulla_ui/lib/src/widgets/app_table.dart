@@ -6,7 +6,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// {@template app_table}
 /// A bounded table: a header and every row laid out in a [Column].
 ///
-/// **For short, known-length collections only** — a title's copies, a
+/// **For short, known-length collections only** - a title's copies, a
 /// member's open loans, the last ten accessions. It builds every row up
 /// front, so a catalogue query goes in [AppSliverTable] instead, which builds
 /// only the rows the viewport can see.

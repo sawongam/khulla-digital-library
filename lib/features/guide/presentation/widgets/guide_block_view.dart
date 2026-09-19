@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// The single place the article's data model meets the design system, which
 /// is what lets a new kind of block be added by extending the sealed type and
-/// answering the analyzer's complaint here — rather than by hunting for every
+/// answering the analyzer's complaint here - rather than by hunting for every
 /// page that renders content.
 class GuideBlockView extends StatelessWidget {
   const GuideBlockView(this.block, {super.key});

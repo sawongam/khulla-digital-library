@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// A short, bounded [AppTable] rather than a sliver one: this list is six
 /// rows by definition, and the page's scroll view already owns the scrolling.
 /// When circulation has a table behind it, the rows come from a query and
-/// the four screen states arrive with it — the layout does not change.
+/// the four screen states arrive with it - the layout does not change.
 class DashboardActivitySection extends StatelessWidget {
   const DashboardActivitySection({required this.entries, super.key});
 

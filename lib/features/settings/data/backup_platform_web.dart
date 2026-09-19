@@ -15,7 +15,7 @@ import 'package:khulla/core/error/app_exception.dart';
 Iterable<TableInfo<Table, Object?>> _backedUpTables(AppDatabase db) =>
     db.allTables.where((table) => table is! VirtualTableInfo);
 
-/// Dumps every table to one JSON document — there is no file to copy on
+/// Dumps every table to one JSON document - there is no file to copy on
 /// web, only the OPFS/IndexedDB store behind [db]'s own connection, so the
 /// export goes through that connection instead of the filesystem.
 Future<Uint8List> exportBackupBytes(AppDatabase db, AppConfig config) async {
@@ -40,7 +40,7 @@ Future<Uint8List> exportBackupBytes(AppDatabase db, AppConfig config) async {
 }
 
 /// Replaces every row in every table with what [bytes] holds, inside one
-/// transaction with foreign-key checks suspended — table order does not
+/// transaction with foreign-key checks suspended - table order does not
 /// matter when nothing is being checked against it, which is what makes a
 /// fully generic restore possible without a hand-written table order.
 Future<void> importBackupBytes(
@@ -70,7 +70,7 @@ Future<void> importBackupBytes(
   }
 
   // The backup file controls these identifiers, so allowlist them against
-  // the schema before interpolating into SQL — otherwise a crafted file
+  // the schema before interpolating into SQL - otherwise a crafted file
   // injects arbitrary statements through table/column names.
   final expectedTables = {
     for (final table in _backedUpTables(db)) table.actualTableName,
@@ -146,7 +146,7 @@ Future<void> importBackupBytes(
   }
 }
 
-/// Nothing to size or locate — the store is inside the browser profile, not
+/// Nothing to size or locate - the store is inside the browser profile, not
 /// at a path this app can read.
 Future<({int? sizeBytes, String? path})> inspectStorage(AppConfig config) =>
     Future.value((sizeBytes: null, path: null));

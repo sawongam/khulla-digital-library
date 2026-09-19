@@ -41,8 +41,8 @@ enum FormFactor {
   /// Whether this class is [other] or wider.
   ///
   /// The enum is declared narrowest-first, so comparing ordinals is the same
-  /// question as comparing widths. Use it to gate anything that needs room —
-  /// a table column, a second pane — without naming a pixel value:
+  /// question as comparing widths. Use it to gate anything that needs room -
+  /// a table column, a second pane - without naming a pixel value:
   /// `context.formFactor.isAtLeast(FormFactor.expanded)`.
   bool isAtLeast(FormFactor other) => index >= other.index;
 
@@ -67,7 +67,7 @@ enum FormFactor {
 /// {@template app_breakpoints}
 /// Window size class thresholds and content caps.
 ///
-/// Read the class with `context.formFactor` — never compare a
+/// Read the class with `context.formFactor` - never compare a
 /// [MediaQuery] width against a literal.
 /// {@endtemplate}
 class AppBreakpoints extends ThemeExtension<AppBreakpoints> {
@@ -95,7 +95,7 @@ class AppBreakpoints extends ThemeExtension<AppBreakpoints> {
   /// and reflows nothing. It is the only width [AppDensity] is read from.
   final double comfortable;
 
-  /// Max width for reading content — prose, forms, a book's detail pane.
+  /// Max width for reading content - prose, forms, a book's detail pane.
   /// Roughly 75 characters at the body ramp, which is the readable ceiling.
   final double contentMaxWidth;
 

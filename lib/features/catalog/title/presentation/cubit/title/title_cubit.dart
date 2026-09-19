@@ -23,7 +23,7 @@ class TitleCubit extends Cubit<TitleState> {
 
   /// Fetches the current page of titles using [TitleState.query].
   ///
-  /// Failures are emitted into state and swallowed — the list screen already
+  /// Failures are emitted into state and swallowed - the list screen already
   /// watches [TitleState.error].
   Future<void> loadTitles() async {
     emit(

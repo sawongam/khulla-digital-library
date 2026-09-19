@@ -3,7 +3,7 @@
 
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// One article of the manual — one per section of the app, plus the
+/// One article of the manual - one per section of the app, plus the
 /// walkthrough that comes before any of them.
 ///
 /// The order is the order the guide lists them in, and it is the order a

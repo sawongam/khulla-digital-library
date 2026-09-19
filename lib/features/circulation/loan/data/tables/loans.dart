@@ -9,7 +9,7 @@ import 'package:khulla/features/catalog/shared/domain/copy_condition.dart';
 import 'package:khulla/features/members/data/tables/members.dart';
 import 'package:khulla/features/users/data/tables/staff.dart';
 
-/// One checkout — open while [returnedAt] is null.
+/// One checkout - open while [returnedAt] is null.
 @DataClassName('LoanRow')
 @TableIndex.sql(
   'CREATE UNIQUE INDEX loans_one_open_per_copy ON loans (copy_id) WHERE returned_at IS NULL',

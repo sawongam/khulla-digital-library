@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// Only drawn on a large window, where the column it occupies is room the
 /// text was never going to use. Below that it would be a second list above
-/// the article — the reader already has one, on the guide's landing page.
+/// the article - the reader already has one, on the guide's landing page.
 class GuideContentsPanel extends StatelessWidget {
   const GuideContentsPanel({
     required this.article,

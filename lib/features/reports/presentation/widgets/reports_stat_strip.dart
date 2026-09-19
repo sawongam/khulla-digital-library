@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The four headline figures: borrowed, returned, new members, fines raised.
 ///
 /// Every tile carries its trend against the previous window and the same
-/// "last month" caption. Fines invert the trend — up is bad there.
+/// "last month" caption. Fines invert the trend - up is bad there.
 class ReportsStatStrip extends StatelessWidget {
   const ReportsStatStrip({required this.summary, super.key});
 

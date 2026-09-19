@@ -8,7 +8,7 @@ import 'package:khulla/features/catalog/title/data/tables/title_formats.dart';
 /// One work in the catalogue.
 ///
 /// Searched through `titles_fts` (`titles_fts.drift`), which triggers on this
-/// table keep current — there is no search column to write by hand.
+/// table keep current - there is no search column to write by hand.
 @DataClassName('TitleRow')
 @TableIndex(name: 'titles_format', columns: {#formatId})
 @TableIndex.sql(
@@ -20,7 +20,7 @@ class Titles extends Table {
 
   TextColumn get title => text().withLength(min: 1, max: 300)();
 
-  /// Plain text for now — no authors table (see plan §1.11).
+  /// Plain text for now - no authors table (see plan §1.11).
   TextColumn get author => text().withLength(max: 200)();
 
   TextColumn get isbn => text().nullable().withLength(max: 20)();

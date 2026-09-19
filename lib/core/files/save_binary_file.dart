@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:khulla/core/files/saved_text_file.dart';
 import 'package:khulla/core/files/share_mobile_file.dart';
 
-/// Writes binary [bytes] to a location the operator picked — the same
+/// Writes binary [bytes] to a location the operator picked - the same
 /// `file_selector` pattern as `saveTextFile`, for content that isn't text.
 ///
 /// On Android/iOS there is no save dialog (`getSaveLocation` is not

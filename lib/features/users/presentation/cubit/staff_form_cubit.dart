@@ -19,7 +19,7 @@ import 'package:khulla/shared/models/load_status.dart';
 /// The add/edit-account dialog and the reset-password dialog, one cubit for
 /// all three (see [StaffFormMode]).
 ///
-/// Page-scoped `@injectable`, matching `MemberFormCubit` — a fresh instance
+/// Page-scoped `@injectable`, matching `MemberFormCubit` - a fresh instance
 /// per dialog, closed when it's dismissed.
 @injectable
 class StaffFormCubit extends Cubit<StaffFormState> {
@@ -37,7 +37,7 @@ class StaffFormCubit extends Cubit<StaffFormState> {
           ? null
           : await _staff.findStaffById(staffId);
       if (isClosed) return;
-      // A new account starts pure so the form opens quiet — dirtying an
+      // A new account starts pure so the form opens quiet - dirtying an
       // empty input would fail validation immediately and paint errors
       // before the desk has typed anything. `save()` re-dirties every
       // field, so submit-time validation is unaffected.
@@ -91,7 +91,7 @@ class StaffFormCubit extends Cubit<StaffFormState> {
   );
 
   /// Validates and saves the create/edit form. Returns null when validation
-  /// failed — the field messages are already in state, there is nothing
+  /// failed - the field messages are already in state, there is nothing
   /// further to tell the caller. Emits the failure into state *and*
   /// rethrows on a repository error, same as `MemberFormCubit.saveMember`.
   Future<StaffMember?> save() async {

@@ -6,7 +6,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// A vocabulary list: the word on one side, what it means here on the other.
 ///
-/// It stacks to one column on a phone rather than squeezing two — a
+/// It stacks to one column on a phone rather than squeezing two - a
 /// definition wrapped to three words a line is harder to read than the term
 /// sitting above it.
 class GuideTermList extends StatelessWidget {

@@ -6,8 +6,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// {@template app_menu_action}
 /// One entry in an [AppMenuButton] overflow menu.
 ///
-/// A section header carries exactly one primary action; everything else — the
-/// duplicate, the export, the delete — lives here, so a toolbar never becomes
+/// A section header carries exactly one primary action; everything else - the
+/// duplicate, the export, the delete - lives here, so a toolbar never becomes
 /// a row of five equal buttons with no obvious next step.
 /// {@endtemplate}
 class AppMenuAction {
@@ -20,7 +20,7 @@ class AppMenuAction {
     this.enabled = true,
   });
 
-  /// The action's localized name, phrased as the act — *Delete copy*.
+  /// The action's localized name, phrased as the act - *Delete copy*.
   final String label;
 
   /// Called when the entry is chosen.

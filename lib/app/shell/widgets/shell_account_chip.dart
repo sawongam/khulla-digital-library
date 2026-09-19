@@ -20,11 +20,11 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// without opening a menu, whether they are signed in as themselves or as
 /// whoever worked the morning shift.
 ///
-/// The menu opens above the full footer row, not from the avatar alone — the
+/// The menu opens above the full footer row, not from the avatar alone - the
 /// whole row is the tap target and the panel anchors to its width.
 ///
 /// It renders nothing when nobody is signed in. That is unreachable in
-/// practice — the shell is behind the router's redirect — but a signed-out
+/// practice - the shell is behind the router's redirect - but a signed-out
 /// frame can still be built for one pass while the redirect settles.
 class ShellAccountChip extends StatelessWidget {
   const ShellAccountChip({this.compact = false, super.key});
@@ -44,7 +44,7 @@ class ShellAccountChip extends StatelessWidget {
     // The cursor sits on the trigger itself, inside the button:
     // PopupMenuButton wraps its child in an InkWell whose default cursor
     // (adaptiveClickable) resolves to the basic arrow on desktop, and the
-    // innermost MouseRegion wins — an outer one would never take effect.
+    // innermost MouseRegion wins - an outer one would never take effect.
     return PopupMenuButton<int>(
       tooltip: l10n.shellAccountMenu,
       position: PopupMenuPosition.over,
@@ -94,7 +94,7 @@ class ShellAccountChip extends StatelessWidget {
         PopupMenuItem<int>(
           mouseCursor: SystemMouseCursors.click,
           // No confirmation: signing out costs nothing to undo, and the
-          // catalogue is untouched — the next screen is sign-in.
+          // catalogue is untouched - the next screen is sign-in.
           onTap: () => unawaited(context.read<AuthCubit>().signOut()),
           child: _MenuRow(
             icon: AppIcons.signOut,

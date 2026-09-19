@@ -6,8 +6,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// What one sticker will look like coming off the printer.
 ///
 /// The barcode is drawn rather than encoded: this screen is about the label's
-/// *layout* — what fits at 38 × 21 mm, whether the shelf mark still reads at
-/// arm's length — and a real Code 128 rendering answers none of those
+/// *layout* - what fits at 38 × 21 mm, whether the shelf mark still reads at
+/// arm's length - and a real Code 128 rendering answers none of those
 /// questions any better than a faithful set of bars does. Encoding belongs to
 /// the print pipeline, next to the paper size.
 class LabelPreview extends StatelessWidget {

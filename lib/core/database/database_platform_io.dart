@@ -27,7 +27,7 @@ Future<String> resolveDatabasePath(String name) async {
 /// so it may not capture anything.
 void configureNativeConnection(CommonDatabase database) {
   // `journal_mode` reports the mode it ended up in rather than failing, so a
-  // file system that refuses WAL — a network share, some sandboxes — quietly
+  // file system that refuses WAL - a network share, some sandboxes - quietly
   // stays on the rollback journal. That is correct, just slower, and must
   // never stop the catalogue from opening.
   try {

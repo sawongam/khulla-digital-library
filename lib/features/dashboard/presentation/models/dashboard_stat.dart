@@ -6,7 +6,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// One figure on the dashboard, ready for [AppStatTile].
 ///
 /// [value] is already a string because the three kinds of figure the board
-/// shows — a count, a date-bound count and a money total — format differently,
+/// shows - a count, a date-bound count and a money total - format differently,
 /// and only the caller knows which is which. A `Money` total arrives here as
 /// `amount.display()`, never as a number.
 class DashboardStat {
@@ -47,6 +47,6 @@ class DashboardStat {
   /// The change's sign. Only the sign is read; the text is [trend].
   final num trendValue;
 
-  /// Whether a fall is the good news — overdue copies, fines outstanding.
+  /// Whether a fall is the good news - overdue copies, fines outstanding.
   final bool trendInverted;
 }

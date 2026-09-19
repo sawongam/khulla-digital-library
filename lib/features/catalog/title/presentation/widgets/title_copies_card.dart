@@ -26,7 +26,7 @@ class TitleCopiesCard extends StatelessWidget {
   final List<Copy> copies;
 
   /// Opens the add-copies dialog. Null for a role that may read the catalogue
-  /// but not change it — the button is absent rather than disabled.
+  /// but not change it - the button is absent rather than disabled.
   final VoidCallback? onAddCopy;
 
   /// Per-copy maintenance, passed down to each row. Null for a role that may

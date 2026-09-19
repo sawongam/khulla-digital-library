@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The scan card: a focus-kept field plus the bulk-entry shortcut.
 ///
-/// The page owns the controller and focus node — a handheld scanner is a
+/// The page owns the controller and focus node - a handheld scanner is a
 /// keyboard, so focus returns here after every submit.
 class LabelScanCard extends StatelessWidget {
   const LabelScanCard({
@@ -52,7 +52,7 @@ class LabelScanCard extends StatelessWidget {
 
 /// The queue card: every queued sticker with its per-copy count stepper.
 ///
-/// Dumb by design — counts and removals call back out so the cubit writes
+/// Dumb by design - counts and removals call back out so the cubit writes
 /// stay with the page.
 class LabelQueueCard extends StatelessWidget {
   const LabelQueueCard({

@@ -7,8 +7,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The brand half of the sign-in and onboarding screens.
 ///
-/// It exists to answer the question someone has on their first launch —
-/// *what is this, and where does my data go?* — before they type anything.
+/// It exists to answer the question someone has on their first launch -
+/// *what is this, and where does my data go?* - before they type anything.
 /// Shown only when the window is wide enough that the form does not need the
 /// room; on a phone the same screen leads with the form.
 class AuthBrandPanel extends StatelessWidget {

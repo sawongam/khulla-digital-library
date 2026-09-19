@@ -13,7 +13,7 @@ import 'package:khulla/l10n/l10n.dart';
 ///
 /// A field shows its message only once it has been edited: an error under a
 /// form nobody has typed in yet reads as an accusation, not as help. That is
-/// what [messageFor] encodes — a pure input has nothing to say.
+/// what [messageFor] encodes - a pure input has nothing to say.
 extension EmailErrorX on Email {
   String? messageFor(AppLocalizations l10n) => isPure || isValid
       ? null

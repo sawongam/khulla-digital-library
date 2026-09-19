@@ -26,24 +26,24 @@ import 'package:khulla/features/staff_auth/presentation/sign_in/sign_in_page.dar
 /// Owns the single [GoRouter] instance.
 ///
 /// One [StatefulShellRoute] with one branch per shell destination, in the
-/// order `shellDestinations` declares them, plus the manual after them all —
+/// order `shellDestinations` declares them, plus the manual after them all -
 /// it opens from the account menu rather than the rail, so the rail never
 /// targets its index. The indexed-stack form keeps
-/// every branch alive — a section holds its scroll position and navigation
-/// stack while the user is away in another — and swaps between them with no
+/// every branch alive - a section holds its scroll position and navigation
+/// stack while the user is away in another - and swaps between them with no
 /// transition, which is what a desk tool wants.
 ///
 /// Each branch is a small tree rather than a single page: a list at the
 /// branch root, records and editors nested under it. Nesting is what keeps
 /// the shell's rail on screen while a librarian moves between records, and
 /// what makes the back control on a detail page mean "up to the list". The
-/// trees themselves live in app_branch_routes — this file is composition
+/// trees themselves live in app_branch_routes - this file is composition
 /// (the router, the out-of-shell routes, the redirect) only.
 ///
-/// Route paths are never written here as strings — [Routes] owns the
+/// Route paths are never written here as strings - [Routes] owns the
 /// segments, so a rename is one edit and every caller moves with it.
 ///
-/// Two routes sit outside the shell — onboarding and sign-in — and
+/// Two routes sit outside the shell - onboarding and sign-in - and
 /// [_redirect] is what decides when the operator is on one of them. It reads
 /// [AuthCubit], and `refreshListenable` re-runs it whenever that cubit emits,
 /// so signing in or out moves the app on its own with no `context.go` at the

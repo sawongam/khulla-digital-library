@@ -213,7 +213,7 @@ class CirculationHoldQueue {
   );
 
   /// Moves the earliest waiting hold onto [copyId]; no-op when the queue is
-  /// empty — the caller already released the copy.
+  /// empty - the caller already released the copy.
   Future<void> promoteNextWaiting({
     required String titleId,
     required String copyId,

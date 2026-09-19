@@ -32,7 +32,7 @@ abstract class CheckOutState with _$CheckOutState {
 
   int get loanPeriodDays => rules?.loanPeriodDays ?? 0;
 
-  /// Open loans plus basket size — compared against [borrowingLimit].
+  /// Open loans plus basket size - compared against [borrowingLimit].
   int get copiesAfterCheckout => (member?.loansOut ?? 0) + basket.length;
 
   /// Whether confirming would exceed the member's borrowing limit.

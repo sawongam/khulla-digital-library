@@ -6,7 +6,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The floating panel chrome shared by [AppDialog] and [AppFormModal].
 ///
 /// The close chip hangs off the top-right corner, so it must be a **sibling**
-/// of the panel — not a child overflowing the [Dialog]'s [Material]. A child
+/// of the panel - not a child overflowing the [Dialog]'s [Material]. A child
 /// that crosses a shaped Material is composited against the scrim and reads
 /// as translucent.
 class AppDialogShell extends StatelessWidget {

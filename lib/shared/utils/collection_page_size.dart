@@ -14,7 +14,7 @@ const int kCollectionPageSizeCompact = 30;
 /// How many table body rows to fetch for [tableBodyHeight].
 ///
 /// [tableBodyHeight] is the height of the scroll viewport in a collection
-/// list page — the [Expanded] slot on a desk window, not the full screen.
+/// list page - the [Expanded] slot on a desk window, not the full screen.
 /// The pinned header row is subtracted before dividing by row height.
 ///
 /// Rounds up so the last page of rows fills the viewport; rounding down leaves

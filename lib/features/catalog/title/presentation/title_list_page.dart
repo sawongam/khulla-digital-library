@@ -28,7 +28,7 @@ String _displayOrDash(String? value) =>
 
 /// Every work the library holds.
 ///
-/// [TitleCubit] owns search, format and availability filters, sort and paging —
+/// [TitleCubit] owns search, format and availability filters, sort and paging -
 /// the same four knobs the placeholder ran in memory, now one SQLite query.
 /// Format chips read [ReferenceDataCubit] because formats are reference data,
 /// not part of the title query. The [CollectionPageView] shape is unchanged:

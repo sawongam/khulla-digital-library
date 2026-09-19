@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// Remembers this device's own backup and restore history.
 ///
-/// Local preferences, not a table — the same reasoning as
+/// Local preferences, not a table - the same reasoning as
 /// `AuthSessionStorage`. A restore replaces the catalogue's tables wholesale,
 /// and a "last backup" timestamp inside them would then show whoever made
 /// *that* backup's history, on a device that may never have taken one.

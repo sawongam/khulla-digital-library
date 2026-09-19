@@ -14,7 +14,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// [ThemeCubit] is an app-wide `@lazySingleton` with real storage behind it,
 /// so the choice made here survives a restart. It is a device setting, not a
-/// library one — nothing about it reaches the catalogue file.
+/// library one - nothing about it reaches the catalogue file.
 class AppearancePage extends StatelessWidget {
   const AppearancePage({super.key});
 

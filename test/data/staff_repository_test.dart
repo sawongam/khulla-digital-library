@@ -318,7 +318,7 @@ void main() {
       ),
       isNotNull,
     );
-    // Unrelated to the account being reset — the administrator's own
+    // Unrelated to the account being reset - the administrator's own
     // password never moves.
     expect(
       await repository.signIn(email: admin.email, password: 'correct-horse'),

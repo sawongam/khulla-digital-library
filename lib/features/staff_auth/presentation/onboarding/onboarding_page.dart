@@ -23,7 +23,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// First-run setup: the screen a fresh download opens on.
 ///
 /// The router sends the operator here whenever the catalogue holds no staff
-/// account, and nowhere else — there is no route out of this page except
+/// account, and nowhere else - there is no route out of this page except
 /// finishing it or adopting a backup, because a library with no
 /// administrator has nothing to show.
 ///
@@ -60,7 +60,7 @@ class OnboardingPage extends StatelessWidget {
     if (!context.mounted || !confirmed) return;
 
     try {
-      // On success this never returns to a running screen — `restartApp()`
+      // On success this never returns to a running screen - `restartApp()`
       // ends the process (or reloads the page on web) before the wizard
       // could draw another frame over a catalogue that was replaced under it.
       await context.read<OnboardingCubit>().restoreFromBackup();

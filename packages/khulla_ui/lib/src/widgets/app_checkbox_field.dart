@@ -7,7 +7,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// A checkbox with its label and optional explanation, laid out as one row
 /// that is entirely tappable.
 ///
-/// The whole row is the target, not just the 16px box — a checkbox alone is
+/// The whole row is the target, not just the 16px box - a checkbox alone is
 /// well under any reasonable minimum and is the control people miss most.
 ///
 /// The box itself is a **tick in an outlined square, not a filled block**:
@@ -34,7 +34,7 @@ class AppCheckboxField extends StatelessWidget {
   /// Called with the next state. Null disables the row.
   final ValueChanged<bool?>? onChanged;
 
-  /// Supporting line under [label] — the consequence of ticking it.
+  /// Supporting line under [label] - the consequence of ticking it.
   final String? description;
 
   /// Whether the box cycles through an indeterminate state.

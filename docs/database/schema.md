@@ -2,7 +2,7 @@
 
 > DO NOT HAND-EDIT. Generated from `drift_schemas/app_database/drift_schema_v15.json` by `tools/db_diagram.dart`. Regenerate with `make db-diagram`.
 
-## ER diagram — schema v15
+## ER diagram - schema v15
 
 Renders on GitHub and in VS Code Markdown preview.
 
@@ -295,4 +295,3 @@ erDiagram
 
 - Source: `a Drift Table class registered in lib/core/database/app_database.dart`
 - No outgoing foreign keys.
-

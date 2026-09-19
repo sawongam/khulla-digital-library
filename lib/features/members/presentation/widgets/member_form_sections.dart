@@ -150,7 +150,7 @@ class MemberFormContactSection extends StatelessWidget {
   }
 }
 
-/// Occupation, institution/school and ID verification — free text.
+/// Occupation, institution/school and ID verification - free text.
 class MemberFormAdditionalSection extends StatelessWidget {
   const MemberFormAdditionalSection({
     required this.occupation,
@@ -197,7 +197,7 @@ class MemberFormAdditionalSection extends StatelessWidget {
   }
 }
 
-/// Emergency contact — name and phone.
+/// Emergency contact - name and phone.
 class MemberFormEmergencySection extends StatelessWidget {
   const MemberFormEmergencySection({
     required this.emergencyContactName,

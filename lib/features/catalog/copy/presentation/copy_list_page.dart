@@ -185,7 +185,7 @@ class _CopyListPageState extends State<CopyListPage> {
         ),
       ),
       // Every action in this column writes, so the column itself is gone for
-      // a role that may read the catalogue but not change it — rather than a
+      // a role that may read the catalogue but not change it - rather than a
       // menu button that opens onto nothing.
       if (canManage)
         AppTableColumn<Copy>(

@@ -5,7 +5,7 @@ import 'package:khulla/features/members/domain/models/member_query.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// Search plus the desk's four questions of the register — who is holding
+/// Search plus the desk's four questions of the register - who is holding
 /// something, who owes something, whose card is expiring or stopped working.
 ///
 /// Dumb by design: the page owns the query and wires every control

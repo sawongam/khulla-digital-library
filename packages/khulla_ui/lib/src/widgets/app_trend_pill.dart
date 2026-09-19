@@ -3,14 +3,14 @@
 
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// The change in a figure since the period before it — `+8.2%`, `-5.6%`.
+/// The change in a figure since the period before it - `+8.2%`, `-5.6%`.
 ///
 /// A number on its own says what the library has; a number with a delta says
 /// which way it is going, which is the only reason a dashboard tile beats a
 /// report. The arrow and the color come from [value]'s sign, so a caller
 /// passes the measurement and not a decision about how to paint it.
 ///
-/// [inverted] is for the figures where *down* is the good news — overdue
+/// [inverted] is for the figures where *down* is the good news - overdue
 /// items, unpaid fines, damaged copies. Green then means "fewer", which is
 /// what an operator actually wants to know.
 class AppTrendPill extends StatelessWidget {
@@ -22,7 +22,7 @@ class AppTrendPill extends StatelessWidget {
     super.key,
   });
 
-  /// The delta as the caller wants it read — already formatted and localized
+  /// The delta as the caller wants it read - already formatted and localized
   /// (`+8.2%`, `+150`). The widget never formats a number itself.
   final String label;
 

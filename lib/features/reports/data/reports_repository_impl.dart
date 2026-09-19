@@ -18,7 +18,7 @@ const String _source = 'ReportsRepositoryImpl';
 ///
 /// The monthly trend charts and the overdue/acquisitions exports read a
 /// fixed eight-month or current-snapshot window regardless of the selected
-/// period — only the stat tiles, fine totals and rankings are scoped to
+/// period - only the stat tiles, fine totals and rankings are scoped to
 /// `[start, end)`. See [ReportsRepository.loadSummary].
 ///
 /// The overdue snapshot is capped at the 100 most overdue loans
@@ -123,7 +123,7 @@ class ReportsRepositoryImpl implements ReportsRepository {
       .getSingle()
       .then((row) => Money(row.read<int>('total')));
 
-  /// Fines fully settled within `[start, end)` — the only point a fine's
+  /// Fines fully settled within `[start, end)` - the only point a fine's
   /// paid/waived split is known to be final, since a payment carries no
   /// timestamp of its own.
   Future<Money> _sumSettledFines(
@@ -188,7 +188,7 @@ ORDER BY ym
     ];
   }
 
-  /// Copies by their title's format — a snapshot of the catalogue as it
+  /// Copies by their title's format - a snapshot of the catalogue as it
   /// stands, not scoped to the report period.
   Future<List<ReportsFormatCount>> _collectionByFormat() async {
     final rows = await _db.customSelect(

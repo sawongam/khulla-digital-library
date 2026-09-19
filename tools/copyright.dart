@@ -47,7 +47,7 @@ const List<String> _roots = <String>[
   'tools',
 ];
 
-/// Generated file suffixes — matches the gitignored codegen outputs.
+/// Generated file suffixes - matches the gitignored codegen outputs.
 bool _isGeneratedName(String path) =>
     path.endsWith('.g.dart') ||
     path.endsWith('.freezed.dart') ||

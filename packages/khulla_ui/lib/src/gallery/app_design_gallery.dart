@@ -8,8 +8,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// that matters, on one page.
 ///
 /// It exists to be *looked at*. When a component is retuned, this is where the
-/// change is checked — side by side with its neighbours, at both densities,
-/// in both themes — rather than by opening whichever product screen happens
+/// change is checked - side by side with its neighbours, at both densities,
+/// in both themes - rather than by opening whichever product screen happens
 /// to use it. A component that cannot be shown here without a special case is
 /// usually a component that has grown a screen-specific behaviour it should
 /// not have.

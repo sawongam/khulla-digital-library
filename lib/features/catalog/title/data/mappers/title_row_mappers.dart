@@ -7,7 +7,7 @@ import 'package:khulla/features/catalog/title/domain/models/title.dart';
 
 /// Maps [TitleRow] to [Title] and back for drift writes.
 ///
-/// Joined columns — format name and copy counts — are passed in from the data
+/// Joined columns - format name and copy counts - are passed in from the data
 /// source because they are not on the base row.
 extension TitleRowMapper on TitleRow {
   Title toDomain({

@@ -3,7 +3,7 @@
 
 import 'package:khulla/core/money/money.dart';
 
-/// Calendar date with no time-of-day — safe for due dates and shelf expiry.
+/// Calendar date with no time-of-day - safe for due dates and shelf expiry.
 DateTime dateOnly(DateTime value) =>
     DateTime(value.year, value.month, value.day);
 

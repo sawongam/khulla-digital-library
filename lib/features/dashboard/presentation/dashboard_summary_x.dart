@@ -34,7 +34,7 @@ final DateFormat _dueFormat = DateFormat('d MMM');
 final DateFormat _monthFormat = DateFormat('MMM');
 
 /// Maps a raw [DashboardSummary] to the formatted view models the board's
-/// widgets already draw — the same shapes `dashboard_placeholder.dart` used
+/// widgets already draw - the same shapes `dashboard_placeholder.dart` used
 /// to hand-write, computed for real and localized here rather than in the
 /// repository, which returns facts, not display strings.
 extension DashboardSummaryX on DashboardSummary {
@@ -257,7 +257,7 @@ double? _trendValue(int current, int previous) {
   return ((current - previous) / previous) * 100;
 }
 
-/// [DashboardStat.trendValue] is non-nullable — zero when there is nothing
+/// [DashboardStat.trendValue] is non-nullable - zero when there is nothing
 /// to compare, which reads as "flat", not as a rise or a fall.
 num _trendValueOrZero(int current, int previous) =>
     _trendValue(current, previous) ?? 0;

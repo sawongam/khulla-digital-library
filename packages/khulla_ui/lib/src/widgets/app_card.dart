@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// This is the product's real card, and it is not the shadcn/Material one. A
 /// dashboard holding twelve surfaces with drop shadows and grey fills reads
 /// as a mockup; the same twelve separated by hairlines read as a tool. Set
-/// [filled] for the rarer variant that does carry a fill and a shadow — a
+/// [filled] for the rarer variant that does carry a fill and a shadow - a
 /// standalone panel with nothing around it to give it an edge.
 ///
 /// Hovering a tappable card raises its hairline rather than lifting it, which
@@ -37,7 +37,7 @@ class AppCard extends StatefulWidget {
   /// Makes the whole card pressable, with hover and focus feedback.
   final VoidCallback? onTap;
 
-  /// Draws the selected outline — a picked row, an active filter panel.
+  /// Draws the selected outline - a picked row, an active filter panel.
   final bool selected;
 
   /// Whether to draw the hairline. Turn it off for a card nested inside
@@ -48,7 +48,7 @@ class AppCard extends StatefulWidget {
   /// shadow. Use it for a surface with no neighbours to define its edge.
   final bool filled;
 
-  /// Tints the card's fill and hairline with a status wash — a warning
+  /// Tints the card's fill and hairline with a status wash - a warning
   /// banner, a danger panel. Null keeps the neutral surface.
   final AppStatusTone? tone;
 

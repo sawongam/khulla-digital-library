@@ -10,7 +10,7 @@ import 'package:khulla/features/circulation/shared/domain/loan_status.dart';
 
 part 'loan.freezed.dart';
 
-/// One checkout — open while [returnedAt] is null.
+/// One checkout - open while [returnedAt] is null.
 @freezed
 abstract class Loan with _$Loan {
   const factory Loan({

@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// Who has borrowed this work, most recent first.
 ///
-/// Closed loans only — open loans show on the copies table via borrower and
+/// Closed loans only - open loans show on the copies table via borrower and
 /// due date. The parent loads the list from [TitleDetailCubit].
 class TitleHistoryCard extends StatelessWidget {
   const TitleHistoryCard({required this.loans, super.key});

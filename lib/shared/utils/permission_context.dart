@@ -10,7 +10,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// The router keeps a role out of a section it cannot open; this is what
 /// keeps it from writing inside a section it *can*. The two are different
-/// questions and both have to be asked — a desk assistant may open the
+/// questions and both have to be asked - a desk assistant may open the
 /// catalogue, so the only thing standing between them and an edited title is
 /// the check the button makes.
 ///
@@ -19,11 +19,11 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// other reason.
 ///
 /// This is convenience, not security. The catalogue is a file on the
-/// operator's own disk, and anyone holding it holds everything in it — see
+/// operator's own disk, and anyone holding it holds everything in it - see
 /// `docs/architecture`. What these checks buy is that a shift cannot make a
 /// mistake its role was never meant to be able to make.
 extension PermissionContext on BuildContext {
-  /// The signed-in account's role — [UserRole.readOnly] when nobody is.
+  /// The signed-in account's role - [UserRole.readOnly] when nobody is.
   UserRole get role => watch<AuthCubit>().state.role;
 
   /// Whether the signed-in role may open the section [permission] guards.

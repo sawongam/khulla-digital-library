@@ -11,7 +11,7 @@ part 'label_state.freezed.dart';
 
 /// The label desk: the queued stickers, the layout, and the library name.
 ///
-/// [status] tracks the library-profile read only — the queue itself is local
+/// [status] tracks the library-profile read only - the queue itself is local
 /// state, so scanning never spins the screen. The preview reads [libraryName]
 /// when [includeLibrary] is on.
 @freezed

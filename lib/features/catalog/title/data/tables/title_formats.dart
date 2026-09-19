@@ -3,7 +3,7 @@
 
 import 'package:drift/drift.dart';
 
-/// Editable catalogue formats — book, journal, audiobook, and so on.
+/// Editable catalogue formats - book, journal, audiobook, and so on.
 ///
 /// Seeded rows carry a stable [code] for icons and import/export; operator-
 /// created rows leave it null and get a default glyph. Archiving hides a row
@@ -12,7 +12,7 @@ import 'package:drift/drift.dart';
 class TitleFormats extends Table {
   TextColumn get id => text()();
 
-  /// Stable machine id on seeded rows only — never changes when [name] is edited.
+  /// Stable machine id on seeded rows only - never changes when [name] is edited.
   TextColumn get code => text().nullable().unique()();
 
   /// What the operator sees in every dropdown.
@@ -21,7 +21,7 @@ class TitleFormats extends Table {
   /// Order in pickers; lower comes first.
   IntColumn get sortOrder => integer()();
 
-  /// Seeded rows cannot be hard-deleted — only archived and renamed.
+  /// Seeded rows cannot be hard-deleted - only archived and renamed.
   BoolColumn get isSystem => boolean().withDefault(const Constant(false))();
 
   /// When set, the row is hidden from pickers but still valid on existing titles.

@@ -30,8 +30,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// The consequence is deliberate: a section's action must be expressible as
 /// *go here* or *open this*, not as something that depends on the page's
-/// state. An action that needs the cubit — bulk-editing the rows a table has
-/// selected — belongs in that page's toolbar, above the table it acts on.
+/// state. An action that needs the cubit - bulk-editing the rows a table has
+/// selected - belongs in that page's toolbar, above the table it acts on.
 ///
 /// Every action here writes something, so every branch is behind the `manage`
 /// level of its section's permission. A role that may read the catalogue gets

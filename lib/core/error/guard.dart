@@ -3,7 +3,7 @@
 
 import 'package:drift/drift.dart';
 // `drift/remote.dart` is marked experimental, but it is the only public home
-// of DriftRemoteException — the wrapper every failure on the database isolate
+// of DriftRemoteException - the wrapper every failure on the database isolate
 // arrives in. Not unwrapping it would degrade every constraint violation to
 // UnknownException.
 // ignore: experimental_member_use
@@ -16,7 +16,7 @@ import 'package:sqlite3/common.dart';
 ///
 /// Every data-source method that touches the database wraps its body in this
 /// so a cubit only ever has to catch [AppException]. An [AppException] thrown
-/// deliberately inside [action] — a domain rule rejecting the write — passes
+/// deliberately inside [action] - a domain rule rejecting the write - passes
 /// through untouched, including one thrown on the database isolate.
 ///
 /// ```dart
@@ -62,7 +62,7 @@ AppException _classify(
       );
       return AppException.fromSqlite(error);
 
-    // Drift rejected the row before it reached SQLite — a value longer than
+    // Drift rejected the row before it reached SQLite - a value longer than
     // the column allows, a null in a non-nullable column.
     case InvalidDataException():
       AppLogger.warn(

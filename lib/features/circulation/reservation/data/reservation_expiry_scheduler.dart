@@ -14,7 +14,7 @@ const String _source = 'ReservationExpiryScheduler';
 /// Keeps stale holds expiring while the app runs, not only at launch.
 ///
 /// `CirculationRepository.expireStaleHolds` closes a `ready` hold once its
-/// pickup window has passed and promotes the next waiting one — correct
+/// pickup window has passed and promotes the next waiting one - correct
 /// logic, but calling it once at boot means a hold only expires the next
 /// time the app is started. A library open for a full shift needs that to
 /// happen during the shift.
@@ -31,7 +31,7 @@ class ReservationExpiryScheduler {
 
   /// Expires stale holds now, then every [_interval] for as long as the app
   /// runs. `bootstrap` calls this once, in place of the one-shot call it used
-  /// to make directly — the immediate check keeps today's "expire on launch"
+  /// to make directly - the immediate check keeps today's "expire on launch"
   /// behaviour, including surfacing a failure to the startup screen; failures
   /// on the recurring timer only log, since a background tick has no screen
   /// to report to and must not take a running app down.

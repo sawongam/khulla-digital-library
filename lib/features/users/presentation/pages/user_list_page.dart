@@ -27,7 +27,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// means one account per person rather than a shared login taped to the
 /// monitor.
 ///
-/// Search, filters, sort and paging are local state — the register is small
+/// Search, filters, sort and paging are local state - the register is small
 /// and fully loaded. Columns and toolbar live in `presentation/widgets/`;
 /// the self-disable and last-administrator guards toast here.
 class UserListPage extends StatefulWidget {

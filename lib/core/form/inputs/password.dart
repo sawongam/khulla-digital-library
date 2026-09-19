@@ -14,7 +14,7 @@ class Password extends FormzInput<String, PasswordValidationError> {
 
   static const int minLength = 8;
 
-  /// bcrypt accepts at most 72 UTF-8 bytes — longer input throws in the
+  /// bcrypt accepts at most 72 UTF-8 bytes - longer input throws in the
   /// hasher, past every guard, so the form rejects it first.
   static const int maxLengthBytes = 72;
 

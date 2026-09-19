@@ -11,7 +11,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The layout card: sticker size plus which lines print on it.
 ///
-/// Dumb by design — every toggle calls back out to the cubit.
+/// Dumb by design - every toggle calls back out to the cubit.
 class LabelLayoutCard extends StatelessWidget {
   const LabelLayoutCard({
     required this.size,

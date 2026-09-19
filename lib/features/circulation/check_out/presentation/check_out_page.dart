@@ -27,7 +27,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// [CheckOutCubit] owns the chosen member and the basket; `checkOutCopies()`
 /// names the outcome rather than the gesture, and a failed write answers as a
-/// toast — not as a screen state.
+/// toast - not as a screen state.
 class CheckOutPage extends StatefulWidget {
   const CheckOutPage({super.key});
 

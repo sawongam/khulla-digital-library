@@ -4,7 +4,7 @@
 import 'package:drift/drift.dart';
 import 'package:khulla/core/database/converters/money_converter.dart';
 
-/// Editable member categories — student, teacher, public, and so on.
+/// Editable member categories - student, teacher, public, and so on.
 ///
 /// Each nullable rule column overrides the global loan-rules singleton when
 /// set; `NULL` means inherit. Seeded rows start with every override null so

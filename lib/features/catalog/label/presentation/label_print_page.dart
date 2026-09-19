@@ -20,7 +20,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The label desk: scan a copy, queue its sticker, print the sheet.
 ///
 /// The scan field keeps focus and clears itself on submit, because a handheld
-/// scanner is a keyboard that types a barcode and presses enter — anything
+/// scanner is a keyboard that types a barcode and presses enter - anything
 /// that steals focus between two scans turns a tray of new books into a
 /// hunt-and-click job.
 ///

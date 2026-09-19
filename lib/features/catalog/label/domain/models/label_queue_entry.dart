@@ -8,8 +8,8 @@ part 'label_queue_entry.freezed.dart';
 
 /// One copy waiting for its sticker, and how many of that sticker to print.
 ///
-/// A copy needs a second label often enough — one peels off, one goes inside
-/// the cover — that the queue counts labels rather than assuming one each.
+/// A copy needs a second label often enough - one peels off, one goes inside
+/// the cover - that the queue counts labels rather than assuming one each.
 /// [author] is resolved from the title at queue time so the preview never
 /// queries while it draws.
 @freezed

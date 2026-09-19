@@ -7,19 +7,19 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// Which Khulla logo asset to draw.
 enum AppLogoVariant {
-  /// Horizontal wordmark — `primary_logo.png`.
+  /// Horizontal wordmark - `primary_logo.png`.
   primary,
 
-  /// Horizontal wordmark with a light background — `primary_light_logo.png`.
+  /// Horizontal wordmark with a light background - `primary_light_logo.png`.
   primaryLight,
 
-  /// Horizontal full wordmark — `primary_full_logo.png`.
+  /// Horizontal full wordmark - `primary_full_logo.png`.
   primaryFull,
 
-  /// Horizontal full wordmark with a light background — `primary_full_light_logo.png`.
+  /// Horizontal full wordmark with a light background - `primary_full_light_logo.png`.
   primaryFullLight,
 
-  /// Icon-only K mark — `submark_logo.png`.
+  /// Icon-only K mark - `submark_logo.png`.
   submark,
 }
 
@@ -27,7 +27,7 @@ enum AppLogoVariant {
 ///
 /// [AppLogoVariant.primary] is the horizontal wordmark; give it a [height] and
 /// let the width follow the asset aspect ratio. [AppLogoVariant.submark] is
-/// square — pass [height] or [width], or neither for [AppMetrics.iconLarge].
+/// square - pass [height] or [width], or neither for [AppMetrics.iconLarge].
 ///
 /// Platform favicons and launcher icons use `favicon_logo.png` via
 /// `icons_launcher.yaml`, not this widget.

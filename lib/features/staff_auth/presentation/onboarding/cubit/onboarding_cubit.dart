@@ -191,7 +191,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   /// survivable by design: the setup gate is the staff table, so a profile
   /// written without its administrator leaves the app on this screen, and the
   /// retry overwrites the profile row rather than adding a second. The reverse
-  /// order would not be survivable — an administrator with no library profile
+  /// order would not be survivable - an administrator with no library profile
   /// would let the app into the shell with no currency set.
   ///
   /// Emits the failure into state *and* rethrows: a gesture asked for this,

@@ -67,7 +67,7 @@ abstract interface class CirculationRepository {
 
   Future<Fine> waiveFine(String fineId);
 
-  /// Assesses a one-off fine by hand — a lost/damaged copy or a membership
+  /// Assesses a one-off fine by hand - a lost/damaged copy or a membership
   /// fee. The automatic overdue fine on return does not go through here.
   Future<Fine> chargeFine({
     required String memberId,

@@ -19,7 +19,7 @@ const String _source = 'DashboardRepositoryImpl';
 /// [DashboardRepository] over the local catalogue.
 ///
 /// Every query here crosses loans, fines, reservations, copies, titles and
-/// members — none of it belongs to a single feature's repository, which is
+/// members - none of it belongs to a single feature's repository, which is
 /// why this reads `AppDatabase` directly rather than composing
 /// `CirculationRepository`/`MemberRepository`/`TitleRepository` calls. A
 /// composed version would still need a second round trip per figure; this
@@ -77,7 +77,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
     source: '$_source.loadSummary',
   );
 
-  /// Loans in `[start, end)` by [column] — `checked_out_at` for borrows,
+  /// Loans in `[start, end)` by [column] - `checked_out_at` for borrows,
   /// `returned_at` for returns.
   Future<int> _countByColumn(String column, DateTime start, DateTime end) => _db
       .customSelect(
@@ -103,7 +103,7 @@ WHERE due_at < ?
       .getSingle()
       .then((row) => row.read<int>('c'));
 
-  /// The total owed right now — a snapshot, not bound to any period.
+  /// The total owed right now - a snapshot, not bound to any period.
   Future<Money> _outstandingFines() => _db
       .customSelect(
         'SELECT COALESCE(SUM(assessed - paid - waived), 0) AS total '
@@ -112,7 +112,7 @@ WHERE due_at < ?
       .getSingle()
       .then((row) => Money(row.read<int>('total')));
 
-  /// What was assessed in `[start, end)` — the fines stat tile's trend
+  /// What was assessed in `[start, end)` - the fines stat tile's trend
   /// compares this, not the outstanding balance (see [DashboardSummary]).
   Future<Money> _assessedFines(DateTime start, DateTime end) => _db
       .customSelect(
@@ -186,7 +186,7 @@ ORDER BY ym
     };
   }
 
-  /// Titles by format, the closest categorical dimension a title carries —
+  /// Titles by format, the closest categorical dimension a title carries -
   /// there is no separate subject/genre column (see ADR 0007).
   Future<List<DashboardCategoryShare>> _categoryShares() async {
     final rows = await _db.customSelect(
@@ -308,7 +308,7 @@ LIMIT ?1
     )..addColumns([count])).getSingle().then((row) => row.read(count) ?? 0);
   }
 
-  /// Active memberships expiring within 30 days — the same window
+  /// Active memberships expiring within 30 days - the same window
   /// `Member.status` uses to compute `MemberStatus.expiring`.
   Future<int> _countExpiringMemberships() {
     final today = dateOnly(DateTime.now());

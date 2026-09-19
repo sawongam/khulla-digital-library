@@ -473,7 +473,7 @@ class _MockCards extends StatelessWidget {
   }
 }
 
-/// A surface inside the drawing — a card, a field, a table's box.
+/// A surface inside the drawing - a card, a field, a table's box.
 class _Panel extends StatelessWidget {
   const _Panel({required this.child, this.padding});
 

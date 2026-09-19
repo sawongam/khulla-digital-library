@@ -31,7 +31,7 @@ void main() {
 
     test('steps type and control height up exactly once at comfortable', () {
       // The comfortable rung is the shipped default. Compact still exists for
-      // tests and the gallery — both rungs must stay in step with each other.
+      // tests and the gallery - both rungs must stay in step with each other.
       final compact = AppTheme.light(AppDensity.compact);
       final comfortable = AppTheme.light();
 
@@ -40,7 +40,7 @@ void main() {
       expect(compact.extension<AppMetrics>()!.fieldHeight, 40);
       expect(comfortable.extension<AppMetrics>()!.fieldHeight, 44);
       // Row height is global rather than a density rung, so the claim is that
-      // the two agree — not what the number is, which design tunes.
+      // the two agree - not what the number is, which design tunes.
       expect(
         compact.extension<AppMetrics>()!.tableRowHeight,
         comfortable.extension<AppMetrics>()!.tableRowHeight,

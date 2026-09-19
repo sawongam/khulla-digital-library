@@ -12,7 +12,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// waiver the desk can apply before committing it.
 ///
 /// The waiver is a form value, not a setting, so it is an [AppCheckboxField]
-/// rather than an [AppSwitchField] — nothing has happened until *Confirm
+/// rather than an [AppSwitchField] - nothing has happened until *Confirm
 /// return* is pressed.
 class ReturnSummaryCard extends StatelessWidget {
   const ReturnSummaryCard({

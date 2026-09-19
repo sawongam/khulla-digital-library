@@ -10,7 +10,7 @@ import 'package:khulla_ui/src/theme/app_palette.dart';
 ///
 /// Three ways in, because they suit different intents. The pad is for finding
 /// a color by eye, the slider narrows the hue first, and the hex field is for
-/// a brand color someone has been given as `#0A6A66` and must match exactly —
+/// a brand color someone has been given as `#0A6A66` and must match exactly -
 /// which no amount of dragging reliably hits.
 ///
 /// The hue is held separately from the color it produces. Dragging the pad
@@ -54,7 +54,7 @@ class _AppColorPickerState extends State<AppColorPicker> {
   @override
   void didUpdateWidget(AppColorPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Only when the owner replaced the color — not when it is echoing back
+    // Only when the owner replaced the color - not when it is echoing back
     // what this widget just emitted, which would fight the drag.
     if (widget.value != oldWidget.value && widget.value != _hsv.toColor()) {
       _hsv = HSVColor.fromColor(widget.value);

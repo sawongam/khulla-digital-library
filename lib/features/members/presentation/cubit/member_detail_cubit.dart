@@ -74,12 +74,12 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
     }
   }
 
-  /// Deletes the member. Rethrows on failure — the confirming dialog toasts.
+  /// Deletes the member. Rethrows on failure - the confirming dialog toasts.
   Future<void> removeMember(String id) async {
     await _members.removeMember(id);
   }
 
-  /// Archives the member. Rethrows on failure — the confirming dialog toasts.
+  /// Archives the member. Rethrows on failure - the confirming dialog toasts.
   Future<void> archiveMember(String id) async {
     await _members.archiveMember(id);
   }

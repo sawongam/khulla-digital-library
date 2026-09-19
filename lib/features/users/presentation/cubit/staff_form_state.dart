@@ -18,7 +18,7 @@ part 'staff_form_state.freezed.dart';
 /// one's identity and role, setting a new password for one, or updating
 /// the signed-in operator's own profile.
 ///
-/// One cubit, four modes, rather than multiple cubits — every mode mutates
+/// One cubit, four modes, rather than multiple cubits - every mode mutates
 /// the same resource and shares the same load/submit shape; only which fields
 /// are validated and which repository call runs differs.
 enum StaffFormMode { create, edit, resetPassword, profile }

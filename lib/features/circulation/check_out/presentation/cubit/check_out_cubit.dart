@@ -160,7 +160,7 @@ class CheckOutCubit extends Cubit<CheckOutState> {
   ///
   /// One-shot direct resolution for the `?card=` deep link. Loads
   /// [EffectiveLoanRules] for their type on success. Failures emit
-  /// into state and swallow — the operator stays on the same field.
+  /// into state and swallow - the operator stays on the same field.
   Future<void> lookupMember(String query) async {
     emit(
       state.copyWith(

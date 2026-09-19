@@ -7,7 +7,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The app version, shared by the rail footer and More sheet.
 ///
 /// Both spots are shell chrome, so the label lives here once: `v` plus
-/// [AppVersion.version] — which reads `version:` in `pubspec.yaml` back from
+/// [AppVersion.version] - which reads `version:` in `pubspec.yaml` back from
 /// the platform at runtime, so there is no generated copy to regenerate after
 /// a bump. The product name is deliberately not shown here; the
 /// brand mark above the rail already carries it. The version part is

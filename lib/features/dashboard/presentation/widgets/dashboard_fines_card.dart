@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// What overdue copies have cost members, month by month.
 ///
-/// A line rather than bars: the shape of the curve is the point — a library
+/// A line rather than bars: the shape of the curve is the point - a library
 /// wants to see fines *falling* after it changes a loan rule, which is a
 /// trend, not a set of monthly comparisons.
 class DashboardFinesCard extends StatelessWidget {

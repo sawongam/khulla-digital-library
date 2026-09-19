@@ -36,7 +36,7 @@ class RouteAccess {
 /// missing. Everything else asks only that the section be readable, and the
 /// controls inside it check `manage` for themselves.
 ///
-/// Ordered longest path first — `/circulation/fines` must not be answered by
+/// Ordered longest path first - `/circulation/fines` must not be answered by
 /// `/circulation`.
 RouteAccess? accessFor(String location) {
   bool under(String prefix) => Routes.isUnder(location, prefix);
@@ -90,7 +90,7 @@ RouteAccess? accessFor(String location) {
 /// The section's own redirect cannot be a constant: a role without the
 /// settings permission would be sent to the library profile and bounced
 /// straight back out, which reads as the rail row doing nothing. Appearance
-/// is the floor — every role may theme its own device.
+/// is the floor - every role may theme its own device.
 String settingsLandingFor(UserRole role) =>
     role.canView(StaffPermission.settings)
     ? Routes.settingsLibrary

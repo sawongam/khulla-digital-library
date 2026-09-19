@@ -12,7 +12,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// open, the write was rejected, the credentials did not match. A field-level
 /// problem belongs under its field instead.
 ///
-/// Takes a resolved [message] or an [error] to resolve — the design system
+/// Takes a resolved [message] or an [error] to resolve - the design system
 /// deals in strings, so localization happens on this side of the line.
 class AuthErrorNotice extends StatelessWidget {
   const AuthErrorNotice({required this.message, super.key}) : error = null;

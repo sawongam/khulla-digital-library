@@ -175,7 +175,7 @@ class StaffRepositoryImpl implements StaffRepository {
   /// administrator.
   ///
   /// Called before the target account's role or status is written, so the
-  /// count still includes it — "one" here means "only this one, and it is
+  /// count still includes it - "one" here means "only this one, and it is
   /// the one about to lose the role or be disabled".
   Future<void> _guardLastAdministrator() async {
     final activeAdmins = await _dataSource.countStaffWithRoleAndStatus(

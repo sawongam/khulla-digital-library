@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// No greeting and no page title. The shell's top bar already names the page
 /// and the account chip already says who the till is open as, so a headline
-/// here would be a second title that scrolls away — the exact thing putting
+/// here would be a second title that scrolls away - the exact thing putting
 /// the bar in the shell was meant to prevent. What is left is a control
 /// strip: the period switch governs every figure below it, so it belongs
 /// once at the top rather than on each card.
@@ -74,7 +74,7 @@ class DashboardHeader extends StatelessWidget {
 
     if (stacked) {
       // The two desk shortcuts share one row rather than taking a band each.
-      // They are a pair — the same copy goes out and comes back — and two
+      // They are a pair - the same copy goes out and comes back - and two
       // full-width buttons stacked read as two unrelated decisions while
       // costing the board a card's worth of height.
       return Column(

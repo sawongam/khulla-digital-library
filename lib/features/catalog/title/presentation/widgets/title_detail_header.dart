@@ -27,7 +27,7 @@ class TitleDetailHeader extends StatelessWidget {
   final catalog.Title title;
 
   /// Opens the title's form. Null for a role that may read the catalogue but
-  /// not change it — the button is absent rather than disabled, because a
+  /// not change it - the button is absent rather than disabled, because a
   /// control that can never be pressed is furniture.
   final VoidCallback? onEdit;
 

@@ -18,8 +18,8 @@ const List<int> _sqliteHeader = [
   0x6f, 0x72, 0x6d, 0x61, 0x74, 0x20, 0x33, 0x00, // 'ormat 3\0'
 ];
 
-/// Checkpoints WAL into the main file — the change that makes a plain copy
-/// of that one file consistent — then reads it.
+/// Checkpoints WAL into the main file - the change that makes a plain copy
+/// of that one file consistent - then reads it.
 Future<Uint8List> exportBackupBytes(AppDatabase db, AppConfig config) async {
   await db.customStatement('PRAGMA wal_checkpoint(TRUNCATE)');
   final path = await resolveDatabasePath(config.databaseName);
@@ -34,7 +34,7 @@ Future<Uint8List> exportBackupBytes(AppDatabase db, AppConfig config) async {
 /// discards stale WAL/SHM sidecars from the file being replaced, and writes
 /// [bytes] over the catalogue file.
 ///
-/// Nothing here restarts the app — the caller does that once this returns,
+/// Nothing here restarts the app - the caller does that once this returns,
 /// since restart is the one step every platform shares.
 Future<void> importBackupBytes(
   AppDatabase db,
@@ -68,7 +68,7 @@ Future<({int? sizeBytes, String? path})> inspectStorage(
 }
 
 /// Checks the SQLite header, then opens a temporary copy read-only and
-/// confirms it holds tables this app expects — a valid-but-unrelated sqlite
+/// confirms it holds tables this app expects - a valid-but-unrelated sqlite
 /// file (someone else's database) has the right header and the wrong
 /// schema, and deserves the same refusal as a file with no header at all.
 Future<void> _validateBackupBytes(Uint8List bytes) async {

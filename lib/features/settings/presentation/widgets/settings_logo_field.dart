@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// A preview of the library's uploaded mark, beside upload/remove controls.
 ///
-/// Purely presentational — picking the file and calling the cubit is the
+/// Purely presentational - picking the file and calling the cubit is the
 /// page's job, same split as every other form control here.
 class SettingsLogoField extends StatelessWidget {
   const SettingsLogoField({

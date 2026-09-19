@@ -40,7 +40,7 @@ ShellPageTitle shellPageTitle(
 }) {
   final destinations = shellDestinations(l10n, role);
 
-  // The manual is no rail destination — it opens from the account menu —
+  // The manual is no rail destination - it opens from the account menu -
   // so neither its landing page nor its articles match the loop below.
   // The articles are a topic enum rather than declared children, so they
   // are resolved here instead.

@@ -13,7 +13,7 @@ final GetIt getIt = GetIt.instance;
 ///
 /// The runtime [config] is registered first so flavor-aware singletons (the
 /// database, the desktop window) can depend on it, then the generated
-/// initializer registers the rest. Bindings are identical across flavors —
+/// initializer registers the rest. Bindings are identical across flavors -
 /// the flavor only decides which database file the app opens.
 @InjectableInit(preferRelativeImports: true)
 Future<void> configureDependencies(AppConfig config) async {

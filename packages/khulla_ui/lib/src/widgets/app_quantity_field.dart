@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// How tall the minus/plus control is relative to a text field.
 enum AppQuantityFieldSize {
-  /// Matches [AppMetrics.fieldHeight] — sits beside a text field in a form row.
+  /// Matches [AppMetrics.fieldHeight] - sits beside a text field in a form row.
   regular,
 
   /// A tighter control for short prompts and dialogs.

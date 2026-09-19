@@ -9,8 +9,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// knows whether the query costs a `LIKE` over ten thousand rows or a filter
 /// over a list already in memory.
 ///
-/// It carries the same hairline box as every other field — no fill, no focus
-/// ring, and the same 2px focus nudge — so a search bar above a table and a
+/// It carries the same hairline box as every other field - no fill, no focus
+/// ring, and the same 2px focus nudge - so a search bar above a table and a
 /// text field inside a form read as the same control. A leading glyph in the
 /// muted icon ink is the only thing that marks it as search.
 class AppSearchField extends StatefulWidget {
@@ -28,7 +28,7 @@ class AppSearchField extends StatefulWidget {
     super.key,
   });
 
-  /// Placeholder copy — say what is searched, not "Search".
+  /// Placeholder copy - say what is searched, not "Search".
   final String hintText;
 
   /// Called on every keystroke.
@@ -46,7 +46,7 @@ class AppSearchField extends StatefulWidget {
   /// External focus, for a screen that focuses search on open.
   final FocusNode? focusNode;
 
-  /// A control pinned inside the trailing edge — a scope switch, a filter
+  /// A control pinned inside the trailing edge - a scope switch, a filter
   /// glyph. Replaced by the clear button while the field has text.
   final Widget? trailing;
 

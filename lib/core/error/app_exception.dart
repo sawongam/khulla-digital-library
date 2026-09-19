@@ -9,7 +9,7 @@ import 'package:sqlite3/common.dart';
 /// The data layer catches driver-level errors and converts them with
 /// [AppException.fromSqlite] so presentation code only ever deals
 /// with this small, exhaustive set of cases. The `message` carried here is a
-/// developer-facing fallback — presentation should render
+/// developer-facing fallback - presentation should render
 /// `AppExceptionL10n.localizedMessage` instead.
 sealed class AppException extends Equatable implements Exception {
   const AppException(this.message);
@@ -60,7 +60,7 @@ sealed class AppException extends Equatable implements Exception {
         'There is no room left to write to the library database.',
       ),
       // Nothing will work until these are resolved, and neither is something
-      // a retry can fix — the operator needs a backup.
+      // a retry can fix - the operator needs a backup.
       SqlError.SQLITE_CORRUPT ||
       SqlError.SQLITE_NOTADB => const DatabaseUnavailableException(
         'The library database file is damaged.',
@@ -76,7 +76,7 @@ sealed class AppException extends Equatable implements Exception {
   List<Object?> get props => [message];
 }
 
-/// A write violated a uniqueness rule — a duplicate ISBN, accession number,
+/// A write violated a uniqueness rule - a duplicate ISBN, accession number,
 /// or membership id.
 class DuplicateRecordException extends AppException {
   const DuplicateRecordException([String? message])
@@ -95,7 +95,7 @@ class InvalidInputException extends AppException {
     : super(message ?? 'Some of those details are not valid.');
 }
 
-/// The action conflicts with the current state — returning a copy that is not
+/// The action conflicts with the current state - returning a copy that is not
 /// on loan, borrowing one that is already out.
 class ConflictException extends AppException {
   const ConflictException([String? message])
@@ -116,7 +116,7 @@ class DatabaseFailureException extends AppException {
     : super(message ?? 'The database rejected that change.');
 }
 
-/// Reading or writing a file failed — a cover image, an import, an export.
+/// Reading or writing a file failed - a cover image, an import, an export.
 class StorageException extends AppException {
   const StorageException([String? message])
     : super(message ?? 'A file could not be read or written.');

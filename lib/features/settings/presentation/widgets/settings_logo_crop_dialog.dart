@@ -10,7 +10,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// Crops a freshly picked image before it becomes the shell's brand mark.
 ///
-/// No fixed aspect ratio — the shell's brand mark renders whatever shape
+/// No fixed aspect ratio - the shell's brand mark renders whatever shape
 /// comes out of this, so cropping is free-form rather than forced to a
 /// square.
 ///

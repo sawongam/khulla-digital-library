@@ -7,7 +7,7 @@ import 'package:solar_iconkit/solar_iconkit.dart';
 /// The app's icon catalog.
 ///
 /// Every icon in Khulla is named here and drawn with `AppIcon`. Material's
-/// `Icons` and Cupertino's `CupertinoIcons` are **banned** — see `DESIGN.md`.
+/// `Icons` and Cupertino's `CupertinoIcons` are **banned** - see `DESIGN.md`.
 /// Two reasons:
 ///
 /// * A central catalog is what keeps "delete" the same glyph on the copy list,
@@ -18,7 +18,7 @@ import 'package:solar_iconkit/solar_iconkit.dart';
 /// ## One weight: `outline`
 ///
 /// Every icon here is [SolarIconStyle.outline], and nothing in the app uses
-/// `bold` or either duotone. Solar's bold style is a solid silhouette — next
+/// `bold` or either duotone. Solar's bold style is a solid silhouette - next
 /// to this app's hairline borders and `w500` type it reads as a different,
 /// heavier product. Selection and active state are carried by **color** and by
 /// the surface underneath the icon, never by swapping in a filled glyph. Do
@@ -26,13 +26,13 @@ import 'package:solar_iconkit/solar_iconkit.dart';
 /// fix is contrast, not weight.
 ///
 /// Names are semantic, not Solar names: a call site says [delete], not
-/// `'trash-bin-minimalistic'`. Two names may share a glyph — [warning] and
+/// `'trash-bin-minimalistic'`. Two names may share a glyph - [warning] and
 /// [damage] are different meanings that happen to look alike today, and
 /// keeping them separate is what lets one change without the other.
 ///
 /// Adding an icon: pick a name from <https://solar-icons-web.vercel.app>, add
 /// a constant here with a doc comment saying what it *means*, and use it.
-/// Never inline an [AppIconSpec] at a call site — the catalog is the point.
+/// Never inline an [AppIconSpec] at a call site - the catalog is the point.
 abstract final class AppIcons {
   // ---------------------------------------------------------------- direction
 
@@ -85,7 +85,7 @@ abstract final class AppIcons {
     SolarIcons.trashBinMinimalistic,
   );
 
-  /// Delete for good — the confirm on a destructive, unrecoverable action.
+  /// Delete for good - the confirm on a destructive, unrecoverable action.
   static const AppIconSpec deleteForever = AppIconSpec(
     SolarIcons.trashBinMinimalistic2,
   );
@@ -93,7 +93,7 @@ abstract final class AppIcons {
   /// Dismiss a sheet, dialog, chip or banner.
   static const AppIconSpec close = AppIconSpec(SolarIcons.close);
 
-  /// Confirm a choice — the tick beside a selected menu row.
+  /// Confirm a choice - the tick beside a selected menu row.
   static const AppIconSpec check = AppIconSpec(SolarIcons.checkCircle);
 
   /// Re-run the query behind the screen.
@@ -126,7 +126,7 @@ abstract final class AppIcons {
   /// Search.
   static const AppIconSpec search = AppIconSpec(SolarIcons.magnifier);
 
-  /// A search that matched nothing — the empty state, not the field.
+  /// A search that matched nothing - the empty state, not the field.
   static const AppIconSpec noResults = AppIconSpec(SolarIcons.magnifierBug);
 
   /// Browse the whole catalogue rather than searching it.
@@ -137,7 +137,7 @@ abstract final class AppIcons {
   /// A title in the catalogue.
   static const AppIconSpec book = AppIconSpec(SolarIcons.book2);
 
-  /// A title being read — reading history, an issued copy.
+  /// A title being read - reading history, an issued copy.
   static const AppIconSpec openBook = AppIconSpec(SolarIcons.book);
 
   /// Add a title to the catalogue.
@@ -167,7 +167,7 @@ abstract final class AppIcons {
   /// Many barcodes entered at once, typed or pasted.
   static const AppIconSpec bulkEntry = AppIconSpec(SolarIcons.clipboardList);
 
-  /// A written piece — an article, a periodical entry.
+  /// A written piece - an article, a periodical entry.
   static const AppIconSpec article = AppIconSpec(SolarIcons.documentText);
 
   /// An audio item in the catalogue.
@@ -204,7 +204,7 @@ abstract final class AppIcons {
   /// A dated event on the calendar.
   static const AppIconSpec event = AppIconSpec(SolarIcons.calendarMark);
 
-  /// Time — a loan period, an overdue count.
+  /// Time - a loan period, an overdue count.
   static const AppIconSpec clock = AppIconSpec(SolarIcons.clockCircle);
 
   // -------------------------------------------------------------------- money
@@ -296,7 +296,7 @@ abstract final class AppIcons {
   /// Switch a list to a table.
   static const AppIconSpec tableView = AppIconSpec(SolarIcons.list);
 
-  /// An unfilled bullet — an unselected row marker.
+  /// An unfilled bullet - an unselected row marker.
   static const AppIconSpec circle = AppIconSpec(SolarIcons.recordCircle);
 
   // -------------------------------------------------------------------- state

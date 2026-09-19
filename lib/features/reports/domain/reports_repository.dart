@@ -12,7 +12,7 @@ import 'package:khulla/features/reports/domain/models/reports_summary.dart';
 abstract interface class ReportsRepository {
   /// Everything the board draws for `[start, end)`, with `[previousStart,
   /// previousEnd)` supplying the stat tiles' trend comparison. The monthly
-  /// trend charts and the collection mix are not period-scoped — they show a
+  /// trend charts and the collection mix are not period-scoped - they show a
   /// fixed eight months of history and the catalogue's current composition.
   Future<ReportsSummary> loadSummary({
     required DateTime start,

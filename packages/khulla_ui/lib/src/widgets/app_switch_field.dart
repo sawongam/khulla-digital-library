@@ -6,7 +6,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// {@template app_switch_field}
 /// A setting row: label, explanation, and a switch on the trailing edge.
 ///
-/// A switch means the change takes effect immediately — that is what
+/// A switch means the change takes effect immediately - that is what
 /// separates it from [AppCheckboxField], which collects a value the form
 /// submits later. Use it in Settings, not in an editor.
 /// {@endtemplate}

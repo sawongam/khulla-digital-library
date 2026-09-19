@@ -5,7 +5,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The footer under a table: how much is showing, and how to move.
 ///
-/// The range label is handed in ready-made — "Showing 1–9 of 36" is a
+/// The range label is handed in ready-made - "Showing 1–9 of 36" is a
 /// sentence with plurals and digit grouping in it, which is an ARB's job, not
 /// a widget's.
 ///
@@ -15,7 +15,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// pages the run is elided around the current one, so the footer never wraps.
 ///
 /// Two conventions here run against the usual instinct and are deliberate.
-/// The **current page is a filled brand chip** — the reference dashboard
+/// The **current page is a filled brand chip** - the reference dashboard
 /// treats pagination as navigation chrome, not a primary action, but the
 /// filled square reads clearly at table scale. And the prev/next controls are
 /// **hidden at the ends rather than disabled**, so there is no permanently
@@ -37,7 +37,7 @@ class AppPagination extends StatelessWidget {
   /// "Showing 1–9 of 36 titles", already localized.
   final String rangeLabel;
 
-  /// Null disables the control — the first page has nowhere back to go.
+  /// Null disables the control - the first page has nowhere back to go.
   final VoidCallback? onPrevious;
 
   /// Null disables the control.

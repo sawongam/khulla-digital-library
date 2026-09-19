@@ -19,7 +19,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// The router sends the operator here whenever staff accounts exist and
 /// nobody is signed in on this device; there is no way to reach it otherwise,
-/// and no link from here to onboarding — a second administrator is created
+/// and no link from here to onboarding - a second administrator is created
 /// from the staff section, not from this screen.
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});

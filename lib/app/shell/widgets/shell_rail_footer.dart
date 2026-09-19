@@ -7,7 +7,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The app-wide chrome, parked at the foot of the rail.
 ///
 /// Who is signed in is the same on every screen, so the account control
-/// belongs beside the navigation that is also the same on every screen — not
+/// belongs beside the navigation that is also the same on every screen - not
 /// across the top, where it crowded out the one thing that differs per screen:
 /// what this section is and what you can do to it.
 class ShellRailFooter extends StatelessWidget {

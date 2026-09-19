@@ -7,7 +7,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// What this product is, who made it, and where the source lives.
 ///
 /// Reachable from the account menu on any screen. It is a dialog rather than
-/// a route because it is looked up *over* the work in progress — an operator
+/// a route because it is looked up *over* the work in progress - an operator
 /// reporting a bug should not lose the screen to find the version number.
 class HelpAboutDialog extends StatelessWidget {
   const HelpAboutDialog({super.key});

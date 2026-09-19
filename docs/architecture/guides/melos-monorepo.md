@@ -1,4 +1,4 @@
-# ADR 0015 — Melos monorepo structure
+# ADR 0015 - Melos monorepo structure
 
 **Status:** Accepted · **Date:** 2026-09-03
 
@@ -7,7 +7,7 @@
 Khulla is one app and one design-system package today. The app imports `package:khulla_ui/khulla_ui.dart`; the design system knows nothing about the app. Without a workspace tool, `pub get` in the app resolves `khulla_ui` from `path: packages/khulla_ui` in `pubspec.yaml`. That works for a single developer running one terminal. It breaks in several ways as the project grows:
 
 - **Commands run from the root do not cross package boundaries.** `dart format .` from the repo root formats files in `lib/` but ignores `packages/khulla_ui/lib/`. `dart analyze` from the root may or may not pick up `khulla_ui`'s analysis options depending on what it finds first. The result is a repository where "I ran the checks" means "I ran them on the app, maybe."
-- **Bootstrapping is manual and error-prone.** A fresh clone needs `flutter pub get` in the root *and* `flutter pub get` in `packages/khulla_ui`. Missing the second step produces import errors that look like the design system is broken.
+- **Bootstrapping is manual and error-prone.** A fresh clone needs `flutter pub get` in the root _and_ `flutter pub get` in `packages/khulla_ui`. Missing the second step produces import errors that look like the design system is broken.
 - **Scripts that should run across all packages need manual repetition.** `make check` would have to be written as two separate commands, one per package. Adding a third package means updating the Makefile in a non-obvious place.
 
 Melos solves all three: it defines the workspace in one file, `melos bootstrap` runs `pub get` across every package and links local path dependencies, and `melos exec` runs any command in every package that matches a filter. The Makefile delegates to `melos exec`; adding a package to `melos.yaml` is the only step required to include it in every workspace command.
@@ -59,7 +59,7 @@ scripts:
 
   build:
     run: dart run build_runner build --delete-conflicting-outputs
-    description: Run code generation (app only — khulla_ui has no generators).
+    description: Run code generation (app only - khulla_ui has no generators).
     packageFilters:
       scope: khulla
 
@@ -72,7 +72,7 @@ scripts:
 
 ### `make` as the human interface
 
-Developers never type `melos run analyze` directly — the Makefile wraps everything:
+Developers never type `melos run analyze` directly - the Makefile wraps everything:
 
 ```makefile
 bootstrap:
@@ -103,7 +103,7 @@ The split between Melos (workspace orchestration) and Make (human-facing interfa
 
 ### Why `dart format .` from the root is banned
 
-`analyzer.exclude` in `analysis_options.yaml` uses a **replacement** semantic when inherited via `include:`. An including file's `analyzer.exclude` replaces the included one's — it does not merge. Running `dart format .` from the repo root picks up the root's `analysis_options.yaml` but may miss the generated-file globs that live in a package's own options, depending on which package it finds first. `melos exec -- dart format` runs in each package directory, picking up that package's analysis options correctly.
+`analyzer.exclude` in `analysis_options.yaml` uses a **replacement** semantic when inherited via `include:`. An including file's `analyzer.exclude` replaces the included one's - it does not merge. Running `dart format .` from the repo root picks up the root's `analysis_options.yaml` but may miss the generated-file globs that live in a package's own options, depending on which package it finds first. `melos exec -- dart format` runs in each package directory, picking up that package's analysis options correctly.
 
 The same applies to `dart analyze`: running it from the root is unreliable for a multi-package repo. `melos exec -- dart analyze` is reliable.
 
@@ -111,13 +111,13 @@ The same applies to `dart analyze`: running it from the root is unreliable for a
 
 `flutter pub get` in the root resolves the app's dependencies and writes a `pubspec.lock` for the app only. `packages/khulla_ui/pubspec.lock` is not updated. `melos bootstrap` runs `pub get` in every package in dependency order and links local packages via `pubspec_overrides.yaml` (written by Melos, gitignored). After `melos bootstrap`, the app resolves `package:khulla_ui` from the local path, not from pub.dev.
 
-A fresh clone that runs `flutter pub get` before `melos bootstrap` will appear to work — the app resolves `khulla_ui` from the path entry in `pubspec.yaml` — but `khulla_ui`'s own dependencies may be unresolved, producing confusing import errors. `dart run melos bootstrap` is always the first step.
+A fresh clone that runs `flutter pub get` before `melos bootstrap` will appear to work - the app resolves `khulla_ui` from the path entry in `pubspec.yaml` - but `khulla_ui`'s own dependencies may be unresolved, producing confusing import errors. `dart run melos bootstrap` is always the first step.
 
 ### Adding a new package
 
 1. Create the directory under `packages/`.
 2. Add a `pubspec.yaml` with a `name:` and `environment:` matching the workspace SDK constraint.
-3. `dart run melos bootstrap` — Melos picks it up automatically from the `packages/**` glob.
+3. `dart run melos bootstrap` - Melos picks it up automatically from the `packages/**` glob.
 4. Every workspace command (`make analyze`, `make test`) now includes the new package with no Makefile change.
 
 If the new package needs to be a dependency of the app, add it to the app's `pubspec.yaml` as a path dependency and re-bootstrap.
@@ -130,7 +130,7 @@ If the new package needs to be a dependency of the app, add it to the app's `pub
 packages:
   - .
   - packages/**
-# sizzbe-app/ is intentionally absent — it is not a workspace package
+# sizzbe-app/ is intentionally absent - it is not a workspace package
 ```
 
 It is also excluded from `analysis_options.yaml`'s `analyzer.exclude` list and from `dart format`. Never import from it; never edit it.
@@ -148,8 +148,8 @@ It is also excluded from `analysis_options.yaml`'s `analyzer.exclude` list and f
 
 - `dart run melos bootstrap` is not `flutter pub get`. A contributor who runs `flutter pub get` and then tries to run the app will encounter `khulla_ui` dependency resolution errors if Melos has not been run. This is documented in the README and the contributing guide but is still the most common setup mistake.
 - `pubspec_overrides.yaml` files are written by Melos into each package directory. They are gitignored. After a `git clean -fd`, they are gone and `melos bootstrap` must be re-run. This surprises contributors who use aggressive git clean.
-- Melos is a dev dependency (`dart pub global activate melos`). CI must install it before running workspace commands. `dart run melos` (via `dev_dependencies: melos: …` in the root pubspec) sidesteps the global activation requirement and is the preferred invocation — it uses the pinned version in the lockfile rather than whatever the system has.
+- Melos is a dev dependency (`dart pub global activate melos`). CI must install it before running workspace commands. `dart run melos` (via `dev_dependencies: melos: …` in the root pubspec) sidesteps the global activation requirement and is the preferred invocation - it uses the pinned version in the lockfile rather than whatever the system has.
 
 ## Revisiting
 
-The trigger to re-evaluate Melos is a Dart/Flutter native workspace feature that covers the same ground — bootstrapping, cross-package script execution, and per-package analysis options. Dart workspaces (the `workspace:` key in `pubspec.yaml`, stable in Dart 3.5) cover dependency resolution but not script execution; Melos still handles the `exec` layer. When the two converge, migrating the dependency management to native workspaces while keeping Melos only for scripts is the natural path.
+The trigger to re-evaluate Melos is a Dart/Flutter native workspace feature that covers the same ground - bootstrapping, cross-package script execution, and per-package analysis options. Dart workspaces (the `workspace:` key in `pubspec.yaml`, stable in Dart 3.5) cover dependency resolution but not script execution; Melos still handles the `exec` layer. When the two converge, migrating the dependency management to native workspaces while keeping Melos only for scripts is the natural path.

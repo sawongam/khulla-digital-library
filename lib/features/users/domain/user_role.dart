@@ -12,7 +12,7 @@ enum UserRole { administrator, librarian, assistant, readOnly }
 
 /// One thing a role may or may not do.
 ///
-/// The list is deliberately coarse — eight permissions a librarian can reason
+/// The list is deliberately coarse - eight permissions a librarian can reason
 /// about, not forty a developer can. Anything finer belongs to the screen
 /// that enforces it.
 enum StaffPermission {
@@ -34,7 +34,7 @@ enum StaffPermission {
 /// the same permission at two different depths. [view] opens the section and
 /// its screens; [manage] additionally unlocks every control that writes.
 enum PermissionLevel {
-  /// The section is not reachable at all — hidden in the shell, and
+  /// The section is not reachable at all - hidden in the shell, and
   /// redirected away from if its URL is typed.
   none,
 
@@ -57,7 +57,7 @@ enum PermissionLevel {
 /// Written out per role rather than derived from a hierarchy: a desk
 /// assistant is not "a librarian with less", and the day that stops being
 /// true this map is the one place that changes. A permission a role does not
-/// list at all is [PermissionLevel.none] — read it through
+/// list at all is [PermissionLevel.none] - read it through
 /// [UserRolePermissions.levelOf] rather than indexing, so a missing entry can
 /// never read as access.
 const Map<UserRole, Map<StaffPermission, PermissionLevel>> rolePermissions = {
@@ -77,15 +77,15 @@ const Map<UserRole, Map<StaffPermission, PermissionLevel>> rolePermissions = {
     StaffPermission.members: PermissionLevel.manage,
     StaffPermission.fines: PermissionLevel.manage,
     StaffPermission.reports: PermissionLevel.manage,
-    // The library's own settings are readable — a librarian answering "how
-    // long is a loan" should not have to ask an administrator — but the loan
+    // The library's own settings are readable - a librarian answering "how
+    // long is a loan" should not have to ask an administrator - but the loan
     // rules and the library's identity are the administrator's to change.
     StaffPermission.settings: PermissionLevel.view,
   },
   // "The circulation desk: check out, return, and look up a member." Looking
   // a book up is catalogue work, so the catalogue opens; editing its records
-  // is not, so it opens read-only. Fines are visible at the counter — a
-  // member's standing decides whether they may borrow — but waiving one is a
+  // is not, so it opens read-only. Fines are visible at the counter - a
+  // member's standing decides whether they may borrow - but waiving one is a
   // librarian's call.
   UserRole.assistant: {
     StaffPermission.catalog: PermissionLevel.view,

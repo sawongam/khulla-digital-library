@@ -38,7 +38,7 @@ class DashboardSectionCard extends StatelessWidget {
   /// Glyph beside the heading.
   final AppIconSpec? icon;
 
-  /// The section's single control — a period picker, a *view all* link.
+  /// The section's single control - a period picker, a *view all* link.
   final Widget? trailing;
 
   /// Floor for the body's height, so two cards side by side start level.

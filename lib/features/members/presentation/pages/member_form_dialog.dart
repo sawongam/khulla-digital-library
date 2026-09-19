@@ -25,7 +25,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The borrower editor, used for both a new card and an existing one.
 ///
-/// A modal rather than a route — see [AppFormModal]. Four sections in the
+/// A modal rather than a route - see [AppFormModal]. Four sections in the
 /// order the counter fills them: identity, contact, additional details and
 /// membership. [MemberFormCubit] loads member types and saves the record;
 /// barcode is auto-generated from library settings when blank.

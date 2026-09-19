@@ -46,7 +46,7 @@ class ThemeStorage {
 
   /// The mixed color in use, or null when the brand is one of the presets.
   ///
-  /// Stored as a packed ARGB int — a color has no name to key it by, and a
+  /// Stored as a packed ARGB int - a color has no name to key it by, and a
   /// hex string would need parsing and a rule for what a corrupt one means.
   Color? readCustomBrand() {
     final value = _prefs.getInt(_customBrandKey);

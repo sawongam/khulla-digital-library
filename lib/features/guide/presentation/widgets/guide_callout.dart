@@ -4,7 +4,7 @@
 import 'package:khulla/features/guide/domain/guide_block.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// An aside with a standing — a tip, a caution, a warning that costs records.
+/// An aside with a standing - a tip, a caution, a warning that costs records.
 ///
 /// The tone is the whole point: a page of eight identical grey boxes trains
 /// the reader to skip all of them, and the one that said *restoring replaces

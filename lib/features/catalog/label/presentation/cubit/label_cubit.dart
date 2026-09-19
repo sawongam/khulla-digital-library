@@ -19,7 +19,7 @@ import 'package:khulla/shared/models/load_status.dart';
 /// Page-scoped `@injectable` cubit. Reads [CopyRepository] for barcode
 /// lookup, [TitleRepository] for the author line, and
 /// [LibrarySettingsRepository] for the library name on property labels.
-/// No table of its own — the queue is local state, so [loadLabelDesk] is the
+/// No table of its own - the queue is local state, so [loadLabelDesk] is the
 /// only read and everything else is synchronous state.
 ///
 /// [queueBarcode] emits and rethrows so the scan field can toast; layout
@@ -54,7 +54,7 @@ class LabelCubit extends Cubit<LabelState> {
   }
 
   /// Queues the copy with [barcode], or bumps its count when it is already
-  /// queued — a second scan of the same book means a second sticker, not a
+  /// queued - a second scan of the same book means a second sticker, not a
   /// duplicate row. Emits and rethrows on failure so the scan field toasts.
   Future<void> queueBarcode(String barcode) async {
     final trimmed = barcode.trim();
@@ -69,13 +69,13 @@ class LabelCubit extends Cubit<LabelState> {
     }
   }
 
-  /// Queues every barcode in [barcodes] — one per pasted line, for a stack of
+  /// Queues every barcode in [barcodes] - one per pasted line, for a stack of
   /// copies that arrived with a printed accession list instead of a scanner
   /// at hand. A barcode matching nothing is skipped and reported back rather
   /// than aborting the rest, since one typo shouldn't cost the whole batch.
   ///
   /// A genuine data-layer failure still emits and rethrows, same as a single
-  /// scan — the difference is that "no copy matches" is expected here, not
+  /// scan - the difference is that "no copy matches" is expected here, not
   /// exceptional.
   Future<LabelBulkQueueResult> queueBarcodes(List<String> barcodes) async {
     final notFound = <String>[];
@@ -202,7 +202,7 @@ class LabelCubit extends Cubit<LabelState> {
 
   /// Builds the sheet PDF and opens the OS print dialog.
   ///
-  /// Returns whether the sheet reached the dialog — a dismissed dialog
+  /// Returns whether the sheet reached the dialog - a dismissed dialog
   /// answers `false` and stays silent. Emits and rethrows on failure so the
   /// print button can toast.
   Future<bool> printSheet() async {

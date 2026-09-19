@@ -38,7 +38,7 @@ class StaffListCubit extends Cubit<StaffListState> {
   }
 
   /// Enables or disables [id]. Rethrows so the row menu can show the failure
-  /// as a toast — the lockout and self-disable rules live in the repository,
+  /// as a toast - the lockout and self-disable rules live in the repository,
   /// not here, so there is exactly one place that enforces them.
   Future<void> setStatus(String id, UserStatus status) async {
     final acting = actingStaffId;

@@ -7,12 +7,12 @@ import 'package:khulla/features/circulation/loan/data/tables/loans.dart';
 import 'package:khulla/features/circulation/shared/domain/fine_reason.dart';
 import 'package:khulla/features/members/data/tables/members.dart';
 
-/// Money actually owed — written at return or manual assessment.
+/// Money actually owed - written at return or manual assessment.
 @DataClassName('FineRow')
 @TableIndex.sql(
   'CREATE INDEX fines_outstanding ON fines (member_id) WHERE paid + waived < assessed',
 )
-// A member's whole fine history, and the lookup a member delete needs —
+// A member's whole fine history, and the lookup a member delete needs -
 // `fines_outstanding` is partial, so it serves neither.
 @TableIndex.sql(
   'CREATE INDEX fines_member ON fines (member_id, raised_at DESC)',

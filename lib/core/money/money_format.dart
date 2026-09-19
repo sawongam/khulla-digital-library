@@ -35,14 +35,14 @@ class MoneyFormat {
     this.separator = ' ',
   });
 
-  /// Nepali rupee — the default, and the currency Khulla was written for.
+  /// Nepali rupee - the default, and the currency Khulla was written for.
   static final MoneyFormat nepaliRupee = MoneyFormat(symbol: 'Rs');
 
   /// The format every `Money.display()` uses unless handed an override.
   ///
   /// Set once during `bootstrap` from the library's settings, before the first
-  /// frame. Changing it later is allowed — a settings screen switching
-  /// currency — but nothing rebuilds on its own: the screen that changes it
+  /// frame. Changing it later is allowed - a settings screen switching
+  /// currency - but nothing rebuilds on its own: the screen that changes it
   /// has to trigger a rebuild of anything showing an amount.
   static MoneyFormat current = nepaliRupee;
 
@@ -61,11 +61,11 @@ class MoneyFormat {
   /// Grouped whole amount: `1,23,456`.
   ///
   /// Pinned to `en` so a locale change can never swap the digit set out from
-  /// under an amount — a fine has to be legible to whoever is reading the
+  /// under an amount - a fine has to be legible to whoever is reading the
   /// screen and to whoever audits the till.
   late final NumberFormat _whole = NumberFormat(grouping.wholePattern, 'en');
 
-  /// Grouped amount carrying minor units: `1,23,456.78`. Always both places —
+  /// Grouped amount carrying minor units: `1,23,456.78`. Always both places -
   /// `1,240.5` reads as a typo where `1,240.50` reads as money.
   late final NumberFormat _decimal = NumberFormat(
     grouping.decimalPattern,

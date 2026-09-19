@@ -8,8 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// A stored id, not a token: there is no server to issue one and nothing to
 /// revoke. Whoever can read this key can already read the catalogue file next
-/// to it, so the id buys convenience — the desk machine does not ask for a
-/// password every morning — and claims no more security than that.
+/// to it, so the id buys convenience - the desk machine does not ask for a
+/// password every morning - and claims no more security than that.
 ///
 /// The id is checked against the staff table on every restore, so an account
 /// that was deleted or disabled since the last session does not come back.

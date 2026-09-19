@@ -7,7 +7,7 @@ import 'package:khulla/features/circulation/shared/domain/reservation_status.dar
 
 part 'reservation.freezed.dart';
 
-/// One hold on a title — any copy can satisfy it.
+/// One hold on a title - any copy can satisfy it.
 @freezed
 abstract class Reservation with _$Reservation {
   const factory Reservation({

@@ -7,7 +7,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// The page's *name* is in the shell's top bar; this says what the table
 /// below holds and offers the one action that adds to it. Secondary actions
-/// go in the overflow menu rather than becoming a row of equal buttons — a
+/// go in the overflow menu rather than becoming a row of equal buttons - a
 /// header with four buttons has no primary action at all.
 class CollectionHeader extends StatelessWidget {
   const CollectionHeader({
@@ -44,10 +44,10 @@ class CollectionHeader extends StatelessWidget {
   /// Tooltip for the overflow menu. Required for the menu to appear.
   final String? menuTooltip;
 
-  /// A widget above the heading — a banner, a back control.
+  /// A widget above the heading - a banner, a back control.
   final Widget? leading;
 
-  /// A control between the heading and the actions — a view switch.
+  /// A control between the heading and the actions - a view switch.
   final Widget? trailing;
 
   @override

@@ -12,7 +12,7 @@ typedef ReportsMonthCount = ({DateTime month, int count});
 /// One row of a "most borrowed" or "most active" ranking, for the period.
 typedef ReportsRanking = ({String name, String detail, int count});
 
-/// One title by catalogue format, for the collection-mix donut — a snapshot,
+/// One title by catalogue format, for the collection-mix donut - a snapshot,
 /// not scoped to the report period.
 typedef ReportsFormatCount = ({String label, int count});
 

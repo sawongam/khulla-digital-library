@@ -10,7 +10,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// badges, the loan-rule overrides it carries, and its edit/archive or
 /// restore actions.
 ///
-/// Dumb by design — taps call back out so the dialog owns the cubit writes
+/// Dumb by design - taps call back out so the dialog owns the cubit writes
 /// and their toasts.
 class MemberTypeRow extends StatelessWidget {
   const MemberTypeRow({

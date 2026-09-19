@@ -10,7 +10,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// of each finding their own.
 ///
 /// Pass [bodyPadding] as [EdgeInsets.zero] when the body paints to the card's
-/// edge — a table, a divided list — and the header keeps its own inset.
+/// edge - a table, a divided list - and the header keeps its own inset.
 class SectionCard extends StatelessWidget {
   const SectionCard({
     required this.title,
@@ -34,7 +34,7 @@ class SectionCard extends StatelessWidget {
   /// Glyph beside the heading.
   final AppIconSpec? icon;
 
-  /// The section's single action — a button, or an [AppMenuButton].
+  /// The section's single action - a button, or an [AppMenuButton].
   final Widget? trailing;
 
   /// Inset around [child]. Defaults to none, since the card already pads.

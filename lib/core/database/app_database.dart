@@ -32,7 +32,7 @@ import 'package:khulla/features/settings/data/tables/loan_rules.dart';
 import 'package:khulla/features/users/data/tables/staff.dart';
 import 'package:khulla/features/users/data/tables/staff_recovery_codes.dart';
 // The enums the tables store through `textEnum` are named in the generated
-// part file, which cannot carry imports of its own — they have to be visible
+// part file, which cannot carry imports of its own - they have to be visible
 // from here even though nothing in this file mentions them.
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/features/users/domain/user_status.dart';
@@ -56,7 +56,7 @@ part 'app_database.g.dart';
     Fines,
     Reservations,
   ],
-  // FTS5 search indexes and the triggers that fill them — virtual tables and
+  // FTS5 search indexes and the triggers that fill them - virtual tables and
   // triggers can only be declared in SQL.
   include: {
     'package:khulla/features/catalog/title/data/tables/titles_fts.drift',
@@ -90,7 +90,7 @@ class AppDatabase extends _$AppDatabase {
   ///
   /// On web, drift keeps the database in memory and copies it to IndexedDB
   /// after each statement that runs outside a transaction. The `COMMIT` itself
-  /// still counts as inside one — drift clears the flag only after it — so a
+  /// still counts as inside one - drift clears the flag only after it - so a
   /// committed transaction stays in memory until some later plain write
   /// happens to copy it. A refresh before that loses it: onboarding's
   /// administrator vanished this way, and so would a checkout.
@@ -172,7 +172,7 @@ class AppDatabase extends _$AppDatabase {
       },
       from3To4: (m, schema) async {
         // v3 snapshot recorded inline column checks on loan_rules that the
-        // current table no longer declares — recreate so v4 matches the snapshot.
+        // current table no longer declares - recreate so v4 matches the snapshot.
         await m.deleteTable('loan_rules');
         await m.createTable(schema.loanRules);
         await m.createTable(schema.titles);
@@ -520,7 +520,7 @@ CREATE TRIGGER members_fts_delete AFTER DELETE ON members BEGIN
 END;''',
 ];
 
-/// The v14 member search triggers — `members_fts` now indexes the richer
+/// The v14 member search triggers - `members_fts` now indexes the richer
 /// profile (barcode, municipality, occupation, institution, id verification
 /// and emergency contact) alongside the name and contacts.
 const List<String> _v14SearchTriggers = [

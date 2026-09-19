@@ -13,7 +13,7 @@ import 'package:khulla/shared/models/load_status.dart';
 /// The backup screen: the info card, and the three actions on it.
 ///
 /// `restoreBackup`/`eraseCatalogue` both end by restarting the app on
-/// success — there is nothing further for this cubit to show, and it never
+/// success - there is nothing further for this cubit to show, and it never
 /// gets the chance to run again in this process.
 @injectable
 class BackupCubit extends Cubit<BackupState> {
@@ -36,7 +36,7 @@ class BackupCubit extends Cubit<BackupState> {
     }
   }
 
-  /// Returns true when a backup was actually written — false means the
+  /// Returns true when a backup was actually written - false means the
   /// operator cancelled the save dialog. Rethrows on failure so the page can
   /// show it as a toast.
   Future<bool> exportBackup() async {
@@ -78,7 +78,7 @@ class BackupCubit extends Cubit<BackupState> {
   /// Re-authenticates the signed-in account before the erase may proceed.
   ///
   /// True when [password] verifies against the session's account. False
-  /// refuses without saying why beyond the dialog's field error — and that
+  /// refuses without saying why beyond the dialog's field error - and that
   /// includes a missing session or a disabled account: without a verified
   /// operator there is no erase. A database failure emits into state and
   /// rethrows for the dialog to answer with a toast.

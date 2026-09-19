@@ -72,7 +72,7 @@ class TitleDetailCubit extends Cubit<TitleDetailState> {
     }
   }
 
-  /// Deletes the title. Rethrows on failure — the confirming dialog toasts.
+  /// Deletes the title. Rethrows on failure - the confirming dialog toasts.
   Future<void> removeTitle(String id) async {
     await _titles.removeTitle(id);
   }

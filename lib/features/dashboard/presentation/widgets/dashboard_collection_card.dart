@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// Where every copy in the collection is right now.
 ///
 /// The donut carries the total in its hole because that is the figure an
-/// operator reads first — "how many copies do we have" — and the slices
+/// operator reads first - "how many copies do we have" - and the slices
 /// answer the follow-up without a second card.
 class DashboardCollectionCard extends StatelessWidget {
   const DashboardCollectionCard({required this.slices, super.key});

@@ -7,7 +7,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The desk's headline figures: out, due today, late, and waiting holds.
 ///
-/// Tapping a counter selects the same rows its filter chip would — the tile
+/// Tapping a counter selects the same rows its filter chip would - the tile
 /// and the chip are two doors into one query.
 class LoanListStats extends StatelessWidget {
   const LoanListStats({

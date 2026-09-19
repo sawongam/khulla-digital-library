@@ -27,8 +27,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// One work's record: what it is, the copies under it, and who has had them.
 ///
-/// Two panes from [FormFactor.expanded] up — copies and loan history on the left, where the tables need the width, and the
-/// bibliographic record on the right — and one column below that, in the same
+/// Two panes from [FormFactor.expanded] up - copies and loan history on the left, where the tables need the width, and the
+/// bibliographic record on the right - and one column below that, in the same
 /// order: copies and history before publication details, since checking a
 /// copy's status is why a librarian opens this page more often than checking
 /// its edition. The page keeps the shell's rail rather than pushing a screen
@@ -185,8 +185,8 @@ class TitleDetailPage extends StatelessWidget {
         final description = title.description;
 
         // A record is readable by anyone who can open the catalogue; changing
-        // it is a separate permission, so every control that writes — the
-        // header's edit and delete, and each copy's maintenance menu — is
+        // it is a separate permission, so every control that writes - the
+        // header's edit and delete, and each copy's maintenance menu - is
         // absent rather than disabled for a role that only reads.
         final canManage = context.canManage(StaffPermission.catalog);
 

@@ -18,7 +18,7 @@ const String _source = 'BackupRepositoryImpl';
 
 /// [BackupRepository] over the local catalogue.
 ///
-/// Every write here ends by restarting the app (see `restart_app.dart`) —
+/// Every write here ends by restarting the app (see `restart_app.dart`) -
 /// restore and erase both replace what is underneath the running
 /// `AppDatabase` connection, and there is no supported way to swap that out
 /// from under `get_it`'s cached singleton in place.

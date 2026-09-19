@@ -8,7 +8,7 @@ import 'package:khulla_ui/src/theme/app_palette.dart';
 /// A row of color choices, one of them active.
 ///
 /// The color *is* the label, so each swatch is a plain filled circle and the
-/// name is only a tooltip — a grid of named rows would make picking a color a
+/// name is only a tooltip - a grid of named rows would make picking a color a
 /// reading task. Selection is a ring drawn outside the swatch plus a tick on
 /// it: a ring alone disappears on a pale color, a tick alone disappears on a
 /// dark one.
@@ -19,7 +19,7 @@ import 'package:khulla_ui/src/theme/app_palette.dart';
 /// The optional last swatch is *mix your own*: give [onCustomTap] and
 /// [customLabel] and the row ends with a spectrum circle that opens whatever
 /// picker the caller wants. It sits in this widget rather than beside it so
-/// the presets and the escape hatch stay one control — the same size, the
+/// the presets and the escape hatch stay one control - the same size, the
 /// same ring, the same row.
 /// {@endtemplate}
 class AppSwatchPicker<T> extends StatelessWidget {
@@ -115,7 +115,7 @@ class _Swatch extends StatelessWidget {
     final colors = context.appColors;
     final motion = context.appMotion;
     final fill = color;
-    // White on a dark swatch, near-black on a pale one — the same rule the
+    // White on a dark swatch, near-black on a pale one - the same rule the
     // brand ramp uses for the ink on a primary fill.
     final tick = (fill ?? colors.textHigh).computeLuminance() > 0.45
         ? colors.textHigh

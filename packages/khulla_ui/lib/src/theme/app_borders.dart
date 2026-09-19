@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// {@template app_borders}
 /// Border widths, and the dashed stroke.
 ///
-/// There is one border width in this design — 1px — and structure comes from
+/// There is one border width in this design - 1px - and structure comes from
 /// using it everywhere rather than from varying it. The two exceptions are
 /// real: a checkbox needs 1.5px to read at 16px square, and a dashed drop
 /// zone needs 2px to hold a visible rhythm.

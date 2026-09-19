@@ -37,7 +37,7 @@ DatabaseConnection openDatabaseConnection(AppConfig config) => driftDatabase(
 /// Records which storage tier the browser actually granted.
 ///
 /// This is not diagnostics for their own sake. When a browser offers nothing
-/// persistent, drift falls back to `inMemory` and succeeds — a librarian would
+/// persistent, drift falls back to `inMemory` and succeeds - a librarian would
 /// enter a day of circulation and lose it on refresh, with no error anywhere.
 /// Logging it is the floor; a web build that becomes a system of record needs
 /// to say so on screen.

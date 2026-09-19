@@ -14,7 +14,7 @@ import 'package:khulla/features/users/domain/staff_repository.dart';
 ///
 /// The router redirects on [AuthState.status], so this cubit is the only
 /// thing deciding whether the operator sees onboarding, sign-in, or the
-/// shell. It is a [lazySingleton] and therefore never closed — no `isClosed`
+/// shell. It is a [lazySingleton] and therefore never closed - no `isClosed`
 /// guards here, deliberately.
 ///
 /// It has no page of its own. Sign-in and onboarding own their forms and hand
@@ -30,7 +30,7 @@ class AuthCubit extends Cubit<AuthState> {
   ///
   /// Called from `bootstrap` before the first frame so the router's first
   /// redirect already knows the answer. A failure to read leaves the status
-  /// [AuthStatus.unknown] with the error in state — the catalogue is not
+  /// [AuthStatus.unknown] with the error in state - the catalogue is not
   /// answering, and guessing "needs setup" would offer to create a second
   /// administrator over the top of a real library.
   Future<void> restoreSession() async {

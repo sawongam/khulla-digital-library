@@ -5,7 +5,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The tighter minus/plus control behind [AppQuantityField] at
 /// [AppQuantityFieldSize.small]: a bordered pill with icon buttons at both
-/// ends and the figure — sliding while unfocused — in the middle.
+/// ends and the figure - sliding while unfocused - in the middle.
 class AppCompactQuantityControl extends StatelessWidget {
   const AppCompactQuantityControl({
     required this.controlHeight,

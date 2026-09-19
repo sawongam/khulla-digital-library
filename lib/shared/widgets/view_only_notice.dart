@@ -6,7 +6,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// Says, once and plainly, that this screen is readable but not writable.
 ///
-/// Most of the app answers a missing permission by removing the control —
+/// Most of the app answers a missing permission by removing the control -
 /// an *Add title* button a role cannot use is furniture, so it is not drawn.
 /// A form is the exception: taking the save button off a page full of filled
 /// fields looks like a bug, not a rule. So the fields stay, and this says why
@@ -56,7 +56,7 @@ class ViewOnlyNotice extends StatelessWidget {
 /// Makes everything under it unreachable when [viewOnly].
 ///
 /// Both halves matter. [AbsorbPointer] stops the pointer, and [ExcludeFocus]
-/// stops the keyboard — without it a form that looks inert is still one Tab
+/// stops the keyboard - without it a form that looks inert is still one Tab
 /// key away from being typed into.
 class ViewOnlyForm extends StatelessWidget {
   const ViewOnlyForm({required this.viewOnly, required this.child, super.key});

@@ -30,8 +30,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The register: every borrower and how they stand.
 ///
-/// The filters are the questions a desk actually asks of it — who is holding
-/// something, who owes something, whose card has stopped working — rather
+/// The filters are the questions a desk actually asks of it - who is holding
+/// something, who owes something, whose card has stopped working - rather
 /// than one chip per enum value. [MemberCubit] turns search, those filters,
 /// sort and paging into one query. Check-out jumps to the circulation desk.
 ///
@@ -63,7 +63,7 @@ class _MemberListPageState extends State<MemberListPage> with DisposeBag {
     super.dispose();
   }
 
-  /// Resets the list whenever the operator leaves the members section —
+  /// Resets the list whenever the operator leaves the members section -
   /// switching rail tabs, checking out to a member, anything that moves the
   /// location out from under `/members`. The shell keeps every branch alive,
   /// so without this the stale search is still sitting there on return.
@@ -87,7 +87,7 @@ class _MemberListPageState extends State<MemberListPage> with DisposeBag {
 
   /// Opens a member's detail page from a clean list: the list cubit outlives
   /// the push (detail is a sub-route), so the search field and its query are
-  /// cleared up front — otherwise coming back shows the stale search.
+  /// cleared up front - otherwise coming back shows the stale search.
   void _openMember(Member member) {
     _search.clear();
     context.read<MemberCubit>().clearFilters();

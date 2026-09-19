@@ -6,7 +6,7 @@ import 'package:drift/drift.dart';
 /// Stores a calendar date without a time-of-day.
 ///
 /// Drift writes instants as UTC ISO-8601 strings. A due date written at 22:00
-/// in UTC+05:45 round-trips as the previous day — this converter keeps genuine
+/// in UTC+05:45 round-trips as the previous day - this converter keeps genuine
 /// dates as `YYYY-MM-DD`, which sorts correctly as text and never shifts a day.
 class DateOnlyConverter extends TypeConverter<DateTime, String> {
   const DateOnlyConverter();

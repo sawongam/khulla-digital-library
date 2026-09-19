@@ -21,7 +21,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// Add a staff account, or edit an existing one's name, email and role.
 ///
-/// A modal, matching `MemberFormDialog` — the account list is the record,
+/// A modal, matching `MemberFormDialog` - the account list is the record,
 /// there is no separate detail route to push. Password only appears when
 /// adding: an existing account's password is changed from the row menu's
 /// *Reset password* instead (see `StaffResetPasswordDialog`), which is its

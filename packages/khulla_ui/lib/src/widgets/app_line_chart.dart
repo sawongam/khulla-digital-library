@@ -3,7 +3,7 @@
 
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// A trend line with a soft fill under it — visitors per month, loans per
+/// A trend line with a soft fill under it - visitors per month, loans per
 /// week, fines accrued.
 ///
 /// Use it where the x-axis is time and the shape of the curve is the point.

@@ -48,7 +48,7 @@ class LocalMemberDataSource implements MemberLocalDataSource {
   /// `fines_outstanding`). A joined `GROUP BY` would aggregate every loan and
   /// fine ever written before the page was cut.
   ///
-  /// Binds one variable — today, as `YYYY-MM-DD` — for the overdue count, so
+  /// Binds one variable - today, as `YYYY-MM-DD` - for the overdue count, so
   /// it must lead the variable list of any query selecting these columns.
   static const String _selectColumns = '''
 m.*,

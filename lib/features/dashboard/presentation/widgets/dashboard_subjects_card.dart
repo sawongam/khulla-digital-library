@@ -5,7 +5,7 @@ import 'package:khulla/features/dashboard/presentation/widgets/dashboard_section
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// How the catalogue divides by format — the closest categorical dimension a
+/// How the catalogue divides by format - the closest categorical dimension a
 /// title carries; there is no separate subject/genre column.
 ///
 /// Bars on a shared scale rather than a second pie: six categories in a pie

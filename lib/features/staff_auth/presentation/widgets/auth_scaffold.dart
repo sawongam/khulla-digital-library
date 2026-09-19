@@ -7,8 +7,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 
 /// The page chrome sign-in and onboarding share.
 ///
-/// Both live **outside** the app shell — there is no rail, no top bar and no
-/// section to be in until someone is signed in — so this is the only page
+/// Both live **outside** the app shell - there is no rail, no top bar and no
+/// section to be in until someone is signed in - so this is the only page
 /// frame they get.
 ///
 /// It adapts on one axis. Given room, the window splits: the brand panel

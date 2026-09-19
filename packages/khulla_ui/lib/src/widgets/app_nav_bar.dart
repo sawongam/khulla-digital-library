@@ -12,7 +12,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// which is what keeps a phone window looking like the same product as the
 /// 1600px one.
 ///
-/// Selection is carried by color alone — brand glyph and brand label against
+/// Selection is carried by color alone - brand glyph and brand label against
 /// the resting ink. At four destinations there is no room for an indicator
 /// that does not crowd the labels.
 ///

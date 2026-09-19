@@ -24,7 +24,7 @@ class AppToolbar extends StatelessWidget {
   /// The search field, given the flexible width.
   final Widget? search;
 
-  /// Filter controls — chips, a segmented control, a dropdown.
+  /// Filter controls - chips, a segmented control, a dropdown.
   final List<Widget> filters;
 
   /// Actions on the trailing edge, primary last.

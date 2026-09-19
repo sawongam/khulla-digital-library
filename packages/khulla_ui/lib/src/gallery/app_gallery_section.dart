@@ -17,7 +17,7 @@ class AppGallerySection extends StatelessWidget {
     super.key,
   });
 
-  /// The block's name — "Buttons", "Table".
+  /// The block's name - "Buttons", "Table".
   final String title;
 
   /// What to look at here, in one line.
@@ -58,7 +58,7 @@ class AppGallerySection extends StatelessWidget {
 class AppGalleryRow extends StatelessWidget {
   const AppGalleryRow({required this.label, required this.children, super.key});
 
-  /// What this row varies — "variants", "sizes", "states".
+  /// What this row varies - "variants", "sizes", "states".
   final String label;
 
   /// The specimens.

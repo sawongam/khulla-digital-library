@@ -26,7 +26,7 @@ class SavedReport {
   /// The tile's tone.
   final AppStatusTone tone;
 
-  /// What a tap on this report exports — carried on the entry itself so the
+  /// What a tap on this report exports - carried on the entry itself so the
   /// list and its export kinds cannot become index-misaligned.
   final ReportsExportKind kind;
 }

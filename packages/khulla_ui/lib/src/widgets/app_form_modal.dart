@@ -15,16 +15,16 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// It adapts rather than branching per platform, and [show] picks the route
 /// to match:
 ///
-/// * **Compact** (a phone, a narrow window) — a full-screen page pushed with
+/// * **Compact** (a phone, a narrow window) - a full-screen page pushed with
 ///   `fullscreenDialog: true`, so the platform gives it the right transition
 ///   and the actions sit in a footer above the keyboard inset. A 576px panel
 ///   floating on a 390px screen is not a dialog, it is a cropped form.
-/// * **Anything wider** — a centred panel capped at [width], its body
+/// * **Anything wider** - a centred panel capped at [width], its body
 ///   scrolling inside a 90%-viewport cap so the footer never leaves the
 ///   screen.
 ///
 /// The form's own state lives in the widget passed to [show]; this is chrome
-/// only. Pop it with a value to tell the caller what happened —
+/// only. Pop it with a value to tell the caller what happened -
 /// `Navigator.of(context).pop(true)` on save.
 class AppFormModal extends StatelessWidget {
   const AppFormModal({
@@ -39,7 +39,7 @@ class AppFormModal extends StatelessWidget {
   /// The heading, already localized.
   final String title;
 
-  /// The line under the heading — what the form is for, not how to fill it.
+  /// The line under the heading - what the form is for, not how to fill it.
   final String? description;
 
   /// The form's sections, laid out in a stretched column.

@@ -9,7 +9,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// The category rows inside the sheet body: an inline empty state
 /// when there is nothing yet, otherwise one [MemberTypeRow] per type.
 ///
-/// `canArchive` guards the last active category — archiving it would leave
+/// `canArchive` guards the last active category - archiving it would leave
 /// new members with nowhere to go.
 class MemberTypeList extends StatelessWidget {
   const MemberTypeList({

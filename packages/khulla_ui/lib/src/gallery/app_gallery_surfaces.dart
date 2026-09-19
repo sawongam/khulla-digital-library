@@ -149,7 +149,7 @@ class _AppGallerySurfacesState extends State<AppGallerySurfaces> {
                   width: 260,
                   child: AppCard(
                     onTap: () {},
-                    child: _cardBody('Tappable — hover it'),
+                    child: _cardBody('Tappable - hover it'),
                   ),
                 ),
                 SizedBox(
@@ -207,7 +207,7 @@ class _AppGallerySurfacesState extends State<AppGallerySurfaces> {
         AppGallerySection(
           title: 'Overlays',
           note:
-              'Open the dialog and hover its close chip — it drifts outward and '
+              'Open the dialog and hover its close chip - it drifts outward and '
               'turns the glyph a quarter turn.',
           children: [
             AppGalleryRow(

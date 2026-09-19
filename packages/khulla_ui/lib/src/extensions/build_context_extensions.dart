@@ -46,7 +46,7 @@ extension AppThemeBuildContext on BuildContext {
   /// number from [appMetrics] or [appTextStyles] over branching on this.
   AppDensity get appDensity => appMetrics.density;
 
-  /// The elevation tokens — `card`, `raised`, `overlay`.
+  /// The elevation tokens - `card`, `raised`, `overlay`.
   AppShadows get appShadows => theme.extension<AppShadows>()!;
 
   /// Window size class thresholds and content caps.

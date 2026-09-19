@@ -8,7 +8,7 @@ import 'package:khulla/features/catalog/title/data/tables/titles.dart';
 import 'package:khulla/features/circulation/shared/domain/reservation_status.dart';
 import 'package:khulla/features/members/data/tables/members.dart';
 
-/// A hold on a title — any copy can satisfy it.
+/// A hold on a title - any copy can satisfy it.
 @DataClassName('ReservationRow')
 @TableIndex.sql(
   'CREATE UNIQUE INDEX reservations_one_active_per_member_title '
@@ -52,8 +52,8 @@ class Reservations extends Table {
   @override
   Set<Column<Object>> get primaryKey => {id};
 
-  /// [closedAt] and [status] both say whether a hold is open — the partial
-  /// indexes read one, the queue logic the other — so the table refuses a
+  /// [closedAt] and [status] both say whether a hold is open - the partial
+  /// indexes read one, the queue logic the other - so the table refuses a
   /// row where they disagree instead of trusting every writer to set both.
   @override
   List<String> get customConstraints => const [

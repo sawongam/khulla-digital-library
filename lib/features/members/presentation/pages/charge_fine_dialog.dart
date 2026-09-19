@@ -13,7 +13,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// `MemberDetailCubit.chargeFine`.
 typedef ChargeFineResult = ({FineReason reason, Money amount, String? note});
 
-/// A one-off fine a librarian charges by hand — a lost or damaged copy, or a
+/// A one-off fine a librarian charges by hand - a lost or damaged copy, or a
 /// membership fee. The automatic overdue fine on return is the only reason
 /// not offered here.
 ///

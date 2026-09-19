@@ -8,7 +8,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// it.
 ///
 /// The one place in the product that carries a filled brand surface. It earns
-/// it by being the only screen a reader arrives at without a task — every
+/// it by being the only screen a reader arrives at without a task - every
 /// other page in the app opens onto work, and hairlines are what keep those
 /// readable.
 class GuideHero extends StatelessWidget {

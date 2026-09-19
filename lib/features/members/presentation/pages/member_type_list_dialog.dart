@@ -16,7 +16,7 @@ import 'package:khulla/shared/utils/app_exception_l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// Lists member categories and lets staff create, edit, archive or restore
-/// them — including the loan-rule overrides each one carries.
+/// them - including the loan-rule overrides each one carries.
 ///
 /// Orchestration only: the sheet body, rows and form live in
 /// `presentation/widgets/`; every write below emits into the cubit and
