@@ -4,6 +4,8 @@ An open-source library management system, built as a **local-first Flutter app**
 
 *Khulla* (खुल्ला) is Nepali for "open".
 
+**[khulladigitallibrary.com](https://khulladigitallibrary.com)** · **[Try it in your browser](https://app.khulladigitallibrary.com/)**
+
 ## What it does
 
 - **Dashboard** — overdue, due today and inventory at a glance.
@@ -61,7 +63,7 @@ An open-source library management system, built as a **local-first Flutter app**
       <sub><b>Barcodes</b> — print & scan</sub>
     </td>
     <td width="50%" align="center">
-      <em><a href="https://sawongam.github.io/khulla-digital-library/">Try the live demo →</a><br />no install, data stays in your browser</em>
+      <em><a href="https://app.khulladigitallibrary.com/">Try the live demo →</a><br />no install, data stays in your browser</em>
     </td>
   </tr>
 </table>
@@ -87,7 +89,7 @@ Verify a download against `SHA256SUMS.txt` attached to the same release. The ins
 - **Android:** sideloading with installs from unknown sources allowed.
 - **Web:** a current Chromium, Firefox or Safari.
 
-You can also **[try it in a browser](https://sawongam.github.io/khulla-digital-library/)** — a demo with no server behind it, where the catalogue lives in that browser's storage and clearing site data wipes it.
+You can also **[try it in a browser](https://app.khulladigitallibrary.com/)** — a demo with no server behind it, where the catalogue lives in that browser's storage and clearing site data wipes it.
 
 Your catalogue is a SQLite file on your own machine, so uninstalling does not delete it and nothing is uploaded anywhere. Take a backup from **Settings → Backup** before moving between machines; on a new machine, choose Restore during setup to adopt that backup.
 
