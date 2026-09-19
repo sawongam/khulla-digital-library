@@ -191,4 +191,9 @@ Merging into `prod` publishes a release at the version in `pubspec.yaml` and red
 
 ## License
 
-[MIT](./LICENSE)
+Khulla is dual-licensed:
+
+- **[AGPL-3.0-only](./LICENSE)** — free for everyone. Libraries, schools and NGOs can install, use, change and share it at no cost. If you distribute a modified version, or run one as a hosted service, you must publish its source under the same licence.
+- **Commercial licence** — for selling Khulla as closed software, white-labelling it, or offering it as a SaaS without sharing your source. See [COMMERCIAL-LICENSE.md](./COMMERCIAL-LICENSE.md).
+
+The design system in `packages/khulla_ui` stays [MIT](./packages/khulla_ui/LICENSE). Releases published before the switch to AGPL remain available under MIT. Contributions need the [Contributor License Agreement](./CLA.md).
