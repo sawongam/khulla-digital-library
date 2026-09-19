@@ -83,9 +83,7 @@ dependencies:
 
 
   # Phone, Currency and Country code
-  country_phone_kit:
-    git:
-      url: https://github.com/sawongam/country_phone_kit
+  country_phone_kit: ^1.0.1
 
   # Printing and PDF
   printing: ^5.15.0
@@ -95,6 +93,7 @@ dependencies:
   # views, so it runs the same on Windows and web as it does on mobile.
   crop_your_image: ^2.0.0
   package_info_plus: ^10.2.1
+  
 
 dev_dependencies:
   # Code generation
