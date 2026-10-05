@@ -76,7 +76,7 @@ format:
 ## Fail if any handwritten Dart source is unformatted, without rewriting it.
 ## Asks git for the file list rather than walking the tree: tracked plus new,
 ## minus everything gitignored. That is what keeps it out of the generated
-## sources, whose formatting is build_runner's business, and out of sizzbe-app/.
+## sources, whose formatting is build_runner's business.
 ## Files git still lists but that are deleted on disk are filtered out.
 format-check:
 	@files=$$(git ls-files --cached --others --exclude-standard '*.dart' \

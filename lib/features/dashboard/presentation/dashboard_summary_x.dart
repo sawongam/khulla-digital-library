@@ -34,8 +34,7 @@ final DateFormat _dueFormat = DateFormat('d MMM');
 final DateFormat _monthFormat = DateFormat('MMM');
 
 /// Maps a raw [DashboardSummary] to the formatted view models the board's
-/// widgets already draw - the same shapes `dashboard_placeholder.dart` used
-/// to hand-write, computed for real and localized here rather than in the
+/// widgets draw - computed for real and localized here rather than in the
 /// repository, which returns facts, not display strings.
 extension DashboardSummaryX on DashboardSummary {
   List<DashboardStat> stats(AppLocalizations l10n, DashboardPeriod period) {
