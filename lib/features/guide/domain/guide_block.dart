@@ -148,7 +148,7 @@ class GuideScreenshot extends GuideBlock {
   /// What the reader is looking at.
   final String caption;
 
-  /// The mock's body, top to bottom.
+  /// The diagram's body, top to bottom.
   final List<GuideMockPart> parts;
 
   /// The legend, in marker order: entry `i` explains marker `i + 1`.

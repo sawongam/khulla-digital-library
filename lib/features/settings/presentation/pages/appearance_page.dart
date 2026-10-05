@@ -10,7 +10,7 @@ import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/section_card.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// The one settings screen that is not a placeholder.
+/// Device-level appearance settings.
 ///
 /// [ThemeCubit] is an app-wide `@lazySingleton` with real storage behind it,
 /// so the choice made here survives a restart. It is a device setting, not a
