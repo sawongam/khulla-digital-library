@@ -18,10 +18,10 @@ import 'package:khulla/features/catalog/title/presentation/title_detail_page.dar
 import 'package:khulla/features/catalog/title/presentation/title_list_page.dart';
 import 'package:khulla/features/circulation/check_out/presentation/check_out_page.dart';
 import 'package:khulla/features/circulation/check_out/presentation/cubit/check_out_cubit.dart';
-import 'package:khulla/features/circulation/circulation/presentation/circulation_page.dart';
-import 'package:khulla/features/circulation/circulation/presentation/cubit/loan_list_cubit.dart';
 import 'package:khulla/features/circulation/fine/presentation/cubit/fine_list_cubit.dart';
 import 'package:khulla/features/circulation/fine/presentation/fine_list_page.dart';
+import 'package:khulla/features/circulation/loan/presentation/cubit/loan_list_cubit.dart';
+import 'package:khulla/features/circulation/loan/presentation/loan_list_page.dart';
 import 'package:khulla/features/circulation/reservation/presentation/cubit/reservation_list_cubit.dart';
 import 'package:khulla/features/circulation/reservation/presentation/reservation_list_page.dart';
 import 'package:khulla/features/circulation/return_copy/presentation/cubit/return_cubit.dart';
@@ -67,7 +67,7 @@ StatefulShellBranch dashboardBranch() => StatefulShellBranch(
       builder: (context, _) => BlocProvider<DashboardCubit>(
         create: (_) {
           final cubit = getIt<DashboardCubit>();
-          unawaited(cubit.load());
+          unawaited(cubit.loadDashboard());
           return cubit;
         },
         child: const DashboardPage(),
@@ -152,7 +152,7 @@ StatefulShellBranch circulationBranch() => StatefulShellBranch(
               unawaited(cubit.loadOpenLoans());
               return cubit;
             },
-            child: const CirculationPage(),
+            child: const LoanListPage(),
           ),
         ),
         GoRoute(
@@ -244,7 +244,7 @@ StatefulShellBranch reportsBranch() => StatefulShellBranch(
       builder: (context, _) => BlocProvider<ReportsCubit>(
         create: (_) {
           final cubit = getIt<ReportsCubit>();
-          unawaited(cubit.load());
+          unawaited(cubit.loadReports());
           return cubit;
         },
         child: const ReportsPage(),
@@ -260,7 +260,7 @@ StatefulShellBranch usersBranch() => StatefulShellBranch(
       builder: (context, _) => BlocProvider<StaffListCubit>(
         create: (_) {
           final cubit = getIt<StaffListCubit>();
-          unawaited(cubit.load());
+          unawaited(cubit.loadStaff());
           return cubit;
         },
         child: const UserListPage(),
@@ -271,7 +271,7 @@ StatefulShellBranch usersBranch() => StatefulShellBranch(
           builder: (context, _) => BlocProvider<StaffListCubit>(
             create: (_) {
               final cubit = getIt<StaffListCubit>();
-              unawaited(cubit.load());
+              unawaited(cubit.loadStaff());
               return cubit;
             },
             child: const RoleListPage(),
@@ -363,7 +363,7 @@ StatefulShellBranch settingsBranch({
           builder: (context, _) => BlocProvider<BackupCubit>(
             create: (_) {
               final cubit = getIt<BackupCubit>();
-              unawaited(cubit.load());
+              unawaited(cubit.loadBackupInfo());
               return cubit;
             },
             child: const BackupPage(),

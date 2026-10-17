@@ -3,27 +3,11 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/error/app_exception.dart';
+import 'package:khulla/features/staff_auth/domain/models/session.dart';
 import 'package:khulla/features/users/domain/models/staff_member.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 
 part 'auth_state.freezed.dart';
-
-/// Where the app stands before it can show anything.
-enum AuthStatus {
-  /// The catalogue has not been asked yet. The router holds still rather than
-  /// guessing - sending a signed-in operator to sign-in for one frame is
-  /// worse than a moment of splash.
-  unknown,
-
-  /// No staff account exists: this catalogue has never been set up.
-  needsSetup,
-
-  /// The library is set up, but nobody is signed in on this device.
-  signedOut,
-
-  /// A staff account is signed in.
-  signedIn,
-}
 
 @freezed
 abstract class AuthState with _$AuthState {

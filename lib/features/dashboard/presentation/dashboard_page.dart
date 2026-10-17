@@ -53,7 +53,7 @@ class DashboardPage extends StatelessWidget {
           return AppErrorView(
             message: state.error?.localizedMessage(l10n) ?? '',
             retryLabel: l10n.commonRetry,
-            onRetry: () => context.read<DashboardCubit>().load(),
+            onRetry: () => context.read<DashboardCubit>().loadDashboard(),
           );
         }
         return _DashboardBoard(state: state);

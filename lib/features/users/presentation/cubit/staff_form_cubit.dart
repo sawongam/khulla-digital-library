@@ -9,7 +9,6 @@ import 'package:khulla/core/form/inputs/confirmed_password.dart';
 import 'package:khulla/core/form/inputs/email.dart';
 import 'package:khulla/core/form/inputs/full_name.dart';
 import 'package:khulla/core/form/inputs/password.dart';
-import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
 import 'package:khulla/features/users/domain/models/staff_member.dart';
 import 'package:khulla/features/users/domain/staff_repository.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
@@ -23,14 +22,16 @@ import 'package:khulla/shared/models/load_status.dart';
 /// per dialog, closed when it's dismissed.
 @injectable
 class StaffFormCubit extends Cubit<StaffFormState> {
-  StaffFormCubit(this._staff, this._auth) : super(const StaffFormState());
+  StaffFormCubit(this._staff) : super(const StaffFormState());
 
   final StaffRepository _staff;
-  final AuthCubit _auth;
 
   /// Loads the account being edited or reset. Leaves the form pure for
   /// [StaffFormMode.create], where there is nothing to load.
-  Future<void> load({required StaffFormMode mode, String? staffId}) async {
+  Future<void> loadStaffForm({
+    required StaffFormMode mode,
+    String? staffId,
+  }) async {
     emit(state.copyWith(status: LoadStatus.loading, mode: mode, error: null));
     try {
       final existing = staffId == null
@@ -131,12 +132,12 @@ class StaffFormCubit extends Cubit<StaffFormState> {
         error: null,
       ),
     );
-    // The edit and profile paths need a loaded record and a signed-in actor.
-    // The dialogs show the load error instead of the form when loading failed,
-    // but guard here too so a submit can never hit a null assertion.
+    // The edit and profile paths need a loaded record. The dialogs show the
+    // load error instead of the form when loading failed, but guard here too
+    // so a submit can never hit a null assertion. Who is acting is the
+    // repository's question, not this form's.
     final existing = state.existing;
-    final actingId = _auth.state.staff?.id;
-    if (!isCreating && (existing == null || actingId == null)) {
+    if (!isCreating && existing == null) {
       return null;
     }
     try {
@@ -154,12 +155,8 @@ class StaffFormCubit extends Cubit<StaffFormState> {
               role: state.mode == StaffFormMode.profile
                   ? existing.role
                   : state.role,
-              actingStaffId: actingId!,
             );
       if (isClosed) return saved;
-      if (saved.id == actingId) {
-        _auth.updateStaff(saved);
-      }
       emit(
         state.copyWith(
           submission: FormzSubmissionStatus.success,

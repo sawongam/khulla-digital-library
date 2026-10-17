@@ -16,6 +16,7 @@ import 'package:khulla/features/dashboard/domain/models/dashboard_summary.dart';
 
 import '../helpers/catalog_fixtures.dart';
 import '../helpers/test_database.dart';
+import '../helpers/test_session.dart';
 
 /// [DashboardRepositoryImpl] against a real database, seeded through
 /// [CirculationRepositoryImpl] so the aggregates are checked against the same
@@ -27,11 +28,14 @@ void main() {
 
   setUp(() async {
     db = await openTestDatabase();
+    final session = await openTestSession(db);
+    await signInTestStaff(db, session);
     circulation = CirculationRepositoryImpl(
       db,
       LocalLoanDataSource(db),
       LocalFineDataSource(db),
       LocalReservationDataSource(db),
+      session,
     );
     dashboard = DashboardRepositoryImpl(db);
   });

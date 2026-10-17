@@ -10,11 +10,17 @@ import 'package:khulla/features/circulation/loan/domain/models/loan_query.dart';
 import 'package:khulla/features/circulation/reservation/domain/models/reservation.dart';
 import 'package:khulla/features/circulation/reservation/domain/models/reservation_query.dart';
 import 'package:khulla/features/circulation/shared/domain/fine_reason.dart';
+import 'package:khulla/features/circulation/shared/domain/models/effective_loan_rules.dart';
 
 /// Checkout, return, renew, holds and the ledgers that hang off them.
 ///
 /// Desk writes run in transactions; list screens read through the typed
 /// query objects on each sub-resource.
+///
+/// Checking a copy out or in is recorded against the account signed in on
+/// this device, which the repository reads for itself - a caller cannot
+/// name somebody else, or nobody. Both throw `SignedOutException` when the
+/// session has ended under an open screen.
 
 /// One copy scanned at the returns desk.
 typedef ReturnCopyInput = ({
@@ -26,7 +32,6 @@ abstract interface class CirculationRepository {
   Future<Loan> checkOutCopy({
     required String memberId,
     required String barcode,
-    String? staffId,
   });
 
   /// Processes every item in one transaction so a basket either checks out
@@ -34,24 +39,21 @@ abstract interface class CirculationRepository {
   Future<List<Loan>> checkOutCopies({
     required String memberId,
     required List<String> barcodes,
-    String? staffId,
   });
 
   Future<Loan> returnCopy({
     required String barcode,
     required CopyCondition condition,
     bool waiveFine = false,
-    String? staffId,
   });
 
   /// Processes every item in one transaction so the desk stays consistent.
   Future<List<Loan>> returnCopies({
     required List<ReturnCopyInput> copies,
     bool waiveFine = false,
-    String? staffId,
   });
 
-  Future<Loan> renewLoan(String loanId, {String? staffId});
+  Future<Loan> renewLoan(String loanId);
 
   Future<Reservation> placeHold({
     required String memberId,
@@ -74,10 +76,15 @@ abstract interface class CirculationRepository {
     required FineReason reason,
     required Money amount,
     String? note,
-    String? staffId,
   });
 
   Future<void> expireStaleHolds();
+
+  /// The loan rules that apply to [memberId] - the library's defaults with
+  /// their member category's overrides on top. What the check-out desk
+  /// previews a due date from, read the same way the check-out itself reads
+  /// it.
+  Future<EffectiveLoanRules> findEffectiveRulesForMember(String memberId);
 
   Future<LoanListResult> findOpenLoans(LoanQuery query);
 

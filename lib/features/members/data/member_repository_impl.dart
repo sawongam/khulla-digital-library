@@ -4,7 +4,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/money/money.dart';
-import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart';
+import 'package:khulla/core/time/calendar_days.dart';
 import 'package:khulla/features/circulation/shared/domain/resolve_loan_rules.dart';
 import 'package:khulla/features/members/data/member_local_data_source.dart';
 import 'package:khulla/features/members/data/member_type_local_data_source.dart';
@@ -72,7 +72,7 @@ class MemberRepositoryImpl implements MemberRepository {
     final existing = id == null ? null : await _dataSource.findMemberById(id);
     final memberType = await _memberTypes.findMemberTypeById(memberTypeId);
     if (memberType == null) {
-      throw const NotFoundException('That member type was not found.');
+      throw const NotFoundException.because(AppErrorReason.memberTypeNotFound);
     }
 
     final joinedAt = existing?.joinedAt ?? now;
@@ -80,7 +80,7 @@ class MemberRepositoryImpl implements MemberRepository {
     if (existing == null) {
       final defaults = await _loanRules.findRules();
       if (defaults == null) {
-        throw const NotFoundException('Loan rules have not been configured.');
+        throw const NotFoundException.because(AppErrorReason.loanRulesMissing);
       }
       final rules = resolveLoanRules(defaults, memberType);
       expiresAt = _membershipExpiresAt(
@@ -157,10 +157,12 @@ class MemberRepositoryImpl implements MemberRepository {
   Future<Member> suspendMember(String id, {String? reason}) async {
     final existing = await _dataSource.findMemberById(id);
     if (existing == null) {
-      throw const NotFoundException('That member was not found.');
+      throw const NotFoundException.because(AppErrorReason.memberNotFound);
     }
     if (existing.suspendedAt != null) {
-      throw const ConflictException('That membership is already suspended.');
+      throw const ConflictException.because(
+        AppErrorReason.membershipAlreadySuspended,
+      );
     }
     final now = DateTime.now();
     return await _dataSource.updateMember(
@@ -176,10 +178,12 @@ class MemberRepositoryImpl implements MemberRepository {
   Future<Member> unsuspendMember(String id) async {
     final existing = await _dataSource.findMemberById(id);
     if (existing == null) {
-      throw const NotFoundException('That member was not found.');
+      throw const NotFoundException.because(AppErrorReason.memberNotFound);
     }
     if (existing.suspendedAt == null) {
-      throw const ConflictException('That membership is not suspended.');
+      throw const ConflictException.because(
+        AppErrorReason.membershipNotSuspended,
+      );
     }
     final now = DateTime.now();
     return await _dataSource.updateMember(
@@ -195,17 +199,17 @@ class MemberRepositoryImpl implements MemberRepository {
   Future<Member> renewMembership(String id) async {
     final existing = await _dataSource.findMemberById(id);
     if (existing == null) {
-      throw const NotFoundException('That member was not found.');
+      throw const NotFoundException.because(AppErrorReason.memberNotFound);
     }
     final memberType = await _memberTypes.findMemberTypeById(
       existing.memberTypeId,
     );
     if (memberType == null) {
-      throw const NotFoundException('That member type was not found.');
+      throw const NotFoundException.because(AppErrorReason.memberTypeNotFound);
     }
     final defaults = await _loanRules.findRules();
     if (defaults == null) {
-      throw const NotFoundException('Loan rules have not been configured.');
+      throw const NotFoundException.because(AppErrorReason.loanRulesMissing);
     }
     final rules = resolveLoanRules(defaults, memberType);
     final now = DateTime.now();
@@ -219,9 +223,7 @@ class MemberRepositoryImpl implements MemberRepository {
   @override
   Future<void> removeMember(String id) async {
     if (await _dataSource.hasCirculationHistory(id)) {
-      throw const ConflictException(
-        'That member has circulation history and cannot be deleted.',
-      );
+      throw const ConflictException.because(AppErrorReason.memberHasHistory);
     }
     await _dataSource.deleteMember(id);
   }

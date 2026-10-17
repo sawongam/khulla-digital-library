@@ -39,7 +39,7 @@ class TitleFormDialog extends StatelessWidget {
         builder: (_) => BlocProvider(
           create: (_) {
             final cubit = getIt<TitleFormCubit>();
-            unawaited(cubit.load(titleId: titleId));
+            unawaited(cubit.loadTitleForm(titleId: titleId));
             return cubit;
           },
           child: TitleFormDialog(titleId: titleId),

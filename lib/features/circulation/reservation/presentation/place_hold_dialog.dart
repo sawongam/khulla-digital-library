@@ -29,7 +29,7 @@ class PlaceHoldDialog extends StatelessWidget {
         builder: (_) => BlocProvider(
           create: (_) {
             final cubit = getIt<PlaceHoldCubit>();
-            unawaited(cubit.load(titleId: titleId));
+            unawaited(cubit.loadHoldForm(titleId: titleId));
             return cubit;
           },
           child: PlaceHoldDialog(titleId: titleId),

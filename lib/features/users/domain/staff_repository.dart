@@ -55,20 +55,20 @@ abstract interface class StaffRepository {
     required String newPassword,
   });
 
-  /// Edits name, email and role for an existing account.
+  /// Edits name, email and role for an existing account, on behalf of the
+  /// account signed in on this device.
   ///
-  /// [actingStaffId] is the signed-in administrator making the change - used
-  /// to refuse an account demoting itself out of the administrator role, and
-  /// to refuse a change that would leave the library with no active
-  /// administrator. Throws a `DuplicateRecordException` when [email] is
-  /// already held by another account, and a `ConflictException` for either
-  /// lockout rule.
+  /// Refuses an account changing its own role, and a change that would
+  /// leave the library with no active administrator. Throws a
+  /// `DuplicateRecordException` when [email] is already held by another
+  /// account, a `ConflictException` for either lockout rule, and a
+  /// `SignedOutException` when nobody is signed in. Editing the signed-in
+  /// account itself updates the session, so the shell shows the new name.
   Future<StaffMember> updateStaff({
     required String id,
     required String name,
     required String email,
     required UserRole role,
-    required String actingStaffId,
   });
 
   /// Enables or disables an account.
@@ -78,8 +78,13 @@ abstract interface class StaffRepository {
   Future<StaffMember> setStaffStatus({
     required String id,
     required UserStatus status,
-    required String actingStaffId,
   });
+
+  /// Whether [password] is the signed-in account's own - asked again before
+  /// an irreversible action such as erasing the catalogue.
+  ///
+  /// False when nobody is signed in or the password does not match.
+  Future<bool> confirmSignedInPassword(String password);
 
   /// Sets a new password for [id], chosen and typed by an administrator.
   ///

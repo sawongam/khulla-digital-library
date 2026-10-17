@@ -26,6 +26,11 @@ jobs:
 
       - name: Format, copyright, analysis, tests
         run: make ci
+        # Runners default to UTC, which has no daylight saving - the one
+        # place day arithmetic cannot go wrong. A zone with both changes is
+        # what lets test/core/time catch a due date or fine a day off.
+        env:
+          TZ: America/New_York
 
   # Merging into prod publishes a release at whatever pubspec.yaml says, so a
   # pull request that forgets to bump the version would ship nothing and say so

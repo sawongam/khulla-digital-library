@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/feedback/app_toast.dart';
+import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
 import 'package:khulla/features/users/domain/models/staff_member.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/features/users/domain/user_status.dart';
@@ -89,14 +90,14 @@ class _UserListPageState extends State<UserListPage> {
   Future<void> _add() async {
     final saved = await StaffFormDialog.show(context);
     if (saved == true && mounted) {
-      await context.read<StaffListCubit>().load();
+      await context.read<StaffListCubit>().loadStaff();
     }
   }
 
   Future<void> _edit(StaffMember staff) async {
     final saved = await StaffFormDialog.show(context, staffId: staff.id);
     if (saved == true && mounted) {
-      await context.read<StaffListCubit>().load();
+      await context.read<StaffListCubit>().loadStaff();
     }
   }
 
@@ -120,7 +121,7 @@ class _UserListPageState extends State<UserListPage> {
     // enforces the same two rules as a backstop, in case the register
     // changed under this screen between the load and the tap.
     if (disabling) {
-      if (staff.id == cubit.actingStaffId) {
+      if (staff.id == context.read<AuthCubit>().state.staff?.id) {
         AppToast.error(context, message: l10n.usersSelfDisableError);
         return;
       }

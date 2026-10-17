@@ -2,7 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:equatable/equatable.dart';
+import 'package:khulla/core/error/app_error_reason.dart';
 import 'package:sqlite3/common.dart';
+
+export 'package:khulla/core/error/app_error_reason.dart';
 
 /// Typed, user-presentable failures surfaced by the data layer.
 ///
@@ -11,8 +14,13 @@ import 'package:sqlite3/common.dart';
 /// with this small, exhaustive set of cases. The `message` carried here is a
 /// developer-facing fallback - presentation should render
 /// `AppExceptionL10n.localizedMessage` instead.
+///
+/// A rule the desk can trip throws with `.because(reason)`: the type says
+/// what kind of failure it was, the [reason] says which rule fired, and the
+/// two together are what the librarian reads. A bare constructor is for the
+/// failures that genuinely have nothing more specific to say.
 sealed class AppException extends Equatable implements Exception {
-  const AppException(this.message);
+  const AppException(this.message, {this.reason});
 
   /// Maps a SQLite error onto the closest domain-level failure.
   ///
@@ -72,8 +80,12 @@ sealed class AppException extends Equatable implements Exception {
   /// Developer-facing fallback copy. Not for display.
   final String message;
 
+  /// Which rule refused the action, when one did. Presentation renders this
+  /// in preference to the type's generic copy.
+  final AppErrorReason? reason;
+
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, reason];
 }
 
 /// A write violated a uniqueness rule - a duplicate ISBN, accession number,
@@ -81,18 +93,27 @@ sealed class AppException extends Equatable implements Exception {
 class DuplicateRecordException extends AppException {
   const DuplicateRecordException([String? message])
     : super(message ?? 'That record already exists.');
+
+  const DuplicateRecordException.because(AppErrorReason reason)
+    : super('That record already exists.', reason: reason);
 }
 
 /// The requested record does not exist, or was deleted by another window.
 class NotFoundException extends AppException {
   const NotFoundException([String? message])
     : super(message ?? 'We could not find that.');
+
+  const NotFoundException.because(AppErrorReason reason)
+    : super('We could not find that.', reason: reason);
 }
 
 /// The payload failed a domain rule before or during persistence.
 class InvalidInputException extends AppException {
   const InvalidInputException([String? message])
     : super(message ?? 'Some of those details are not valid.');
+
+  const InvalidInputException.because(AppErrorReason reason)
+    : super('Some of those details are not valid.', reason: reason);
 }
 
 /// The action conflicts with the current state - returning a copy that is not
@@ -100,6 +121,9 @@ class InvalidInputException extends AppException {
 class ConflictException extends AppException {
   const ConflictException([String? message])
     : super(message ?? 'That action conflicts with the current record.');
+
+  const ConflictException.because(AppErrorReason reason)
+    : super('That action conflicts with the current record.', reason: reason);
 }
 
 /// The database could not be opened, was closed underneath a query, or is
@@ -108,6 +132,9 @@ class ConflictException extends AppException {
 class DatabaseUnavailableException extends AppException {
   const DatabaseUnavailableException([String? message])
     : super(message ?? 'The library database is unavailable.');
+
+  const DatabaseUnavailableException.because(AppErrorReason reason)
+    : super('The library database is unavailable.', reason: reason);
 }
 
 /// A statement failed for a reason we could not classify further.
@@ -120,9 +147,19 @@ class DatabaseFailureException extends AppException {
 class StorageException extends AppException {
   const StorageException([String? message])
     : super(message ?? 'A file could not be read or written.');
+
+  const StorageException.because(AppErrorReason reason)
+    : super('A file could not be read or written.', reason: reason);
 }
 
 /// Anything we could not classify.
 class UnknownException extends AppException {
   const UnknownException() : super('An unexpected error occurred.');
+}
+
+/// A write that has to be attributed to a member of staff was attempted with
+/// nobody signed in on this device - the session ended under an open screen.
+class SignedOutException extends AppException {
+  const SignedOutException()
+    : super('Nobody is signed in to attribute that change to.');
 }

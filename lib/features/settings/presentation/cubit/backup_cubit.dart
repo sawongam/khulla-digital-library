@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/features/settings/domain/backup_repository.dart';
 import 'package:khulla/features/settings/presentation/cubit/backup_state.dart';
-import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
 import 'package:khulla/features/users/domain/staff_repository.dart';
 import 'package:khulla/shared/models/load_status.dart';
 
@@ -17,14 +16,12 @@ import 'package:khulla/shared/models/load_status.dart';
 /// gets the chance to run again in this process.
 @injectable
 class BackupCubit extends Cubit<BackupState> {
-  BackupCubit(this._repository, this._staff, this._auth)
-    : super(const BackupState());
+  BackupCubit(this._repository, this._staff) : super(const BackupState());
 
   final BackupRepository _repository;
   final StaffRepository _staff;
-  final AuthCubit _auth;
 
-  Future<void> load() async {
+  Future<void> loadBackupInfo() async {
     emit(state.copyWith(status: LoadStatus.loading, error: null));
     try {
       final info = await _repository.describeBackup();
@@ -45,7 +42,7 @@ class BackupCubit extends Cubit<BackupState> {
       final exported = await _repository.exportBackup();
       if (isClosed) return exported;
       emit(state.copyWith(isWorking: false));
-      if (exported) await load();
+      if (exported) await loadBackupInfo();
       return exported;
     } on AppException catch (error) {
       if (isClosed) rethrow;
@@ -60,6 +57,16 @@ class BackupCubit extends Cubit<BackupState> {
 
   /// Restarts the app on success and never returns to a running screen.
   /// Returns false when the operator cancelled the file picker.
+  /// Asks the browser to keep the catalogue, then re-reads the info card so
+  /// its warning reflects the answer. Returns the browser's answer - null
+  /// where the question does not arise or the browser cannot say.
+  Future<bool?> requestPersistentStorage() async {
+    final granted = await _repository.requestPersistentStorage();
+    if (isClosed) return granted;
+    await loadBackupInfo();
+    return granted;
+  }
+
   Future<bool> restoreBackup() async {
     emit(state.copyWith(isWorking: true, error: null));
     try {
@@ -83,12 +90,10 @@ class BackupCubit extends Cubit<BackupState> {
   /// operator there is no erase. A database failure emits into state and
   /// rethrows for the dialog to answer with a toast.
   Future<bool> verifyErasePassword(String password) async {
-    final email = _auth.state.staff?.email;
-    if (email == null || email.isEmpty) return false;
     try {
-      final staff = await _staff.signIn(email: email, password: password);
+      final confirmed = await _staff.confirmSignedInPassword(password);
       if (isClosed) return false;
-      return staff != null;
+      return confirmed;
     } on AppException catch (error) {
       if (isClosed) rethrow;
       emit(state.copyWith(error: error));

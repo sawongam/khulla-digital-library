@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/security/password_hasher.dart';
 import 'package:khulla/core/security/recovery_code.dart';
+import 'package:khulla/features/staff_auth/domain/session_repository.dart';
 import 'package:khulla/features/users/data/staff_local_data_source.dart';
 import 'package:khulla/features/users/domain/models/staff_member.dart';
 import 'package:khulla/features/users/domain/staff_repository.dart';
@@ -20,10 +21,11 @@ import 'package:uuid/uuid.dart';
 /// leave this class.
 @LazySingleton(as: StaffRepository)
 class StaffRepositoryImpl implements StaffRepository {
-  StaffRepositoryImpl(this._dataSource, this._hasher);
+  StaffRepositoryImpl(this._dataSource, this._hasher, this._session);
 
   final StaffLocalDataSource _dataSource;
   final PasswordHasher _hasher;
+  final SessionRepository _session;
 
   static const Uuid _uuid = Uuid();
 
@@ -115,24 +117,24 @@ class StaffRepositoryImpl implements StaffRepository {
     required String name,
     required String email,
     required UserRole role,
-    required String actingStaffId,
   }) async {
+    final actingStaffId = _session.requireSignedInStaff().id;
     final current = await _dataSource.findStaffById(id);
     if (current == null) {
-      throw const NotFoundException('That staff account no longer exists.');
+      throw const NotFoundException.because(AppErrorReason.staffNotFound);
     }
     // Roles are granted by someone else: a signed-in account cannot change
     // its own role (which would allow self-promotion to administrator or
     // self-demotion away from the last-administrator guard). Name/email
     // edits that keep the role are still allowed.
     if (id == actingStaffId && role != current.role) {
-      throw const ConflictException('You cannot change your own role.');
+      throw const ConflictException.because(AppErrorReason.cannotChangeOwnRole);
     }
     if (current.role == UserRole.administrator &&
         role != UserRole.administrator) {
       await _guardLastAdministrator();
     }
-    return await _dataSource.updateStaff(
+    final saved = await _dataSource.updateStaff(
       StaffMember(
         id: current.id,
         name: name.trim(),
@@ -142,17 +144,21 @@ class StaffRepositoryImpl implements StaffRepository {
         createdAt: current.createdAt,
       ),
     );
+    _session.refreshSignedInStaff(saved);
+    return saved;
   }
 
   @override
   Future<StaffMember> setStaffStatus({
     required String id,
     required UserStatus status,
-    required String actingStaffId,
   }) async {
+    final actingStaffId = _session.requireSignedInStaff().id;
     if (status != UserStatus.active) {
       if (id == actingStaffId) {
-        throw const ConflictException('You cannot disable your own account.');
+        throw const ConflictException.because(
+          AppErrorReason.cannotDisableOwnAccount,
+        );
       }
       final current = await _dataSource.findStaffById(id);
       if (current?.role == UserRole.administrator) {
@@ -160,6 +166,13 @@ class StaffRepositoryImpl implements StaffRepository {
       }
     }
     return await _dataSource.setStaffStatus(staffId: id, status: status);
+  }
+
+  @override
+  Future<bool> confirmSignedInPassword(String password) async {
+    final staff = _session.current.staff;
+    if (staff == null) return false;
+    return await signIn(email: staff.email, password: password) != null;
   }
 
   @override
@@ -183,8 +196,8 @@ class StaffRepositoryImpl implements StaffRepository {
       status: UserStatus.active,
     );
     if (activeAdmins <= 1) {
-      throw const ConflictException(
-        'The library must always have at least one active administrator.',
+      throw const ConflictException.because(
+        AppErrorReason.lastActiveAdministrator,
       );
     }
   }

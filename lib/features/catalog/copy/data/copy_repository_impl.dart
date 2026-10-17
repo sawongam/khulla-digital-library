@@ -68,17 +68,15 @@ class CopyRepositoryImpl implements CopyRepository {
   }) async {
     final existing = await _dataSource.findCopyById(id);
     if (existing == null) {
-      throw const NotFoundException('That copy was not found.');
+      throw const NotFoundException.because(AppErrorReason.copyNotFound);
     }
     if (existing.status == CopyStatus.onLoan) {
-      throw const ConflictException(
-        'That copy is on loan - return it at the desk first.',
-      );
+      throw const ConflictException.because(AppErrorReason.copyOnLoan);
     }
     if (existing.status == CopyStatus.reserved &&
         status != CopyStatus.reserved) {
-      throw const ConflictException(
-        'That copy is reserved for a hold - cancel or fulfil the hold first.',
+      throw const ConflictException.because(
+        AppErrorReason.copyHeldForReservation,
       );
     }
     return await _dataSource.updateCopy(

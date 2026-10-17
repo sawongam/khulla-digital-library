@@ -10,52 +10,42 @@ import 'package:khulla/core/format/app_date_format.dart';
 import 'package:khulla/features/catalog/copy/domain/copy_repository.dart';
 import 'package:khulla/features/catalog/copy/domain/models/copy.dart';
 import 'package:khulla/features/circulation/check_out/presentation/cubit/check_out_state.dart';
-import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart';
 import 'package:khulla/features/circulation/shared/domain/circulation_repository.dart';
+import 'package:khulla/features/circulation/shared/domain/circulation_rules.dart';
 import 'package:khulla/features/circulation/shared/domain/models/effective_loan_rules.dart';
-import 'package:khulla/features/circulation/shared/domain/resolve_loan_rules.dart';
-import 'package:khulla/features/members/data/member_type_local_data_source.dart';
 import 'package:khulla/features/members/domain/member_repository.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/domain/models/member_query.dart';
-import 'package:khulla/features/settings/domain/loan_rules_repository.dart';
-import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
 
 /// The check-out desk: member lookup, copy basket and loan creation.
 ///
 /// Page-scoped `@injectable` cubit coordinating [CirculationRepository],
-/// [CopyRepository], [MemberRepository] and [LoanRulesRepository]. Member
-/// lookup failures emit into state; barcode adds and [checkOutCopies] emit
-/// and rethrow so the scanner field or confirm button can toast.
+/// [CopyRepository] and [MemberRepository]. The loan rules it previews come
+/// from [CirculationRepository.findEffectiveRulesForMember] and the due date
+/// from `dueDateFor` - the same read and the same rule the check-out itself
+/// uses, so the date on screen is the date on the loan. Member lookup
+/// failures emit into state; barcode adds and [checkOutCopies] emit and
+/// rethrow so the scanner field or confirm button can toast.
 @injectable
 class CheckOutCubit extends Cubit<CheckOutState> {
   CheckOutCubit(
     this._circulationRepository,
     this._copyRepository,
     this._memberRepository,
-    this._loanRulesRepository,
-    this._memberTypes,
-    this._auth,
   ) : super(const CheckOutState());
 
   final CirculationRepository _circulationRepository;
   final CopyRepository _copyRepository;
   final MemberRepository _memberRepository;
-  final LoanRulesRepository _loanRulesRepository;
-  final MemberTypeLocalDataSource _memberTypes;
-  final AuthCubit _auth;
 
   Timer? _memberLookupTimer;
 
-  /// Formatted due date from the resolved [EffectiveLoanRules], or blank until a member is set.
+  /// Formatted due date from the resolved [EffectiveLoanRules], or blank
+  /// until a member is set.
   String dueDateLabel() {
     final rules = state.rules;
     if (rules == null) return '';
-    final dueAt = addCalendarDays(
-      dateOnly(DateTime.now()),
-      rules.loanPeriodDays,
-    );
-    return AppDateFormat.format(dueAt);
+    return AppDateFormat.format(dueDateFor(DateTime.now(), rules));
   }
 
   void memberSearchChanged(String value) {
@@ -94,7 +84,9 @@ class CheckOutCubit extends Cubit<CheckOutState> {
       final exact = await _memberRepository.findMemberByBarcode(trimmed);
       if (isClosed) return;
       if (exact != null) {
-        final rules = await _loadEffectiveRules(exact.memberTypeId);
+        final rules = await _circulationRepository.findEffectiveRulesForMember(
+          exact.id,
+        );
         if (isClosed) return;
         emit(
           state.copyWith(
@@ -138,7 +130,9 @@ class CheckOutCubit extends Cubit<CheckOutState> {
   Future<void> memberSelected(Member member) async {
     emit(state.copyWith(isLookingUpMember: true, error: null));
     try {
-      final rules = await _loadEffectiveRules(member.memberTypeId);
+      final rules = await _circulationRepository.findEffectiveRulesForMember(
+        member.id,
+      );
       if (isClosed) return;
       emit(
         state.copyWith(
@@ -189,12 +183,16 @@ class CheckOutCubit extends Cubit<CheckOutState> {
             rules: null,
             memberMatches: const [],
             isLookingUpMember: false,
-            error: const NotFoundException('That member was not found.'),
+            error: const NotFoundException.because(
+              AppErrorReason.memberNotFound,
+            ),
           ),
         );
         return;
       }
-      final rules = await _loadEffectiveRules(member.memberTypeId);
+      final rules = await _circulationRepository.findEffectiveRulesForMember(
+        member.id,
+      );
       if (isClosed) return;
       emit(
         state.copyWith(
@@ -243,10 +241,12 @@ class CheckOutCubit extends Cubit<CheckOutState> {
       final copy = await _copyRepository.findCopyByBarcode(trimmed);
       if (isClosed) return;
       if (copy == null) {
-        throw const NotFoundException('No copy matches that barcode.');
+        throw const NotFoundException.because(AppErrorReason.copyNotFound);
       }
       if (state.basket.any((item) => item.id == copy.id)) {
-        throw const ConflictException('That copy is already in the basket.');
+        throw const ConflictException.because(
+          AppErrorReason.copyAlreadyInBasket,
+        );
       }
       emit(state.copyWith(basket: [...state.basket, copy], error: null));
     } on AppException catch (error) {
@@ -278,7 +278,6 @@ class CheckOutCubit extends Cubit<CheckOutState> {
       await _circulationRepository.checkOutCopies(
         memberId: member.id,
         barcodes: state.basket.map((copy) => copy.barcode).toList(),
-        staffId: _auth.state.staff?.id,
       );
       if (isClosed) return;
       emit(const CheckOutState());
@@ -287,18 +286,6 @@ class CheckOutCubit extends Cubit<CheckOutState> {
       emit(state.copyWith(isSubmitting: false, error: error));
       rethrow;
     }
-  }
-
-  Future<EffectiveLoanRules> _loadEffectiveRules(String memberTypeId) async {
-    final defaults = await _loanRulesRepository.findRules();
-    if (defaults == null) {
-      throw const NotFoundException('Loan rules have not been configured.');
-    }
-    final memberType = await _memberTypes.findMemberTypeById(memberTypeId);
-    if (memberType == null) {
-      throw const NotFoundException('That member type was not found.');
-    }
-    return resolveLoanRules(defaults, memberType);
   }
 
   @override

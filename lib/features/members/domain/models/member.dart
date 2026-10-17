@@ -4,6 +4,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/format/app_date_format.dart';
 import 'package:khulla/core/money/money.dart';
+import 'package:khulla/core/time/calendar_days.dart';
 import 'package:khulla/features/members/domain/blood_group.dart';
 import 'package:khulla/features/members/domain/gender.dart';
 import 'package:khulla/features/members/domain/member_status.dart';
@@ -62,11 +63,8 @@ abstract class Member with _$Member {
   MemberStatus get status {
     if (suspendedAt != null) return MemberStatus.suspended;
     if (expiresAt == null) return MemberStatus.active;
-    final today = DateTime.now();
-    final expiry = DateTime(expiresAt!.year, expiresAt!.month, expiresAt!.day);
-    final now = DateTime(today.year, today.month, today.day);
-    if (now.isAfter(expiry)) return MemberStatus.expired;
-    final daysLeft = expiry.difference(now).inDays;
+    final daysLeft = daysBetween(DateTime.now(), expiresAt!);
+    if (daysLeft < 0) return MemberStatus.expired;
     if (daysLeft <= 30) return MemberStatus.expiring;
     return MemberStatus.active;
   }

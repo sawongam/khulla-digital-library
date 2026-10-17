@@ -11,7 +11,6 @@ import 'package:khulla/core/feedback/app_toast.dart';
 import 'package:khulla/core/lifecycle/dispose_bag.dart';
 import 'package:khulla/core/money/currency.dart';
 import 'package:khulla/core/router/routes.dart';
-import 'package:khulla/features/settings/domain/models/library_profile.dart';
 import 'package:khulla/features/settings/presentation/cubit/library_profile_cubit.dart';
 import 'package:khulla/features/settings/presentation/cubit/library_profile_state.dart';
 import 'package:khulla/features/settings/presentation/widgets/settings_logo_crop_dialog.dart';
@@ -47,27 +46,21 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
   late final TextEditingController _staffBarcodePrefix = textController();
   late final TextEditingController _staffBarcodeNextValue = textController();
 
-  AppCurrency _currency = AppCurrency.npr;
-  LibraryProfile? _loadedProfile;
-
-  void _syncFromProfile(LibraryProfile profile) {
-    if (_loadedProfile?.updatedAt == profile.updatedAt) return;
-    _loadedProfile = profile;
-    _name.text = profile.name;
-    _email.text = profile.email ?? '';
-    _phone.text = profile.phone ?? '';
-    _address.text = profile.address ?? '';
-    _openingHours.text = profile.openingHours ?? '';
-    _barcodePrefix.text = profile.barcodePrefix;
-    _barcodeNextValue.text = '${profile.barcodeNextValue}';
-    _memberBarcodePrefix.text = profile.memberBarcodePrefix;
-    _memberBarcodeNextValue.text = '${profile.memberBarcodeNextValue}';
-    _staffBarcodePrefix.text = profile.staffBarcodePrefix;
-    _staffBarcodeNextValue.text = '${profile.staffBarcodeNextValue}';
-    _currency = profile.currency;
+  /// Copies the cubit's form into the text fields. Runs only when the cubit
+  /// (re)fills the form from a saved profile - never while someone types.
+  void _fillFields(LibraryProfileState state) {
+    _name.text = state.name.value;
+    _email.text = state.email;
+    _phone.text = state.phone;
+    _address.text = state.address;
+    _openingHours.text = state.openingHours;
+    _barcodePrefix.text = state.barcodePrefix.value;
+    _barcodeNextValue.text = state.barcodeNextValue.value;
+    _memberBarcodePrefix.text = state.memberBarcodePrefix.value;
+    _memberBarcodeNextValue.text = state.memberBarcodeNextValue.value;
+    _staffBarcodePrefix.text = state.staffBarcodePrefix.value;
+    _staffBarcodeNextValue.text = state.staffBarcodeNextValue.value;
   }
-
-  int? _parseInt(String text) => int.tryParse(text.trim());
 
   Future<void> _uploadLogo(BuildContext context) async {
     final l10n = context.l10n;
@@ -117,39 +110,13 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
 
   Future<void> _save(BuildContext context) async {
     final l10n = context.l10n;
-    final barcodeNextValue = _parseInt(_barcodeNextValue.text);
-    final memberBarcodeNextValue = _parseInt(_memberBarcodeNextValue.text);
-    final staffBarcodeNextValue = _parseInt(_staffBarcodeNextValue.text);
-    if (_name.text.trim().isEmpty ||
-        _barcodePrefix.text.trim().isEmpty ||
-        barcodeNextValue == null ||
-        barcodeNextValue < 1 ||
-        _memberBarcodePrefix.text.trim().isEmpty ||
-        memberBarcodeNextValue == null ||
-        memberBarcodeNextValue < 1 ||
-        _staffBarcodePrefix.text.trim().isEmpty ||
-        staffBarcodeNextValue == null ||
-        staffBarcodeNextValue < 1) {
-      AppToast.error(context, message: l10n.validationFieldRequired);
-      return;
-    }
-
     try {
-      await context.read<LibraryProfileCubit>().saveProfile(
-        name: _name.text,
-        currency: _currency,
-        barcodePrefix: _barcodePrefix.text,
-        barcodeNextValue: barcodeNextValue,
-        memberBarcodePrefix: _memberBarcodePrefix.text,
-        memberBarcodeNextValue: memberBarcodeNextValue,
-        staffBarcodePrefix: _staffBarcodePrefix.text,
-        staffBarcodeNextValue: staffBarcodeNextValue,
-        email: _email.text,
-        phone: _phone.text,
-        address: _address.text,
-        openingHours: _openingHours.text,
-      );
+      final saved = await context.read<LibraryProfileCubit>().saveProfile();
       if (!context.mounted) return;
+      if (!saved) {
+        AppToast.error(context, message: l10n.validationFieldRequired);
+        return;
+      }
       AppToast.success(context, message: l10n.settingsLibrarySave);
       context.go(Routes.settings);
     } on AppException catch (error) {
@@ -171,12 +138,12 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
     final viewOnly = !context.canManage(StaffPermission.settings);
     const numberInput = TextInputType.number;
 
+    final cubit = context.read<LibraryProfileCubit>();
+
     return BlocConsumer<LibraryProfileCubit, LibraryProfileState>(
-      listenWhen: (previous, current) => current.profile != previous.profile,
-      listener: (context, state) {
-        final profile = state.profile;
-        if (profile != null) _syncFromProfile(profile);
-      },
+      listenWhen: (previous, current) =>
+          current.formRevision != previous.formRevision,
+      listener: (context, state) => _fillFields(state),
       builder: (context, state) {
         if (state.isLoading) {
           return const AppPageBody(
@@ -189,7 +156,7 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
             wide: true,
             child: ErrorRetryView(
               error: state.error,
-              onRetry: context.read<LibraryProfileCubit>().loadProfile,
+              onRetry: cubit.loadProfile,
             ),
           );
         }
@@ -231,7 +198,8 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                         required: true,
                         controller: _name,
                         textCapitalization: TextCapitalization.words,
-                        onChanged: (_) {},
+                        onChanged: cubit.libraryNameChanged,
+                        errorText: state.name.messageFor(l10n),
                       ),
                       if (!viewOnly) ...[
                         SizedBox(height: spacing.md),
@@ -257,13 +225,13 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                             label: l10n.fieldEmail,
                             controller: _email,
                             keyboardType: TextInputType.emailAddress,
-                            onChanged: (_) {},
+                            onChanged: cubit.emailChanged,
                           ),
                           AppTextField(
                             label: l10n.fieldPhone,
                             controller: _phone,
                             keyboardType: TextInputType.phone,
-                            onChanged: (_) {},
+                            onChanged: cubit.phoneChanged,
                           ),
                         ],
                       ),
@@ -273,12 +241,12 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                             label: l10n.fieldAddress,
                             controller: _address,
                             textCapitalization: TextCapitalization.words,
-                            onChanged: (_) {},
+                            onChanged: cubit.addressChanged,
                           ),
                           AppTextField(
                             label: l10n.fieldOpeningHours,
                             controller: _openingHours,
-                            onChanged: (_) {},
+                            onChanged: cubit.openingHoursChanged,
                           ),
                         ],
                       ),
@@ -292,7 +260,7 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                       AppDropdownField<AppCurrency>(
                         label: l10n.fieldCurrency,
                         required: true,
-                        value: _currency,
+                        value: state.currency,
                         items: AppCurrency.values,
                         itemLabel: (currency) => currency.label(l10n),
                         searchHint: l10n.currencySearchHint,
@@ -302,9 +270,7 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                             currency.name.toLowerCase().contains(query) ||
                             currency.code.toLowerCase().contains(query),
                         onChanged: (currency) {
-                          if (currency != null) {
-                            setState(() => _currency = currency);
-                          }
+                          if (currency != null) cubit.currencyChanged(currency);
                         },
                       ),
                     ],
@@ -326,14 +292,16 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                             label: l10n.fieldBarcodePrefix,
                             required: true,
                             controller: _barcodePrefix,
-                            onChanged: (_) {},
+                            onChanged: cubit.barcodePrefixChanged,
+                            errorText: state.barcodePrefix.messageFor(l10n),
                           ),
                           AppTextField(
                             label: l10n.fieldBarcodeNextValue,
                             required: true,
                             controller: _barcodeNextValue,
                             keyboardType: numberInput,
-                            onChanged: (_) {},
+                            onChanged: cubit.barcodeNextValueChanged,
+                            errorText: state.barcodeNextValue.messageFor(l10n),
                           ),
                         ],
                       ),
@@ -350,14 +318,20 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                             label: l10n.fieldBarcodePrefix,
                             required: true,
                             controller: _memberBarcodePrefix,
-                            onChanged: (_) {},
+                            onChanged: cubit.memberBarcodePrefixChanged,
+                            errorText: state.memberBarcodePrefix.messageFor(
+                              l10n,
+                            ),
                           ),
                           AppTextField(
                             label: l10n.fieldBarcodeNextValue,
                             required: true,
                             controller: _memberBarcodeNextValue,
                             keyboardType: numberInput,
-                            onChanged: (_) {},
+                            onChanged: cubit.memberBarcodeNextValueChanged,
+                            errorText: state.memberBarcodeNextValue.messageFor(
+                              l10n,
+                            ),
                           ),
                         ],
                       ),
@@ -374,14 +348,20 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                             label: l10n.fieldBarcodePrefix,
                             required: true,
                             controller: _staffBarcodePrefix,
-                            onChanged: (_) {},
+                            onChanged: cubit.staffBarcodePrefixChanged,
+                            errorText: state.staffBarcodePrefix.messageFor(
+                              l10n,
+                            ),
                           ),
                           AppTextField(
                             label: l10n.fieldBarcodeNextValue,
                             required: true,
                             controller: _staffBarcodeNextValue,
                             keyboardType: numberInput,
-                            onChanged: (_) {},
+                            onChanged: cubit.staffBarcodeNextValueChanged,
+                            errorText: state.staffBarcodeNextValue.messageFor(
+                              l10n,
+                            ),
                           ),
                         ],
                       ),

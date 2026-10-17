@@ -7,12 +7,11 @@ import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_condition.dart';
-import 'package:khulla/features/circulation/circulation/presentation/cubit/loan_list_state.dart';
 import 'package:khulla/features/circulation/loan/domain/models/loan_query.dart';
+import 'package:khulla/features/circulation/loan/presentation/cubit/loan_list_state.dart';
 import 'package:khulla/features/circulation/reservation/domain/models/reservation_query.dart';
 import 'package:khulla/features/circulation/shared/domain/circulation_repository.dart';
 import 'package:khulla/features/circulation/shared/domain/loan_status.dart';
-import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
 import 'package:khulla/shared/models/load_status.dart';
 
 /// Open loans list plus circulation headline counts.
@@ -22,10 +21,9 @@ import 'package:khulla/shared/models/load_status.dart';
 /// round-trip; failures emit into [LoanListState.error].
 @injectable
 class LoanListCubit extends Cubit<LoanListState> {
-  LoanListCubit(this._repository, this._auth) : super(const LoanListState());
+  LoanListCubit(this._repository) : super(const LoanListState());
 
   final CirculationRepository _repository;
-  final AuthCubit _auth;
 
   /// Loads the filtered loan list and on-loan, due-today, overdue and hold counts.
   Future<void> loadOpenLoans() async {
@@ -125,7 +123,7 @@ class LoanListCubit extends Cubit<LoanListState> {
 
   /// Extends the due date for one open loan. Rethrows on failure.
   Future<void> renewLoan(String loanId) async {
-    await _repository.renewLoan(loanId, staffId: _auth.state.staff?.id);
+    await _repository.renewLoan(loanId);
     if (isClosed) return;
     await loadOpenLoans();
   }
@@ -135,7 +133,6 @@ class LoanListCubit extends Cubit<LoanListState> {
     await _repository.returnCopy(
       barcode: barcode.trim(),
       condition: CopyCondition.good,
-      staffId: _auth.state.staff?.id,
     );
     if (isClosed) return;
     await loadOpenLoans();

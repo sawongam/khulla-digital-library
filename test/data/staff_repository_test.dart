@@ -6,22 +6,27 @@ import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/security/password_hasher.dart';
 import 'package:khulla/core/security/recovery_code.dart';
+import 'package:khulla/features/staff_auth/data/session_repository_impl.dart';
 import 'package:khulla/features/users/data/local_staff_data_source.dart';
 import 'package:khulla/features/users/data/staff_repository_impl.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/features/users/domain/user_status.dart';
 
 import '../helpers/test_database.dart';
+import '../helpers/test_session.dart';
 
 void main() {
   late AppDatabase db;
+  late SessionRepositoryImpl session;
   late StaffRepositoryImpl repository;
 
   setUp(() async {
     db = await openTestDatabase();
+    session = await openTestSession(db);
     repository = StaffRepositoryImpl(
       LocalStaffDataSource(db),
       PasswordHasher(),
+      session,
     );
   });
 
@@ -110,12 +115,12 @@ void main() {
       role: UserRole.librarian,
     );
 
+    await session.startSession(admin);
     final updated = await repository.updateStaff(
       id: librarian.id,
       name: 'Sita Rai',
       email: 'sita.rai@lib.np',
       role: UserRole.assistant,
-      actingStaffId: admin.id,
     );
 
     expect(updated.name, 'Sita Rai');
@@ -137,13 +142,13 @@ void main() {
       role: UserRole.librarian,
     );
 
+    await session.startSession(admin);
     expect(
       () => repository.updateStaff(
         id: librarian.id,
         name: librarian.name,
         email: 'ram@lib.np',
         role: librarian.role,
-        actingStaffId: admin.id,
       ),
       throwsA(isA<DuplicateRecordException>()),
     );
@@ -157,13 +162,13 @@ void main() {
       role: UserRole.administrator,
     );
 
+    await session.startSession(admin);
     expect(
       () => repository.updateStaff(
         id: admin.id,
         name: admin.name,
         email: admin.email,
         role: UserRole.librarian,
-        actingStaffId: admin.id,
       ),
       throwsA(isA<ConflictException>()),
     );
@@ -185,12 +190,12 @@ void main() {
         role: UserRole.administrator,
       );
 
+      await session.startSession(first);
       final demoted = await repository.updateStaff(
         id: second.id,
         name: second.name,
         email: second.email,
         role: UserRole.librarian,
-        actingStaffId: first.id,
       );
 
       expect(demoted.role, UserRole.librarian);
@@ -205,11 +210,11 @@ void main() {
       role: UserRole.administrator,
     );
 
+    await session.startSession(admin);
     expect(
       () => repository.setStaffStatus(
         id: admin.id,
         status: UserStatus.disabled,
-        actingStaffId: admin.id,
       ),
       throwsA(isA<ConflictException>()),
     );
@@ -231,11 +236,11 @@ void main() {
         role: UserRole.librarian,
       );
 
+      await session.startSession(librarian);
       expect(
         () => repository.setStaffStatus(
           id: admin.id,
           status: UserStatus.disabled,
-          actingStaffId: librarian.id,
         ),
         throwsA(isA<ConflictException>()),
       );
@@ -258,10 +263,10 @@ void main() {
         role: UserRole.librarian,
       );
 
+      await session.startSession(admin);
       final disabled = await repository.setStaffStatus(
         id: librarian.id,
         status: UserStatus.disabled,
-        actingStaffId: admin.id,
       );
       expect(disabled.status, UserStatus.disabled);
       expect(
@@ -272,10 +277,10 @@ void main() {
         isNull,
       );
 
+      await session.startSession(admin);
       final enabled = await repository.setStaffStatus(
         id: librarian.id,
         status: UserStatus.active,
-        actingStaffId: admin.id,
       );
       expect(enabled.status, UserStatus.active);
       expect(

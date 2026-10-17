@@ -8,6 +8,7 @@ import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/error/guard.dart';
 import 'package:khulla/core/files/save_binary_file.dart';
 import 'package:khulla/core/lifecycle/restart_app.dart';
+import 'package:khulla/core/storage/storage_persistence.dart' as persistence;
 import 'package:khulla/features/settings/data/backup_local_data_source.dart';
 import 'package:khulla/features/settings/data/backup_platform.dart';
 import 'package:khulla/features/settings/data/backup_session_storage.dart';
@@ -39,8 +40,13 @@ class BackupRepositoryImpl implements BackupRepository {
       lastRestoreAt: _sessions.readLastRestoreAt(),
       databaseSizeBytes: storage.sizeBytes,
       storagePath: storage.path,
+      storagePersistent: await persistence.isStoragePersistent(),
     );
   }
+
+  @override
+  Future<bool?> requestPersistentStorage() =>
+      persistence.requestPersistentStorage();
 
   @override
   Future<bool> exportBackup() => guardDatabase(

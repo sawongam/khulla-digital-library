@@ -26,6 +26,11 @@ abstract interface class BackupRepository {
   /// Returns false when they cancel the picker.
   Future<bool> restoreBackup();
 
+  /// Asks the browser to keep the catalogue rather than treat it as
+  /// best-effort storage it may clear. Answers whether it now does; null on
+  /// native, and when the browser cannot say.
+  Future<bool?> requestPersistentStorage();
+
   /// Wipes every table, then restarts the app - it lands back on onboarding,
   /// since a catalogue with no staff account has never been set up.
   Future<void> eraseCatalogue();

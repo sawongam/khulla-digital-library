@@ -16,7 +16,7 @@ import 'package:khulla/shared/models/load_status.dart';
 
 /// The create/edit member modal: member types for the picker and the record being edited.
 ///
-/// Page-scoped `@injectable` cubit for the member form modal. [load] failures
+/// Page-scoped `@injectable` cubit for the member form modal. [loadMemberForm] failures
 /// stay in [MemberFormState.error]; [saveMember] emits and rethrows.
 @injectable
 class MemberFormCubit extends Cubit<MemberFormState> {
@@ -27,7 +27,7 @@ class MemberFormCubit extends Cubit<MemberFormState> {
   final ReferenceDataRepository _referenceData;
 
   /// Loads member-type options and, when [memberId] is set, the existing member.
-  Future<void> load({String? memberId}) async {
+  Future<void> loadMemberForm({String? memberId}) async {
     emit(state.copyWith(status: LoadStatus.loading, error: null));
     try {
       final memberTypes = await _referenceData.findActiveMemberTypes();
@@ -107,8 +107,8 @@ class MemberFormCubit extends Cubit<MemberFormState> {
           ? null
           : AppDateFormat.display.tryParse(trimmedDob);
       if (trimmedDob != null && trimmedDob.isNotEmpty && dateOfBirth == null) {
-        throw const InvalidInputException(
-          'That date of birth could not be read.',
+        throw const InvalidInputException.because(
+          AppErrorReason.dateOfBirthUnreadable,
         );
       }
       final saved = await _members.saveMember(
