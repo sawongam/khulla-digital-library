@@ -185,9 +185,7 @@ class LocalStaffDataSource implements StaffLocalDataSource {
                 StaffRecoveryCodesCompanion(usedAt: Value(DateTime.now())),
               );
       if (marked == 0) {
-        throw const ConflictException(
-          'That recovery code has already been used.',
-        );
+        throw const ConflictException.because(AppErrorReason.recoveryCodeUsed);
       }
     }),
     source: '$_source.resetPasswordWithRecoveryCode',
@@ -229,9 +227,7 @@ class LocalStaffDataSource implements StaffLocalDataSource {
             ),
           );
       if (updated == 0) {
-        throw const NotFoundException(
-          'That staff account no longer exists.',
-        );
+        throw const NotFoundException.because(AppErrorReason.staffNotFound);
       }
       return normalized;
     },

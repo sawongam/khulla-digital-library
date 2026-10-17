@@ -12,6 +12,7 @@ import 'package:khulla/features/settings/presentation/cubit/backup_state.dart';
 import 'package:khulla/features/settings/presentation/widgets/confirm_erase_dialog.dart';
 import 'package:khulla/features/settings/presentation/widgets/settings_action_card.dart';
 import 'package:khulla/features/settings/presentation/widgets/settings_erase_card.dart';
+import 'package:khulla/features/settings/presentation/widgets/settings_storage_notice_card.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/section_card.dart';
 import 'package:khulla/shared/utils/app_exception_l10n.dart';
@@ -36,6 +37,19 @@ class BackupPage extends StatelessWidget {
     } on AppException catch (error) {
       if (!context.mounted) return;
       AppToast.error(context, message: error.localizedMessage(l10n));
+    }
+  }
+
+  Future<void> _keepStorage(BuildContext context) async {
+    final l10n = context.l10n;
+    final granted = await context
+        .read<BackupCubit>()
+        .requestPersistentStorage();
+    if (!context.mounted) return;
+    if (granted ?? false) {
+      AppToast.success(context, message: l10n.settingsBackupStorageKept);
+    } else {
+      AppToast.error(context, message: l10n.settingsBackupStorageDeclined);
     }
   }
 
@@ -87,6 +101,7 @@ class BackupPage extends StatelessWidget {
         }
         return _BackupBody(
           state: state,
+          onKeepStorage: () => unawaited(_keepStorage(context)),
           onExport: () => unawaited(_export(context)),
           onRestore: () => unawaited(_restore(context)),
           onErase: () => unawaited(_confirmErase(context)),
@@ -99,12 +114,14 @@ class BackupPage extends StatelessWidget {
 class _BackupBody extends StatelessWidget {
   const _BackupBody({
     required this.state,
+    required this.onKeepStorage,
     required this.onExport,
     required this.onRestore,
     required this.onErase,
   });
 
   final BackupState state;
+  final VoidCallback onKeepStorage;
   final VoidCallback onExport;
   final VoidCallback onRestore;
   final VoidCallback onErase;
@@ -128,6 +145,16 @@ class _BackupBody extends StatelessWidget {
             ),
             sliver: SliverList.list(
               children: [
+                if (info?.storagePersistent == false) ...[
+                  SettingsStorageNoticeCard(
+                    title: l10n.settingsBackupStorageAtRiskTitle,
+                    description: l10n.settingsBackupStorageAtRiskBody,
+                    actionLabel: l10n.settingsBackupStorageAtRiskAction,
+                    isLoading: state.isWorking,
+                    onAction: onKeepStorage,
+                  ),
+                  SizedBox(height: spacing.md),
+                ],
                 SectionCard(
                   title: l10n.settingsBackupTitle,
                   subtitle: l10n.settingsBackupBody,

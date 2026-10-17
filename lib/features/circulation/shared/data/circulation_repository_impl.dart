@@ -6,6 +6,7 @@ import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/error/guard.dart';
 import 'package:khulla/core/money/money.dart';
+import 'package:khulla/core/time/calendar_days.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_condition.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_status.dart';
 import 'package:khulla/features/circulation/fine/data/fine_local_data_source.dart';
@@ -21,20 +22,27 @@ import 'package:khulla/features/circulation/shared/data/circulation_copies.dart'
 import 'package:khulla/features/circulation/shared/data/circulation_fine_writes.dart';
 import 'package:khulla/features/circulation/shared/data/circulation_hold_queue.dart';
 import 'package:khulla/features/circulation/shared/data/circulation_loan_writes.dart';
-import 'package:khulla/features/circulation/shared/data/circulation_policy.dart';
+import 'package:khulla/features/circulation/shared/data/effective_rules_reader.dart';
 import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart';
 import 'package:khulla/features/circulation/shared/domain/circulation_repository.dart';
+import 'package:khulla/features/circulation/shared/domain/circulation_rules.dart';
 import 'package:khulla/features/circulation/shared/domain/fine_reason.dart';
+import 'package:khulla/features/circulation/shared/domain/models/effective_loan_rules.dart';
+import 'package:khulla/features/staff_auth/domain/session_repository.dart';
 
 /// [CirculationRepository] over the local catalogue.
 ///
-/// Orchestration only: each desk write runs in one transaction here so copy
-/// status, loan rows, fine snapshots and the reservation queue stay
-/// consistent. Row writes live in transaction-scoped helpers sharing this
-/// database instance ([CirculationPolicy], [CirculationLoanWrites],
-/// [CirculationFineWrites], [CirculationHoldQueue]); list reads delegate to
-/// [LoanLocalDataSource], [FineLocalDataSource] and
-/// [ReservationLocalDataSource].
+/// Orchestration only: each desk write gathers the facts its rules need and
+/// writes the result in one transaction, so copy status, loan rows, fine
+/// snapshots and the reservation queue stay consistent. The rules themselves
+/// are the pure functions in `circulation_rules.dart`; row writes live in
+/// transaction-scoped helpers sharing this database instance
+/// ([EffectiveRulesReader], [CirculationLoanWrites], [CirculationFineWrites],
+/// [CirculationHoldQueue]); list reads delegate to [LoanLocalDataSource],
+/// [FineLocalDataSource] and [ReservationLocalDataSource].
+///
+/// Check-out and return are attributed to [SessionRepository]'s signed-in
+/// account, read here rather than passed in.
 @LazySingleton(as: CirculationRepository)
 class CirculationRepositoryImpl implements CirculationRepository {
   CirculationRepositoryImpl(
@@ -42,17 +50,19 @@ class CirculationRepositoryImpl implements CirculationRepository {
     this._loanDataSource,
     this._fineDataSource,
     this._reservationDataSource,
+    this._session,
   );
 
   final AppDatabase _db;
   final LoanLocalDataSource _loanDataSource;
   final FineLocalDataSource _fineDataSource;
   final ReservationLocalDataSource _reservationDataSource;
+  final SessionRepository _session;
 
-  late final _policy = CirculationPolicy(_db);
+  late final _rules = EffectiveRulesReader(_db);
   late final _loanWrites = CirculationLoanWrites(_db);
-  late final _fineWrites = CirculationFineWrites(_db, _policy);
-  late final _holdQueue = CirculationHoldQueue(_db, _policy);
+  late final _fineWrites = CirculationFineWrites(_db);
+  late final _holdQueue = CirculationHoldQueue(_db, _rules);
 
   static const String _source = 'CirculationRepositoryImpl';
 
@@ -60,15 +70,17 @@ class CirculationRepositoryImpl implements CirculationRepository {
   Future<Loan> checkOutCopy({
     required String memberId,
     required String barcode,
-    String? staffId,
   }) => guardDatabase(
-    () => _db.transaction(
-      () => _checkOutCopy(
-        memberId: memberId,
-        barcode: barcode.trim(),
-        staffId: staffId,
-      ),
-    ),
+    () {
+      final staffId = _session.requireSignedInStaff().id;
+      return _db.transaction(
+        () => _checkOutCopy(
+          memberId: memberId,
+          barcode: barcode.trim(),
+          staffId: staffId,
+        ),
+      );
+    },
     source: '$_source.checkOutCopy',
   );
 
@@ -76,28 +88,30 @@ class CirculationRepositoryImpl implements CirculationRepository {
   Future<List<Loan>> checkOutCopies({
     required String memberId,
     required List<String> barcodes,
-    String? staffId,
   }) => guardDatabase(
-    () => _db.transaction(() async {
-      final loans = <Loan>[];
-      for (final barcode in barcodes) {
-        loans.add(
-          await _checkOutCopy(
-            memberId: memberId,
-            barcode: barcode.trim(),
-            staffId: staffId,
-          ),
-        );
-      }
-      return loans;
-    }),
+    () {
+      final staffId = _session.requireSignedInStaff().id;
+      return _db.transaction(() async {
+        final loans = <Loan>[];
+        for (final barcode in barcodes) {
+          loans.add(
+            await _checkOutCopy(
+              memberId: memberId,
+              barcode: barcode.trim(),
+              staffId: staffId,
+            ),
+          );
+        }
+        return loans;
+      });
+    },
     source: '$_source.checkOutCopies',
   );
 
   Future<Loan> _checkOutCopy({
     required String memberId,
     required String barcode,
-    String? staffId,
+    required String staffId,
   }) async {
     final now = DateTime.now();
     final today = dateOnly(now);
@@ -106,90 +120,75 @@ class CirculationRepositoryImpl implements CirculationRepository {
       _db.copies,
     )..where((copy) => copy.barcode.equals(barcode))).getSingleOrNull();
     if (copyRow == null) {
-      throw const NotFoundException('No copy matches that barcode.');
+      throw const NotFoundException.because(AppErrorReason.copyNotFound);
     }
 
     final titleRow = await (_db.select(
       _db.titles,
     )..where((title) => title.id.equals(copyRow.titleId))).getSingleOrNull();
     if (titleRow == null) {
-      throw const NotFoundException('The title for that copy was not found.');
+      throw const NotFoundException.because(AppErrorReason.titleNotFound);
     }
 
     final memberRow = await (_db.select(
       _db.members,
     )..where((member) => member.id.equals(memberId))).getSingleOrNull();
     if (memberRow == null) {
-      throw const NotFoundException('That member was not found.');
+      throw const NotFoundException.because(AppErrorReason.memberNotFound);
     }
 
-    final rules = await _policy.loadEffectiveRules(memberRow.memberTypeId);
+    final rules = await _rules.loadEffectiveRules(memberRow.memberTypeId);
 
-    _policy.rejectIneligibleMember(
+    // Checked in this order, and each fact read only once the rules before
+    // it have passed, so the desk is told the first thing standing in the
+    // way - and a cheap refusal never pays for an expensive count.
+    ensureMemberInGoodStanding(
       archivedAt: memberRow.archivedAt,
       suspendedAt: memberRow.suspendedAt,
       expiresAt: memberRow.expiresAt,
       today: today,
     );
+    ensureCopyCanCirculate(
+      copyArchivedAt: copyRow.archivedAt,
+      titleArchivedAt: titleRow.archivedAt,
+      titleLendable: titleRow.lendable,
+    );
+    ensureCopyAvailableTo(
+      status: copyRow.status,
+      memberId: memberId,
+      readyHoldMemberId: copyRow.status == CopyStatus.reserved
+          ? (await _holdQueue.findReadyHoldForCopy(copyRow.id))?.memberId
+          : null,
+    );
+    ensureUnderBorrowingLimit(
+      openLoans: await _loanDataSource.countOpenLoansForMember(memberId),
+      rules: rules,
+    );
+    ensureNoBlockingOverdues(
+      hasOverdueLoans:
+          rules.blockOverdueBorrowers &&
+          await _loanDataSource.memberHasOverdueLoans(memberId),
+      rules: rules,
+    );
+    ensureFinesWithinLimit(
+      outstanding: rules.maxOutstandingFine == null
+          ? Money.zero
+          : await _fineDataSource.outstandingForMember(memberId),
+      rules: rules,
+    );
+    ensureFirstInHoldQueue(
+      memberId: memberId,
+      firstWaitingMemberId:
+          (await _reservationDataSource.findFirstWaitingHoldForTitle(
+            copyRow.titleId,
+          ))?.memberId,
+    );
 
-    if (copyRow.archivedAt != null) {
-      throw const ConflictException('That copy has been archived.');
-    }
-    if (!titleRow.lendable) {
-      throw const ConflictException('That title is not lendable.');
-    }
-    if (titleRow.archivedAt != null) {
-      throw const ConflictException('That title has been archived.');
-    }
-
-    if (copyRow.status == CopyStatus.reserved) {
-      final readyHold = await _holdQueue.findReadyHoldForCopy(copyRow.id);
-      if (readyHold == null || readyHold.memberId != memberId) {
-        throw const ConflictException(
-          'That copy is reserved for another member.',
-        );
-      }
-    } else if (copyRow.status != CopyStatus.available) {
-      throw const ConflictException('That copy is not available to borrow.');
-    }
-
-    final openLoans = await _loanDataSource.countOpenLoansForMember(memberId);
-    if (openLoans >= rules.borrowingLimit) {
-      throw const ConflictException(
-        'That member has reached their borrowing limit.',
-      );
-    }
-
-    if (rules.blockOverdueBorrowers &&
-        await _loanDataSource.memberHasOverdueLoans(memberId)) {
-      throw const ConflictException(
-        'That member has overdue loans and cannot borrow.',
-      );
-    }
-
-    if (rules.maxOutstandingFine != null) {
-      final owed = await _fineDataSource.outstandingForMember(memberId);
-      if (owed > rules.maxOutstandingFine!) {
-        throw const ConflictException(
-          'That member owes more than the allowed outstanding fine.',
-        );
-      }
-    }
-
-    final firstWaiting = await _reservationDataSource
-        .findFirstWaitingHoldForTitle(copyRow.titleId);
-    if (firstWaiting != null && firstWaiting.memberId != memberId) {
-      throw const ConflictException(
-        'Another member has an earlier hold on this title.',
-      );
-    }
-
-    final dueAt = addCalendarDays(today, rules.loanPeriodDays);
     final loanId = await _loanWrites.insertCheckoutLoan(
       copyId: copyRow.id,
       memberId: memberId,
       checkedOutAt: now,
-      dueAt: dueAt,
+      dueAt: dueDateFor(today, rules),
       ruleLoanPeriodDays: rules.loanPeriodDays,
       ruleFinePerDay: rules.finePerDay,
       ruleGraceDays: rules.graceDays,
@@ -211,16 +210,18 @@ class CirculationRepositoryImpl implements CirculationRepository {
     required String barcode,
     required CopyCondition condition,
     bool waiveFine = false,
-    String? staffId,
   }) => guardDatabase(
-    () => _db.transaction(
-      () => _returnCopy(
-        barcode: barcode.trim(),
-        condition: condition,
-        waiveFine: waiveFine,
-        staffId: staffId,
-      ),
-    ),
+    () {
+      final staffId = _session.requireSignedInStaff().id;
+      return _db.transaction(
+        () => _returnCopy(
+          barcode: barcode.trim(),
+          condition: condition,
+          waiveFine: waiveFine,
+          staffId: staffId,
+        ),
+      );
+    },
     source: '$_source.returnCopy',
   );
 
@@ -228,22 +229,24 @@ class CirculationRepositoryImpl implements CirculationRepository {
   Future<List<Loan>> returnCopies({
     required List<ReturnCopyInput> copies,
     bool waiveFine = false,
-    String? staffId,
   }) => guardDatabase(
-    () => _db.transaction(() async {
-      final closed = <Loan>[];
-      for (final item in copies) {
-        closed.add(
-          await _returnCopy(
-            barcode: item.barcode.trim(),
-            condition: item.condition,
-            waiveFine: waiveFine,
-            staffId: staffId,
-          ),
-        );
-      }
-      return closed;
-    }),
+    () {
+      final staffId = _session.requireSignedInStaff().id;
+      return _db.transaction(() async {
+        final closed = <Loan>[];
+        for (final item in copies) {
+          closed.add(
+            await _returnCopy(
+              barcode: item.barcode.trim(),
+              condition: item.condition,
+              waiveFine: waiveFine,
+              staffId: staffId,
+            ),
+          );
+        }
+        return closed;
+      });
+    },
     source: '$_source.returnCopies',
   );
 
@@ -251,7 +254,7 @@ class CirculationRepositoryImpl implements CirculationRepository {
     required String barcode,
     required CopyCondition condition,
     required bool waiveFine,
-    String? staffId,
+    required String staffId,
   }) async {
     final now = DateTime.now();
     final today = dateOnly(now);
@@ -260,12 +263,12 @@ class CirculationRepositoryImpl implements CirculationRepository {
       _db.copies,
     )..where((copy) => copy.barcode.equals(barcode))).getSingleOrNull();
     if (copyRow == null) {
-      throw const NotFoundException('No copy matches that barcode.');
+      throw const NotFoundException.because(AppErrorReason.copyNotFound);
     }
 
     final openLoan = await _loanDataSource.findOpenLoanByCopyId(copyRow.id);
     if (openLoan == null) {
-      throw const NotFoundException('That copy is not on loan.');
+      throw const NotFoundException.because(AppErrorReason.copyNotOnLoan);
     }
 
     await _loanWrites.markLoanReturned(
@@ -299,7 +302,7 @@ class CirculationRepositoryImpl implements CirculationRepository {
   }
 
   @override
-  Future<Loan> renewLoan(String loanId, {String? staffId}) => guardDatabase(
+  Future<Loan> renewLoan(String loanId) => guardDatabase(
     () => _db.transaction(() => _renewLoan(loanId: loanId)),
     source: '$_source.renewLoan',
   );
@@ -307,36 +310,31 @@ class CirculationRepositoryImpl implements CirculationRepository {
   Future<Loan> _renewLoan({required String loanId}) async {
     final loan = await _loanDataSource.findLoanById(loanId);
     if (loan == null) {
-      throw const NotFoundException('That loan was not found.');
+      throw const NotFoundException.because(AppErrorReason.loanNotFound);
     }
     if (loan.returnedAt != null) {
-      throw const ConflictException('That loan has already been returned.');
+      throw const ConflictException.because(AppErrorReason.loanAlreadyReturned);
     }
 
     final copyRow = await (_db.select(
       _db.copies,
     )..where((copy) => copy.id.equals(loan.copyId))).getSingleOrNull();
     if (copyRow == null) {
-      throw const NotFoundException('The copy for that loan was not found.');
+      throw const NotFoundException.because(AppErrorReason.copyNotFound);
     }
 
-    final rules = await _policy.loadEffectiveRulesForMember(loan.memberId);
+    final rules = await _rules.loadEffectiveRulesForMember(loan.memberId);
 
-    if (loan.renewalCount >= rules.renewalLimit) {
-      throw const ConflictException('That loan has reached its renewal limit.');
-    }
+    ensureRenewable(
+      returnedAt: loan.returnedAt,
+      renewalCount: loan.renewalCount,
+      waitingHolds: await _holdQueue.countWaitingHolds(copyRow.titleId),
+      rules: rules,
+    );
 
-    final waitingHolds = await _holdQueue.countWaitingHolds(copyRow.titleId);
-    if (waitingHolds > 0) {
-      throw const ConflictException(
-        'A hold is waiting on this title and the loan cannot be renewed.',
-      );
-    }
-
-    final extendBy = rules.renewalPeriodDays ?? rules.loanPeriodDays;
     await _loanWrites.extendLoanDue(
       loanId: loanId,
-      newDueAt: addCalendarDays(loan.dueAt, extendBy),
+      newDueAt: renewedDueDate(loan.dueAt, rules),
     );
 
     return (await _loanDataSource.findLoanById(loanId))!;
@@ -364,40 +362,32 @@ class CirculationRepositoryImpl implements CirculationRepository {
       _db.members,
     )..where((member) => member.id.equals(memberId))).getSingleOrNull();
     if (memberRow == null) {
-      throw const NotFoundException('That member was not found.');
+      throw const NotFoundException.because(AppErrorReason.memberNotFound);
     }
 
     final titleRow = await (_db.select(
       _db.titles,
     )..where((title) => title.id.equals(titleId))).getSingleOrNull();
     if (titleRow == null) {
-      throw const NotFoundException('That title was not found.');
+      throw const NotFoundException.because(AppErrorReason.titleNotFound);
     }
 
-    final rules = await _policy.loadEffectiveRules(memberRow.memberTypeId);
+    final rules = await _rules.loadEffectiveRules(memberRow.memberTypeId);
 
-    _policy.rejectIneligibleMember(
+    ensureMemberInGoodStanding(
       archivedAt: memberRow.archivedAt,
       suspendedAt: memberRow.suspendedAt,
       expiresAt: memberRow.expiresAt,
       today: today,
     );
-
-    if (titleRow.archivedAt != null) {
-      throw const ConflictException('That title has been archived.');
-    }
-    if (!titleRow.lendable) {
-      throw const ConflictException('That title is not lendable.');
-    }
-
-    final activeHolds = await _reservationDataSource.countActiveHoldsForMember(
-      memberId,
+    ensureHoldAllowed(
+      titleArchivedAt: titleRow.archivedAt,
+      titleLendable: titleRow.lendable,
+      activeHolds: await _reservationDataSource.countActiveHoldsForMember(
+        memberId,
+      ),
+      rules: rules,
     );
-    if (activeHolds >= rules.reservationLimit) {
-      throw const ConflictException(
-        'That member has reached their hold limit.',
-      );
-    }
 
     final reservationId = await _holdQueue.insertWaitingHold(
       memberId: memberId,
@@ -447,7 +437,6 @@ class CirculationRepositoryImpl implements CirculationRepository {
     required FineReason reason,
     required Money amount,
     String? note,
-    String? staffId,
   }) => guardDatabase(
     () => _db.transaction(() async {
       final id = await _fineWrites.chargeManualFine(
@@ -466,6 +455,10 @@ class CirculationRepositoryImpl implements CirculationRepository {
     () => _db.transaction(_holdQueue.expireStaleReady),
     source: '$_source.expireStaleHolds',
   );
+
+  @override
+  Future<EffectiveLoanRules> findEffectiveRulesForMember(String memberId) =>
+      _rules.loadEffectiveRulesForMember(memberId);
 
   @override
   Future<LoanListResult> findOpenLoans(LoanQuery query) =>

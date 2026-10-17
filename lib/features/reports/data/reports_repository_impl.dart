@@ -7,8 +7,7 @@ import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/database/converters/date_only_converter.dart';
 import 'package:khulla/core/error/guard.dart';
 import 'package:khulla/core/money/money.dart';
-import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart'
-    show dateOnly;
+import 'package:khulla/core/time/calendar_days.dart';
 import 'package:khulla/features/reports/domain/models/reports_summary.dart';
 import 'package:khulla/features/reports/domain/reports_repository.dart';
 
@@ -285,9 +284,10 @@ LIMIT 100
           title: row.read<String>('title'),
           member: row.read<String>('member'),
           dueDate: DateTime.parse(row.read<String>('due_at')),
-          daysLate: today
-              .difference(DateTime.parse(row.read<String>('due_at')))
-              .inDays,
+          daysLate: daysBetween(
+            DateTime.parse(row.read<String>('due_at')),
+            today,
+          ),
         ),
     ];
   }

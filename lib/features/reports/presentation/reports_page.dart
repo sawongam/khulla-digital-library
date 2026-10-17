@@ -43,7 +43,7 @@ class ReportsPage extends StatelessWidget {
           return AppErrorView(
             message: state.error?.localizedMessage(l10n) ?? '',
             retryLabel: l10n.commonRetry,
-            onRetry: () => context.read<ReportsCubit>().load(),
+            onRetry: () => context.read<ReportsCubit>().loadReports(),
           );
         }
         return _ReportsBoard(state: state);

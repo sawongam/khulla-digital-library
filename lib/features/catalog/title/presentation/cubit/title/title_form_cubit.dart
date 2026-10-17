@@ -15,7 +15,7 @@ import 'package:khulla/shared/models/load_status.dart';
 
 /// The create/edit title modal: formats for the picker and the record being edited.
 ///
-/// Page-scoped `@injectable` cubit for the title form modal. [load] failures
+/// Page-scoped `@injectable` cubit for the title form modal. [loadTitleForm] failures
 /// stay in [TitleFormState.error]; [saveTitle] emits and rethrows so the
 /// modal can toast and keep the form open.
 @injectable
@@ -31,7 +31,7 @@ class TitleFormCubit extends Cubit<TitleFormState> {
   final ReferenceDataRepository _referenceData;
 
   /// Loads format options and, when [titleId] is set, the existing title.
-  Future<void> load({String? titleId}) async {
+  Future<void> loadTitleForm({String? titleId}) async {
     emit(state.copyWith(status: LoadStatus.loading, error: null));
     try {
       final formats = await _referenceData.findActiveFormats();

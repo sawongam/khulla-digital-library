@@ -43,7 +43,10 @@ class StaffResetPasswordDialog extends StatelessWidget {
       create: (_) {
         final cubit = getIt<StaffFormCubit>();
         unawaited(
-          cubit.load(mode: StaffFormMode.resetPassword, staffId: staffId),
+          cubit.loadStaffForm(
+            mode: StaffFormMode.resetPassword,
+            staffId: staffId,
+          ),
         );
         return cubit;
       },

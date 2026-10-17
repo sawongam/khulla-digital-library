@@ -7,7 +7,7 @@ import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/error/guard.dart';
 import 'package:khulla/core/money/money.dart';
 import 'package:khulla/features/circulation/fine/data/fine_local_data_source.dart';
-import 'package:khulla/features/circulation/shared/data/circulation_policy.dart';
+import 'package:khulla/features/circulation/shared/domain/circulation_rules.dart';
 import 'package:khulla/features/circulation/shared/domain/fine_reason.dart';
 import 'package:uuid/uuid.dart';
 
@@ -17,10 +17,9 @@ import 'package:uuid/uuid.dart';
 /// runs its transaction on. Totals stay on [FineLocalDataSource]; views are
 /// reloaded through it.
 class CirculationFineWrites {
-  CirculationFineWrites(this._db, this._policy);
+  CirculationFineWrites(this._db);
 
   final AppDatabase _db;
-  final CirculationPolicy _policy;
 
   static const Uuid _uuid = Uuid();
   static const String _source = 'CirculationFineWrites';
@@ -58,11 +57,13 @@ class CirculationFineWrites {
             _db.fines,
           )..where((fine) => fine.id.equals(id))).getSingleOrNull();
           if (row == null) {
-            throw const NotFoundException('That fine was not found.');
+            throw const NotFoundException.because(AppErrorReason.fineNotFound);
           }
           final outstanding = row.assessed - row.paid - row.waived;
           if (!outstanding.isPositive) {
-            throw const ConflictException('That fine is already settled.');
+            throw const ConflictException.because(
+              AppErrorReason.fineAlreadySettled,
+            );
           }
           final now = DateTime.now();
           await (_db.update(
@@ -93,17 +94,17 @@ class CirculationFineWrites {
   }) => guardDatabase(
     () async {
       if (!amount.isPositive) {
-        throw const ConflictException(
-          'A charged fine must be more than zero.',
+        throw const ConflictException.because(
+          AppErrorReason.fineAmountNotPositive,
         );
       }
       final memberRow = await (_db.select(
         _db.members,
       )..where((member) => member.id.equals(memberId))).getSingleOrNull();
       if (memberRow == null) {
-        throw const NotFoundException('That member was not found.');
+        throw const NotFoundException.because(AppErrorReason.memberNotFound);
       }
-      _policy.rejectArchivedMember(memberRow.archivedAt);
+      ensureMemberNotArchived(memberRow.archivedAt);
 
       final now = DateTime.now();
       final id = _uuid.v4();

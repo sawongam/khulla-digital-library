@@ -43,7 +43,9 @@ class TitleDetailCubit extends Cubit<TitleDetailState> {
         emit(
           state.copyWith(
             status: LoadStatus.failure,
-            error: const NotFoundException('Title not found.'),
+            error: const NotFoundException.because(
+              AppErrorReason.titleNotFound,
+            ),
           ),
         );
         return;

@@ -7,21 +7,21 @@ import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/form/inputs/email.dart';
 import 'package:khulla/core/form/inputs/password.dart';
-import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
+import 'package:khulla/features/staff_auth/domain/session_repository.dart';
 import 'package:khulla/features/staff_auth/presentation/sign_in/cubit/sign_in_state.dart';
 import 'package:khulla/features/users/domain/staff_repository.dart';
 
 /// The sign-in form.
 ///
 /// It owns the form and nothing else: on success it hands the account to
-/// [AuthCubit], which is what the router watches. That is why this cubit can
-/// be scoped to the page and die with it.
+/// [SessionRepository], which `AuthCubit` mirrors for the router. That is
+/// why this cubit can be scoped to the page and die with it.
 @injectable
 class SignInCubit extends Cubit<SignInState> {
-  SignInCubit(this._staff, this._auth) : super(const SignInState());
+  SignInCubit(this._staff, this._session) : super(const SignInState());
 
   final StaffRepository _staff;
-  final AuthCubit _auth;
+  final SessionRepository _session;
 
   void emailChanged(String value) => emit(
     state.copyWith(
@@ -99,7 +99,7 @@ class SignInCubit extends Cubit<SignInState> {
       }
 
       emit(state.copyWith(status: FormzSubmissionStatus.success));
-      await _auth.startSession(staff);
+      await _session.startSession(staff);
     } on AppException catch (error) {
       if (isClosed) return;
       emit(

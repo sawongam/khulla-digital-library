@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/money/money.dart';
+import 'package:khulla/core/time/calendar_days.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_condition.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_status.dart';
 import 'package:khulla/features/circulation/fine/data/local_fine_data_source.dart';
@@ -13,9 +14,12 @@ import 'package:khulla/features/circulation/loan/data/local_loan_data_source.dar
 import 'package:khulla/features/circulation/reservation/data/local_reservation_data_source.dart';
 import 'package:khulla/features/circulation/shared/data/circulation_repository_impl.dart';
 import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart';
+import 'package:khulla/features/staff_auth/data/session_repository_impl.dart';
+import 'package:khulla/features/users/domain/models/staff_member.dart';
 
 import '../helpers/catalog_fixtures.dart';
 import '../helpers/test_database.dart';
+import '../helpers/test_session.dart';
 
 /// Integration tests for [CirculationRepositoryImpl] against a real database.
 ///
@@ -25,15 +29,20 @@ import '../helpers/test_database.dart';
 /// status changes - without also asserting loan-list queries.
 void main() {
   late AppDatabase db;
+  late SessionRepositoryImpl session;
+  late StaffMember deskStaff;
   late CirculationRepositoryImpl repository;
 
   setUp(() async {
     db = await openTestDatabase();
+    session = await openTestSession(db);
+    deskStaff = await signInTestStaff(db, session);
     repository = CirculationRepositoryImpl(
       db,
       LocalLoanDataSource(db),
       LocalFineDataSource(db),
       LocalReservationDataSource(db),
+      session,
     );
   });
 
@@ -112,9 +121,74 @@ void main() {
           memberId: member.memberId,
           barcode: secondCopy.barcode,
         ),
-        throwsA(isA<ConflictException>()),
+        throwsA(
+          isA<ConflictException>().having(
+            (error) => error.reason,
+            'reason',
+            AppErrorReason.borrowingLimitReached,
+          ),
+        ),
       );
     });
+
+    test(
+      'checkout and return are recorded against the signed-in staff',
+      () async {
+        final reference = await seedReferenceData(db);
+        final seeded = await seedTitleWithCopy(
+          db,
+          formatId: reference.formatId,
+        );
+        final member = await seedMember(
+          db,
+          memberTypeId: reference.memberTypeId,
+        );
+
+        final loan = await repository.checkOutCopy(
+          memberId: member.memberId,
+          barcode: seeded.barcode,
+        );
+        await repository.returnCopy(
+          barcode: seeded.barcode,
+          condition: CopyCondition.good,
+        );
+
+        final row = await (db.select(
+          db.loans,
+        )..where((row) => row.id.equals(loan.id))).getSingle();
+        expect(row.checkedOutByStaffId, deskStaff.id);
+        expect(row.returnedByStaffId, deskStaff.id);
+      },
+    );
+
+    test(
+      'checkout with nobody signed in is refused and writes nothing',
+      () async {
+        final reference = await seedReferenceData(db);
+        final seeded = await seedTitleWithCopy(
+          db,
+          formatId: reference.formatId,
+        );
+        final member = await seedMember(
+          db,
+          memberTypeId: reference.memberTypeId,
+        );
+        await session.endSession();
+
+        await expectLater(
+          repository.checkOutCopy(
+            memberId: member.memberId,
+            barcode: seeded.barcode,
+          ),
+          throwsA(isA<SignedOutException>()),
+        );
+        expect(await db.select(db.loans).get(), isEmpty);
+        expect(
+          (await copyByBarcode(seeded.barcode)).status,
+          CopyStatus.available,
+        );
+      },
+    );
 
     test('checkout for suspended member throws ConflictException', () async {
       final reference = await seedReferenceData(db);

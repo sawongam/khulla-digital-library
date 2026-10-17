@@ -14,9 +14,11 @@ import 'package:khulla/shared/presentation/cubit/reference_data_state.dart';
 /// options without re-querying on each open. A [lazySingleton] - it outlives
 /// any one page and is never closed.
 ///
-/// Delegates to [ReferenceDataRepository]. Reads emit failures into
-/// [ReferenceDataState.error]; [refreshFormats] and [refreshMemberTypes]
-/// patch one list after a write elsewhere without a full reload.
+/// Delegates to [ReferenceDataRepository]. Every method is a read, so each
+/// emits its failure into [ReferenceDataState.error] and returns normally;
+/// [refreshFormats] and [refreshMemberTypes] patch one list after a write
+/// elsewhere without a full reload. A [lazySingleton] is never closed, so
+/// there are no `isClosed` guards after its awaits.
 @lazySingleton
 class ReferenceDataCubit extends Cubit<ReferenceDataState> {
   ReferenceDataCubit(this._repository) : super(const ReferenceDataState());
@@ -32,7 +34,6 @@ class ReferenceDataCubit extends Cubit<ReferenceDataState> {
     try {
       final formats = await _repository.findActiveFormats();
       final memberTypes = await _repository.findActiveMemberTypes();
-      if (isClosed) return;
       emit(
         state.copyWith(
           status: LoadStatus.loaded,
@@ -42,22 +43,27 @@ class ReferenceDataCubit extends Cubit<ReferenceDataState> {
         ),
       );
     } on AppException catch (error) {
-      if (isClosed) return;
       emit(state.copyWith(status: LoadStatus.failure, error: error));
     }
   }
 
   /// Re-fetches formats after a settings change without resetting member types.
   Future<void> refreshFormats() async {
-    final formats = await _repository.findActiveFormats();
-    if (isClosed) return;
-    emit(state.copyWith(formats: formats));
+    try {
+      final formats = await _repository.findActiveFormats();
+      emit(state.copyWith(formats: formats));
+    } on AppException catch (error) {
+      emit(state.copyWith(error: error));
+    }
   }
 
   /// Re-fetches member types after a settings change without resetting formats.
   Future<void> refreshMemberTypes() async {
-    final memberTypes = await _repository.findActiveMemberTypes();
-    if (isClosed) return;
-    emit(state.copyWith(memberTypes: memberTypes));
+    try {
+      final memberTypes = await _repository.findActiveMemberTypes();
+      emit(state.copyWith(memberTypes: memberTypes));
+    } on AppException catch (error) {
+      emit(state.copyWith(error: error));
+    }
   }
 }

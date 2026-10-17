@@ -25,7 +25,7 @@ class CopyFormCubit extends Cubit<CopyFormState> {
   Timer? _titleLookupTimer;
 
   /// Loads a fixed title when [titleId] is set; otherwise starts empty.
-  Future<void> load({String? titleId}) async {
+  Future<void> loadCopyForm({String? titleId}) async {
     emit(state.copyWith(status: LoadStatus.loading, error: null));
     try {
       final fixed = titleId == null ? null : await _titles.findTitle(titleId);
@@ -92,7 +92,9 @@ class CopyFormCubit extends Cubit<CopyFormState> {
   }) async {
     final title = state.selectedTitle ?? state.fixedTitle;
     if (title == null) {
-      throw const InvalidInputException('Choose a title first.');
+      throw const InvalidInputException.because(
+        AppErrorReason.chooseTitleFirst,
+      );
     }
 
     emit(state.copyWith(isSaving: true, error: null));

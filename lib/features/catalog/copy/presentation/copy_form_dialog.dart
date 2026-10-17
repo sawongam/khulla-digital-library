@@ -28,7 +28,7 @@ class CopyFormDialog extends StatelessWidget {
         builder: (_) => BlocProvider(
           create: (_) {
             final cubit = getIt<CopyFormCubit>();
-            unawaited(cubit.load(titleId: titleId));
+            unawaited(cubit.loadCopyForm(titleId: titleId));
             return cubit;
           },
           child: CopyFormDialog(titleId: titleId),

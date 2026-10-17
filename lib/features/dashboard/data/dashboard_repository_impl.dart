@@ -7,9 +7,8 @@ import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/database/converters/date_only_converter.dart';
 import 'package:khulla/core/error/guard.dart';
 import 'package:khulla/core/money/money.dart';
+import 'package:khulla/core/time/calendar_days.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_status.dart';
-import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart'
-    show dateOnly;
 import 'package:khulla/features/circulation/shared/domain/reservation_status.dart';
 import 'package:khulla/features/dashboard/domain/dashboard_repository.dart';
 import 'package:khulla/features/dashboard/domain/models/dashboard_summary.dart';
@@ -312,7 +311,7 @@ LIMIT ?1
   /// `Member.status` uses to compute `MemberStatus.expiring`.
   Future<int> _countExpiringMemberships() {
     final today = dateOnly(DateTime.now());
-    final horizon = today.add(const Duration(days: 30));
+    final horizon = addCalendarDays(today, 30);
     return _db
         .customSelect(
           '''

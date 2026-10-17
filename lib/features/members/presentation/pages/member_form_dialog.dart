@@ -40,7 +40,7 @@ class MemberFormDialog extends StatelessWidget {
         builder: (_) => BlocProvider(
           create: (_) {
             final cubit = getIt<MemberFormCubit>();
-            unawaited(cubit.load(memberId: memberId));
+            unawaited(cubit.loadMemberForm(memberId: memberId));
             return cubit;
           },
           child: MemberFormDialog(memberId: memberId),

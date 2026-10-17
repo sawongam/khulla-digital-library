@@ -7,7 +7,7 @@ import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/database/converters/date_only_converter.dart';
 import 'package:khulla/core/database/converters/money_converter.dart';
 import 'package:khulla/core/money/money.dart';
-import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart';
+import 'package:khulla/core/time/calendar_days.dart';
 
 import '../helpers/catalog_fixtures.dart';
 import '../helpers/test_database.dart';

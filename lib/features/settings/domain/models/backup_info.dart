@@ -22,5 +22,11 @@ abstract class BackupInfo with _$BackupInfo {
 
     /// Where the catalogue file lives, native only.
     String? storagePath,
+
+    /// Whether the browser has promised to keep the catalogue, web only -
+    /// null on native, where the question does not arise, and when the
+    /// browser cannot say. False means the catalogue is best-effort storage
+    /// the browser may clear on its own.
+    bool? storagePersistent,
   }) = _BackupInfo;
 }

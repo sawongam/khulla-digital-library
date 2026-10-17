@@ -30,7 +30,7 @@ class PlaceHoldCubit extends Cubit<PlaceHoldState> {
   Timer? _memberLookupTimer;
   Timer? _titleLookupTimer;
 
-  Future<void> load({String? titleId}) async {
+  Future<void> loadHoldForm({String? titleId}) async {
     emit(state.copyWith(status: LoadStatus.loading, error: null));
     try {
       final fixed = titleId == null ? null : await _titles.findTitle(titleId);
@@ -185,10 +185,14 @@ class PlaceHoldCubit extends Cubit<PlaceHoldState> {
     final member = state.member;
     final title = state.selectedTitle ?? state.fixedTitle;
     if (member == null) {
-      throw const InvalidInputException('Choose a member first.');
+      throw const InvalidInputException.because(
+        AppErrorReason.chooseMemberFirst,
+      );
     }
     if (title == null) {
-      throw const InvalidInputException('Choose a title first.');
+      throw const InvalidInputException.because(
+        AppErrorReason.chooseTitleFirst,
+      );
     }
 
     emit(state.copyWith(isSaving: true, error: null));

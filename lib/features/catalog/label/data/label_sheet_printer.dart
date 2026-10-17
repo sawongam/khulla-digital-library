@@ -53,7 +53,9 @@ class LabelSheetPrinter {
     } on AppException {
       rethrow;
     } on Object {
-      throw const StorageException('The label sheet could not be printed.');
+      throw const StorageException.because(
+        AppErrorReason.labelSheetPrintFailed,
+      );
     }
   }
 

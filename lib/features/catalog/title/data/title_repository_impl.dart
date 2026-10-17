@@ -85,7 +85,7 @@ class TitleRepositoryImpl implements TitleRepository {
   @override
   Future<void> removeTitle(String id) async {
     if (await _dataSource.hasDependentCopies(id)) {
-      throw const ConflictException('Title has copies and cannot be deleted.');
+      throw const ConflictException.because(AppErrorReason.titleHasCopies);
     }
     await _dataSource.deleteTitle(id);
   }
