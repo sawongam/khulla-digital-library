@@ -13,8 +13,9 @@ import 'package:url_launcher/url_launcher.dart';
 /// What this product is, who built it, and where to find the source.
 ///
 /// Every link here leaves the app, which is the one place in Khulla that
-/// happens: the catalogue is local, and these four addresses are the whole
-/// reason the operator would want a browser.
+/// happens: the catalogue is local, and these addresses - asking for a hand,
+/// and where the project lives - are the whole reason the operator would want
+/// a browser.
 class HelpAboutPanel extends StatelessWidget {
   const HelpAboutPanel({super.key});
 
@@ -36,9 +37,15 @@ class HelpAboutPanel extends StatelessWidget {
     }
     if (opened || !context.mounted) return;
 
-    await Clipboard.setData(ClipboardData(text: url));
+    // A machine with no mail app gets the bare address, ready to paste.
+    final uri = Uri.parse(url);
+    final isMail = uri.scheme == 'mailto';
+    await Clipboard.setData(ClipboardData(text: isMail ? uri.path : url));
     if (context.mounted) {
-      AppToast.warning(context, message: l10n.helpAboutLinkFailed);
+      AppToast.warning(
+        context,
+        message: isMail ? l10n.helpAboutEmailCopied : l10n.helpAboutLinkFailed,
+      );
     }
   }
 
@@ -96,17 +103,34 @@ class HelpAboutPanel extends StatelessWidget {
           child: const _AuthorLink(),
         ),
         SizedBox(height: spacing.md),
+        AppSectionHeader(title: l10n.helpAboutHelpTitle, dense: true),
+        SizedBox(height: spacing.xs),
+        Text(
+          l10n.helpAboutHelpBody,
+          style: typography.body.copyWith(color: colors.textMuted),
+        ),
+        SizedBox(height: spacing.sm),
+        _LinkRow(
+          icon: AppIcons.support,
+          label: l10n.helpAboutContactWhatsapp,
+          url: AppInfo.whatsappUrl,
+          display: AppInfo.whatsappDisplay,
+          hint: l10n.helpAboutOpenWhatsapp,
+        ),
+        _LinkRow(
+          icon: AppIcons.email,
+          label: l10n.helpAboutContactEmail,
+          url: 'mailto:${AppInfo.email}',
+          display: AppInfo.email,
+          hint: l10n.helpAboutOpenMail,
+        ),
+        SizedBox(height: spacing.md),
         AppSectionHeader(title: l10n.helpAboutLinksTitle, dense: true),
         SizedBox(height: spacing.sm),
         _LinkRow(
           icon: AppIcons.discover,
           label: l10n.helpAboutLinkWebsite,
-          url: AppInfo.authorSite,
-        ),
-        _LinkRow(
-          icon: AppIcons.person,
-          label: l10n.helpAboutLinkGithub,
-          url: AppInfo.authorGithub,
+          url: AppInfo.websiteUrl,
         ),
         _LinkRow(
           icon: AppIcons.article,
@@ -156,11 +180,21 @@ class _LinkRow extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.url,
+    this.display,
+    this.hint,
   });
 
   final AppIconSpec icon;
   final String label;
   final String url;
+
+  /// What to show under [label] instead of [url], when the address reads
+  /// better than the link: a phone number, or an email without `mailto:`.
+  /// Without one, the URL is shown without its scheme.
+  final String? display;
+
+  /// The tooltip, when the row opens something other than the browser.
+  final String? hint;
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +207,7 @@ class _LinkRow extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: spacing.xxs),
       child: Tooltip(
-        message: l10n.helpAboutOpenLink,
+        message: hint ?? l10n.helpAboutOpenLink,
         child: InkWell(
           onTap: () => HelpAboutPanel.openLink(context, url),
           borderRadius: radius,
@@ -197,7 +231,7 @@ class _LinkRow extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        url,
+                        display ?? url.replaceFirst(RegExp('^https?://'), ''),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: typography.caption.copyWith(

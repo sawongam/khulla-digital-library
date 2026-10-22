@@ -26,15 +26,25 @@ abstract final class AppInfo {
   /// The author's site.
   static const String authorSite = 'https://sangamadhikari.com';
 
-  /// The author's GitHub profile.
-  static const String authorGithub = 'https://github.com/sawongam';
-
   /// Where the source lives.
   static const String repositoryUrl =
       'https://github.com/sawongam/khulla-digital-library';
 
   /// Where a bug or a request goes.
   static const String issuesUrl = '$repositoryUrl/issues';
+
+  /// The product's own website.
+  static const String websiteUrl = 'https://khulladigitallibrary.com';
+
+  /// Where a library asks for a hand: setting up, moving records over, or a
+  /// feature it needs. The same number and address as the website's.
+  static const String whatsappUrl = 'https://wa.me/9779819102869';
+
+  /// The WhatsApp number as people read it.
+  static const String whatsappDisplay = '+977 981-9102869';
+
+  /// The address for the same, by email.
+  static const String email = 'info@sangamadhikari.com';
 
   /// The licence the source is released under.
   static const String license = 'AGPL-3.0-only';

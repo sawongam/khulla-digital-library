@@ -148,129 +148,137 @@ class _LoanRulesPageState extends State<LoanRulesPage> with DisposeBag {
 
         return AppPageBody(
           wide: true,
-          child: ViewOnlyForm(
-            viewOnly: viewOnly,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(
-                spacing.page,
-                spacing.lg,
-                spacing.page,
-                spacing.xlg,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (viewOnly) ...[
-                    const ViewOnlyNotice(),
-                    SizedBox(height: spacing.md),
-                  ],
-                  AppFormSection(
-                    title: l10n.settingsLoanPeriods,
-                    description: l10n.settingsLoanPeriodsDescription,
-                    children: [
-                      AppFormRow(
-                        children: [
-                          AppTextField(
-                            label: l10n.fieldLoanPeriodDays,
-                            required: true,
-                            controller: _loanPeriod,
-                            keyboardType: numberInput,
-                            onChanged: (_) {},
-                          ),
-                          AppTextField(
-                            label: l10n.fieldRenewalLimit,
-                            controller: _renewals,
-                            keyboardType: numberInput,
-                            onChanged: (_) {},
-                          ),
-                        ],
-                      ),
-                      AppTextField(
-                        label: l10n.fieldBorrowingLimit,
-                        controller: _borrowingLimit,
-                        keyboardType: numberInput,
-                        onChanged: (_) {},
-                      ),
-                      AppSwitchField(
-                        value: _autoRenew,
-                        label: l10n.settingsLoanAutoRenew,
-                        description: l10n.settingsLoanAutoRenewDescription,
-                        onChanged: (value) =>
-                            setState(() => _autoRenew = value),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: spacing.lg),
-                  AppFormSection(
-                    title: l10n.settingsLoanFines,
-                    description: l10n.settingsLoanFinesDescription,
-                    children: [
-                      AppFormRow(
-                        children: [
-                          AppTextField(
-                            label: l10n.fieldFinePerDay,
-                            controller: _finePerDay,
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            onChanged: (_) {},
-                          ),
-                          AppTextField(
-                            label: l10n.fieldGraceDays,
-                            controller: _graceDays,
-                            keyboardType: numberInput,
-                            onChanged: (_) {},
-                          ),
-                        ],
-                      ),
-                      AppTextField(
-                        label: l10n.fieldMaximumFine,
-                        controller: _maximumFine,
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        onChanged: (_) {},
-                      ),
-                      AppSwitchField(
-                        value: _blockOverdue,
-                        label: l10n.settingsLoanBlockOverdue,
-                        description: l10n.settingsLoanBlockOverdueDescription,
-                        onChanged: (value) =>
-                            setState(() => _blockOverdue = value),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: spacing.lg),
-                  AppFormSection(
-                    title: l10n.settingsLoanHolds,
-                    description: l10n.settingsLoanHoldsDescription,
-                    children: [
-                      AppTextField(
-                        label: l10n.fieldHoldShelfDays,
-                        controller: _holdShelfDays,
-                        keyboardType: numberInput,
-                        onChanged: (_) {},
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: spacing.xlg),
-                  if (!viewOnly)
-                    Row(
+          child: Column(
+            children: [
+              Expanded(
+                child: ViewOnlyForm(
+                  viewOnly: viewOnly,
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(
+                      spacing.page,
+                      spacing.lg,
+                      spacing.page,
+                      spacing.xlg,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Spacer(),
-                        AppButton(
-                          size: AppButtonSize.medium,
-                          isLoading: state.isSaving,
-                          onPressed: state.isSaving
-                              ? null
-                              : () => unawaited(_save(context)),
-                          child: Text(l10n.settingsLoanRulesSave),
+                        if (viewOnly) ...[
+                          const ViewOnlyNotice(),
+                          SizedBox(height: spacing.md),
+                        ],
+                        AppFormSection(
+                          title: l10n.settingsLoanPeriods,
+                          description: l10n.settingsLoanPeriodsDescription,
+                          children: [
+                            AppFormRow(
+                              children: [
+                                AppTextField(
+                                  label: l10n.fieldLoanPeriodDays,
+                                  required: true,
+                                  controller: _loanPeriod,
+                                  keyboardType: numberInput,
+                                  onChanged: (_) {},
+                                ),
+                                AppTextField(
+                                  label: l10n.fieldRenewalLimit,
+                                  controller: _renewals,
+                                  keyboardType: numberInput,
+                                  onChanged: (_) {},
+                                ),
+                              ],
+                            ),
+                            AppTextField(
+                              label: l10n.fieldBorrowingLimit,
+                              controller: _borrowingLimit,
+                              keyboardType: numberInput,
+                              onChanged: (_) {},
+                            ),
+                            AppSwitchField(
+                              value: _autoRenew,
+                              label: l10n.settingsLoanAutoRenew,
+                              description:
+                                  l10n.settingsLoanAutoRenewDescription,
+                              onChanged: (value) =>
+                                  setState(() => _autoRenew = value),
+                            ),
+                          ],
+                        ),
+                        const AppFormDivider(),
+                        AppFormSection(
+                          title: l10n.settingsLoanFines,
+                          description: l10n.settingsLoanFinesDescription,
+                          children: [
+                            AppFormRow(
+                              children: [
+                                AppTextField(
+                                  label: l10n.fieldFinePerDay,
+                                  controller: _finePerDay,
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                        decimal: true,
+                                      ),
+                                  onChanged: (_) {},
+                                ),
+                                AppTextField(
+                                  label: l10n.fieldGraceDays,
+                                  controller: _graceDays,
+                                  keyboardType: numberInput,
+                                  onChanged: (_) {},
+                                ),
+                              ],
+                            ),
+                            AppTextField(
+                              label: l10n.fieldMaximumFine,
+                              controller: _maximumFine,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              onChanged: (_) {},
+                            ),
+                            AppSwitchField(
+                              value: _blockOverdue,
+                              label: l10n.settingsLoanBlockOverdue,
+                              description:
+                                  l10n.settingsLoanBlockOverdueDescription,
+                              onChanged: (value) =>
+                                  setState(() => _blockOverdue = value),
+                            ),
+                          ],
+                        ),
+                        const AppFormDivider(),
+                        AppFormSection(
+                          title: l10n.settingsLoanHolds,
+                          description: l10n.settingsLoanHoldsDescription,
+                          children: [
+                            AppTextField(
+                              label: l10n.fieldHoldShelfDays,
+                              controller: _holdShelfDays,
+                              keyboardType: numberInput,
+                              onChanged: (_) {},
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                ],
+                  ),
+                ),
               ),
-            ),
+              if (!viewOnly)
+                AppBottomBar(
+                  children: [
+                    AppButton(
+                      size: AppButtonSize.medium,
+                      isLoading: state.isSaving,
+                      onPressed: state.isSaving
+                          ? null
+                          : () => unawaited(_save(context)),
+                      child: Text(l10n.settingsLoanRulesSave),
+                    ),
+                  ],
+                ),
+            ],
           ),
         );
       },
