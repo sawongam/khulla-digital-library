@@ -15,7 +15,7 @@ import 'package:khulla/core/security/recovery_code.dart';
 import 'package:khulla/features/settings/domain/backup_repository.dart';
 import 'package:khulla/features/settings/domain/library_settings_repository.dart';
 import 'package:khulla/features/settings/domain/models/library_profile.dart';
-import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
+import 'package:khulla/features/staff_auth/domain/session_repository.dart';
 import 'package:khulla/features/staff_auth/presentation/onboarding/cubit/onboarding_state.dart';
 import 'package:khulla/features/users/domain/staff_repository.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
@@ -28,12 +28,12 @@ import 'package:khulla/features/users/domain/user_role.dart';
 /// creating its own, through [restoreFromBackup].
 @injectable
 class OnboardingCubit extends Cubit<OnboardingState> {
-  OnboardingCubit(this._library, this._staff, this._auth, this._backups)
+  OnboardingCubit(this._library, this._staff, this._session, this._backups)
     : super(const OnboardingState());
 
   final LibrarySettingsRepository _library;
   final StaffRepository _staff;
-  final AuthCubit _auth;
+  final SessionRepository _session;
   final BackupRepository _backups;
 
   void libraryNameChanged(String value) =>
@@ -229,7 +229,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
       // Last, and only once both writes landed: this is what flips the router
       // over to the shell, so the screen must not move before the catalogue
       // has the rows behind it.
-      await _auth.startSession(administrator);
+      await _session.startSession(administrator);
     } on AppException catch (error) {
       if (isClosed) return;
       emit(

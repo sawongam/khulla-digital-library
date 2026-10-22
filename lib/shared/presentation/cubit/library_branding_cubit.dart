@@ -25,10 +25,8 @@ class LibraryBrandingCubit extends Cubit<LibraryBrandingState> {
     emit(state.copyWith(status: LoadStatus.loading));
     try {
       final logoBytes = await _repository.loadLogoBytes();
-      if (isClosed) return;
       emit(state.copyWith(status: LoadStatus.loaded, logoBytes: logoBytes));
     } on Object {
-      if (isClosed) return;
       emit(state.copyWith(status: LoadStatus.loaded, logoBytes: null));
     }
   }

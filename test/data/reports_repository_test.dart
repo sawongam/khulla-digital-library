@@ -12,6 +12,7 @@ import 'package:khulla/features/reports/data/reports_repository_impl.dart';
 
 import '../helpers/catalog_fixtures.dart';
 import '../helpers/test_database.dart';
+import '../helpers/test_session.dart';
 
 /// [ReportsRepositoryImpl] against a real database, seeded through
 /// [CirculationRepositoryImpl] the same way the app writes.
@@ -22,11 +23,14 @@ void main() {
 
   setUp(() async {
     db = await openTestDatabase();
+    final session = await openTestSession(db);
+    await signInTestStaff(db, session);
     circulation = CirculationRepositoryImpl(
       db,
       LocalLoanDataSource(db),
       LocalFineDataSource(db),
       LocalReservationDataSource(db),
+      session,
     );
     reports = ReportsRepositoryImpl(db);
   });

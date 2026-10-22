@@ -87,6 +87,35 @@ void main() {
     },
   );
 
+  test(
+    'web import refuses a backup whose rows point at missing records, '
+    'and leaves the catalogue as it was',
+    () async {
+      final reference = await seedReferenceData(db);
+      await seedTitleWithCopy(db, formatId: reference.formatId);
+      final bytes = await web_platform.exportBackupBytes(db, config);
+
+      // Drop the titles but keep their copies: every copy now references a
+      // title that is not there.
+      final dump = jsonDecode(utf8.decode(bytes)) as Map<String, Object?>;
+      (dump['tables']! as Map<String, Object?>)['titles'] = <Object?>[];
+      final orphaned = Uint8List.fromList(utf8.encode(jsonEncode(dump)));
+
+      await expectLater(
+        web_platform.importBackupBytes(db, config, orphaned),
+        throwsA(
+          isA<InvalidInputException>().having(
+            (error) => error.reason,
+            'reason',
+            AppErrorReason.backupDamaged,
+          ),
+        ),
+      );
+      expect(await db.select(db.titles).get(), hasLength(1));
+      expect(await db.select(db.copies).get(), hasLength(1));
+    },
+  );
+
   test('web import refuses a file that is not JSON', () async {
     final garbage = Uint8List.fromList(utf8.encode('not json at all'));
 

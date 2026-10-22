@@ -4,7 +4,7 @@
 import 'package:khulla/features/guide/domain/guide_block.dart';
 import 'package:khulla/features/guide/presentation/widgets/guide_callout.dart';
 import 'package:khulla/features/guide/presentation/widgets/guide_faq_list.dart';
-import 'package:khulla/features/guide/presentation/widgets/guide_screen_mock.dart';
+import 'package:khulla/features/guide/presentation/widgets/guide_screen_diagram.dart';
 import 'package:khulla/features/guide/presentation/widgets/guide_step_list.dart';
 import 'package:khulla/features/guide/presentation/widgets/guide_term_list.dart';
 import 'package:khulla_ui/khulla_ui.dart';
@@ -33,6 +33,6 @@ class GuideBlockView extends StatelessWidget {
     final GuideCallout callout => GuideCalloutView(callout),
     final GuideTerms terms => GuideTermList(terms),
     final GuideFaq faq => GuideFaqList(faq),
-    final GuideScreenshot shot => GuideScreenMock(shot),
+    final GuideScreenshot shot => GuideScreenDiagram(shot),
   };
 }

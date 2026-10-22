@@ -1,10 +1,10 @@
 {
     "name": "Khulla Digital Library",
-    "short_name": "Khulla Digital Library",
+    "short_name": "Khulla",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#F1F3F3",
-    "theme_color": "#0F6E68",
+    "background_color": "#FFFFFF",
+    "theme_color": "#0A6A66",
     "description": "An open-source library management system.",
     "orientation": "any",
     "prefer_related_applications": false,

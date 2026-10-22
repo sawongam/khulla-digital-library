@@ -2,18 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 import 'package:khulla/core/money/money.dart';
-
-/// Calendar date with no time-of-day - safe for due dates and shelf expiry.
-DateTime dateOnly(DateTime value) =>
-    DateTime(value.year, value.month, value.day);
-
-/// Whole days from [from] to [to], both treated as calendar dates.
-int daysBetween(DateTime from, DateTime to) =>
-    dateOnly(to).difference(dateOnly(from)).inDays;
-
-/// Adds [days] calendar days to [from].
-DateTime addCalendarDays(DateTime from, int days) =>
-    dateOnly(from).add(Duration(days: days));
+import 'package:khulla/core/time/calendar_days.dart';
 
 /// Accrued overdue fine from a loan's own rule snapshot (§1.5).
 ///

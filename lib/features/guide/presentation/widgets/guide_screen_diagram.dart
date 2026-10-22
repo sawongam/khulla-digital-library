@@ -16,8 +16,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 /// It is drawn from the real labels rather than invented ones, and it never
 /// shows a figure: a number made up for a diagram is a number somebody quotes
 /// back. Bars stand in for values.
-class GuideScreenMock extends StatelessWidget {
-  const GuideScreenMock(this.shot, {super.key});
+class GuideScreenDiagram extends StatelessWidget {
+  const GuideScreenDiagram(this.shot, {super.key});
 
   /// What to draw, and what the numbered legend under it says.
   final GuideScreenshot shot;
@@ -37,7 +37,7 @@ class GuideScreenMock extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _MockChrome(caption: shot.caption),
+              _DiagramChrome(caption: shot.caption),
               Padding(
                 padding: EdgeInsets.all(spacing.sm),
                 child: Column(
@@ -86,8 +86,8 @@ class GuideScreenMock extends StatelessWidget {
 /// The window furniture around the drawing: a stub of the rail and a top bar
 /// carrying the caption, so the reader places the drawing inside the app
 /// before reading a single label.
-class _MockChrome extends StatelessWidget {
-  const _MockChrome({required this.caption});
+class _DiagramChrome extends StatelessWidget {
+  const _DiagramChrome({required this.caption});
 
   final String caption;
 
@@ -172,17 +172,17 @@ class _PartBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => switch (part) {
-    final GuideMockToolbar toolbar => _MockToolbar(toolbar),
-    final GuideMockStats stats => _MockStats(stats),
-    final GuideMockTable table => _MockTable(table),
-    final GuideMockForm form => _MockForm(form),
-    final GuideMockList list => _MockList(list),
-    final GuideMockCards cards => _MockCards(cards),
+    final GuideMockToolbar toolbar => _DiagramToolbar(toolbar),
+    final GuideMockStats stats => _DiagramStats(stats),
+    final GuideMockTable table => _DiagramTable(table),
+    final GuideMockForm form => _DiagramForm(form),
+    final GuideMockList list => _DiagramList(list),
+    final GuideMockCards cards => _DiagramCards(cards),
   };
 }
 
-class _MockToolbar extends StatelessWidget {
-  const _MockToolbar(this.part);
+class _DiagramToolbar extends StatelessWidget {
+  const _DiagramToolbar(this.part);
 
   final GuideMockToolbar part;
 
@@ -222,8 +222,8 @@ class _MockToolbar extends StatelessWidget {
   }
 }
 
-class _MockStats extends StatelessWidget {
-  const _MockStats(this.part);
+class _DiagramStats extends StatelessWidget {
+  const _DiagramStats(this.part);
 
   final GuideMockStats part;
 
@@ -265,8 +265,8 @@ class _MockStats extends StatelessWidget {
   }
 }
 
-class _MockTable extends StatelessWidget {
-  const _MockTable(this.part);
+class _DiagramTable extends StatelessWidget {
+  const _DiagramTable(this.part);
 
   final GuideMockTable part;
 
@@ -341,8 +341,8 @@ class _MockTable extends StatelessWidget {
   }
 }
 
-class _MockForm extends StatelessWidget {
-  const _MockForm(this.part);
+class _DiagramForm extends StatelessWidget {
+  const _DiagramForm(this.part);
 
   final GuideMockForm part;
 
@@ -383,8 +383,8 @@ class _MockForm extends StatelessWidget {
   }
 }
 
-class _MockList extends StatelessWidget {
-  const _MockList(this.part);
+class _DiagramList extends StatelessWidget {
+  const _DiagramList(this.part);
 
   final GuideMockList part;
 
@@ -432,8 +432,8 @@ class _MockList extends StatelessWidget {
   }
 }
 
-class _MockCards extends StatelessWidget {
-  const _MockCards(this.part);
+class _DiagramCards extends StatelessWidget {
+  const _DiagramCards(this.part);
 
   final GuideMockCards part;
 

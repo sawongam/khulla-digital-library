@@ -52,20 +52,26 @@ Future<void> importBackupBytes(
   try {
     final parsed = jsonDecode(utf8.decode(bytes));
     if (parsed is! Map<String, Object?>) {
-      throw const InvalidInputException('That file is not a Khulla backup.');
+      throw const InvalidInputException.because(AppErrorReason.notABackup);
     }
     decoded = parsed;
   } on FormatException {
-    throw const InvalidInputException('That file is not a Khulla backup.');
+    throw const InvalidInputException.because(AppErrorReason.notABackup);
   }
 
   final schemaVersion = decoded['schemaVersion'];
   final tables = decoded['tables'];
-  if (schemaVersion is! int ||
-      tables is! Map ||
-      schemaVersion != db.schemaVersion) {
-    throw const InvalidInputException(
-      'That backup does not match this app version.',
+  if (schemaVersion is! int || tables is! Map) {
+    throw const InvalidInputException.because(AppErrorReason.notABackup);
+  }
+  if (schemaVersion > db.schemaVersion) {
+    throw const InvalidInputException.because(
+      AppErrorReason.backupFromNewerVersion,
+    );
+  }
+  if (schemaVersion != db.schemaVersion) {
+    throw const InvalidInputException.because(
+      AppErrorReason.backupVersionMismatch,
     );
   }
 
@@ -78,16 +84,14 @@ Future<void> importBackupBytes(
   final backupKeys = <String>{};
   for (final key in tables.keys) {
     if (key is! String) {
-      throw const InvalidInputException(
-        'That file is not a Khulla backup.',
-      );
+      throw const InvalidInputException.because(AppErrorReason.notABackup);
     }
     backupKeys.add(key);
   }
   if (backupKeys.length != expectedTables.length ||
       !backupKeys.containsAll(expectedTables)) {
-    throw const InvalidInputException(
-      'That backup does not match this app version.',
+    throw const InvalidInputException.because(
+      AppErrorReason.backupVersionMismatch,
     );
   }
   final identifier = RegExp(r'^[a-z_][a-z0-9_]*$');
@@ -96,27 +100,19 @@ Future<void> importBackupBytes(
     if (key is! String ||
         !expectedTables.contains(key) ||
         !identifier.hasMatch(key)) {
-      throw const InvalidInputException(
-        'That file is not a Khulla backup.',
-      );
+      throw const InvalidInputException.because(AppErrorReason.notABackup);
     }
     final value = entry.value;
     if (value is! List) {
-      throw const InvalidInputException(
-        'That file is not a Khulla backup.',
-      );
+      throw const InvalidInputException.because(AppErrorReason.notABackup);
     }
     for (final element in value) {
       if (element is! Map) {
-        throw const InvalidInputException(
-          'That file is not a Khulla backup.',
-        );
+        throw const InvalidInputException.because(AppErrorReason.notABackup);
       }
       for (final column in element.keys) {
         if (column is! String || !identifier.hasMatch(column)) {
-          throw const InvalidInputException(
-            'That file is not a Khulla backup.',
-          );
+          throw const InvalidInputException.because(AppErrorReason.notABackup);
         }
       }
     }
@@ -139,6 +135,18 @@ Future<void> importBackupBytes(
             [for (final column in columns) row[column]],
           );
         }
+      }
+
+      // Foreign keys were off so the tables could load in any order; check
+      // them now, before the commit. A backup whose loans point at members
+      // it does not contain was edited or truncated, and is refused whole -
+      // throwing here rolls the transaction back, so the catalogue the
+      // library had a moment ago is still the one it has.
+      final orphans = await db.customSelect('PRAGMA foreign_key_check').get();
+      if (orphans.isNotEmpty) {
+        throw const InvalidInputException.because(
+          AppErrorReason.backupDamaged,
+        );
       }
     });
   } finally {

@@ -41,7 +41,7 @@ class PasswordHasher {
   /// rejects this first; this is the backstop for any path that skips it.
   String hash(String password) {
     if (utf8.encode(password).length > maxPasswordBytes) {
-      throw const InvalidInputException('That password is too long.');
+      throw const InvalidInputException.because(AppErrorReason.passwordTooLong);
     }
     return BCrypt.hashpw(password, BCrypt.gensalt());
   }

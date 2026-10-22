@@ -4,24 +4,27 @@
 import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/error/guard.dart';
-import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart';
 import 'package:khulla/features/circulation/shared/domain/models/effective_loan_rules.dart';
 import 'package:khulla/features/circulation/shared/domain/resolve_loan_rules.dart';
 import 'package:khulla/features/members/data/mappers/member_type_row_mappers.dart';
 import 'package:khulla/features/settings/data/mappers/loan_rules_row_mappers.dart';
 import 'package:khulla/features/settings/data/tables/loan_rules.dart';
 
-/// Eligibility reads shared by checkout, renew and holds.
+/// Reads the loan rules that apply to a member, for checkout, renew and holds.
+///
+/// Reading only: the rules themselves are judged by the pure functions in
+/// `circulation_rules.dart`, so they can be tested without a database and
+/// shared with screens that preview an action.
 ///
 /// Transaction-scoped: constructed with the same [AppDatabase] the caller
 /// runs its transaction on, so every read joins that transaction. Each entry
 /// is wrapped in [guardDatabase] like any other data-source body.
-class CirculationPolicy {
-  CirculationPolicy(this._db);
+class EffectiveRulesReader {
+  EffectiveRulesReader(this._db);
 
   final AppDatabase _db;
 
-  static const String _source = 'CirculationPolicy';
+  static const String _source = 'EffectiveRulesReader';
 
   Future<EffectiveLoanRules> loadEffectiveRules(String memberTypeId) =>
       guardDatabase(
@@ -46,7 +49,7 @@ class CirculationPolicy {
       _db.memberTypes,
     )..where((type) => type.id.equals(memberTypeId))).getSingleOrNull();
     if (typeRow == null) {
-      throw const NotFoundException('That member type was not found.');
+      throw const NotFoundException.because(AppErrorReason.memberTypeNotFound);
     }
     final rulesRow = await _loadLoanRulesRow();
     return resolveLoanRules(rulesRow.toDomain(), typeRow.toDomain());
@@ -59,7 +62,7 @@ class CirculationPolicy {
       _db.members,
     )..where((member) => member.id.equals(memberId))).getSingleOrNull();
     if (memberRow == null) {
-      throw const NotFoundException('That member was not found.');
+      throw const NotFoundException.because(AppErrorReason.memberNotFound);
     }
     return await _loadEffectiveRules(memberRow.memberTypeId);
   }
@@ -71,39 +74,8 @@ class CirculationPolicy {
             ))
             .getSingleOrNull();
     if (rulesRow == null) {
-      throw const NotFoundException('Loan rules have not been configured.');
+      throw const NotFoundException.because(AppErrorReason.loanRulesMissing);
     }
     return rulesRow;
-  }
-
-  /// Rejects archived, suspended and expired members in one call so
-  /// checkout and hold placement share a single eligibility entry.
-  void rejectIneligibleMember({
-    required DateTime? archivedAt,
-    required DateTime? suspendedAt,
-    required DateTime? expiresAt,
-    required DateTime today,
-  }) {
-    rejectArchivedMember(archivedAt);
-    rejectSuspendedMember(suspendedAt);
-    rejectExpiredMember(expiresAt, today);
-  }
-
-  void rejectArchivedMember(DateTime? archivedAt) {
-    if (archivedAt != null) {
-      throw const ConflictException('That member has been archived.');
-    }
-  }
-
-  void rejectSuspendedMember(DateTime? suspendedAt) {
-    if (suspendedAt != null) {
-      throw const ConflictException('That member is suspended.');
-    }
-  }
-
-  void rejectExpiredMember(DateTime? expiresAt, DateTime today) {
-    if (expiresAt != null && dateOnly(expiresAt).isBefore(today)) {
-      throw const ConflictException('That member membership has expired.');
-    }
   }
 }

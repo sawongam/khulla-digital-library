@@ -6,11 +6,11 @@ import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/database/converters/date_only_converter.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/error/guard.dart';
+import 'package:khulla/core/time/calendar_days.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_status.dart';
 import 'package:khulla/features/circulation/reservation/data/reservation_local_data_source.dart';
 import 'package:khulla/features/circulation/shared/data/circulation_copies.dart';
-import 'package:khulla/features/circulation/shared/data/circulation_policy.dart';
-import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart';
+import 'package:khulla/features/circulation/shared/data/effective_rules_reader.dart';
 import 'package:khulla/features/circulation/shared/domain/reservation_status.dart';
 import 'package:uuid/uuid.dart';
 
@@ -20,10 +20,10 @@ import 'package:uuid/uuid.dart';
 /// runs its transaction on, so every write joins that transaction. Queue
 /// views are reloaded through [ReservationLocalDataSource].
 class CirculationHoldQueue {
-  CirculationHoldQueue(this._db, this._policy);
+  CirculationHoldQueue(this._db, this._rules);
 
   final AppDatabase _db;
-  final CirculationPolicy _policy;
+  final EffectiveRulesReader _rules;
 
   static const Uuid _uuid = Uuid();
   static const DateOnlyConverter _dates = DateOnlyConverter();
@@ -93,7 +93,7 @@ class CirculationHoldQueue {
               ))
               .getSingleOrNull();
       if (hold == null) {
-        throw const NotFoundException('That hold was not found.');
+        throw const NotFoundException.because(AppErrorReason.holdNotFound);
       }
 
       await (_db.update(
@@ -130,12 +130,10 @@ class CirculationHoldQueue {
               ))
               .getSingleOrNull();
       if (hold == null) {
-        throw const NotFoundException('That hold was not found.');
+        throw const NotFoundException.because(AppErrorReason.holdNotFound);
       }
       if (hold.status != ReservationStatus.waiting) {
-        throw const ConflictException(
-          'Only waiting holds can be marked ready for pickup.',
-        );
+        throw const ConflictException.because(AppErrorReason.holdNotWaiting);
       }
 
       final copyRow =
@@ -150,12 +148,10 @@ class CirculationHoldQueue {
                 ..limit(1))
               .getSingleOrNull();
       if (copyRow == null) {
-        throw const ConflictException(
-          'No available copy to assign to this hold.',
-        );
+        throw const ConflictException.because(AppErrorReason.noCopyForHold);
       }
 
-      final holdShelfDays = await _policy.loadHoldShelfDays();
+      final holdShelfDays = await _rules.loadHoldShelfDays();
       final expiresAt = addCalendarDays(today, holdShelfDays);
 
       await (_db.update(
@@ -275,7 +271,7 @@ class CirculationHoldQueue {
     if (nextHold == null) return;
 
     final now = DateTime.now();
-    final holdShelfDays = await _policy.loadHoldShelfDays();
+    final holdShelfDays = await _rules.loadHoldShelfDays();
     final expiresAt = addCalendarDays(dateOnly(now), holdShelfDays);
     await (_db.update(
       _db.reservations,

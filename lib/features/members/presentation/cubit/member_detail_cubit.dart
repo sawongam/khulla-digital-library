@@ -11,7 +11,6 @@ import 'package:khulla/features/circulation/shared/domain/circulation_repository
 import 'package:khulla/features/circulation/shared/domain/fine_reason.dart';
 import 'package:khulla/features/members/domain/member_repository.dart';
 import 'package:khulla/features/members/presentation/cubit/member_detail_state.dart';
-import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
 import 'package:khulla/shared/models/load_status.dart';
 
 /// A single member with open loans, history and outstanding fines.
@@ -21,12 +20,11 @@ import 'package:khulla/shared/models/load_status.dart';
 /// rethrows so the confirming dialog can toast.
 @injectable
 class MemberDetailCubit extends Cubit<MemberDetailState> {
-  MemberDetailCubit(this._members, this._circulation, this._auth)
+  MemberDetailCubit(this._members, this._circulation)
     : super(const MemberDetailState());
 
   final MemberRepository _members;
   final CirculationRepository _circulation;
-  final AuthCubit _auth;
 
   /// Loads the member, open loans, returned loans and unpaid fines.
   Future<void> loadMember(String id) async {
@@ -38,7 +36,9 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
         emit(
           state.copyWith(
             status: LoadStatus.failure,
-            error: const NotFoundException('Member not found.'),
+            error: const NotFoundException.because(
+              AppErrorReason.memberNotFound,
+            ),
           ),
         );
         return;
@@ -110,7 +110,6 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
       reason: reason,
       amount: amount,
       note: note,
-      staffId: _auth.state.staff?.id,
     );
     if (isClosed) return;
     await loadMember(memberId);

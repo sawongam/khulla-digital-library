@@ -118,7 +118,7 @@ class LabelCubit extends Cubit<LabelState> {
     final copy = await _copies.findCopyByBarcode(barcode);
     if (isClosed) return;
     if (copy == null) {
-      throw const NotFoundException('No copy matches that barcode.');
+      throw const NotFoundException.because(AppErrorReason.copyNotFound);
     }
     final title = await _titles.findTitle(copy.titleId);
     if (isClosed) return;

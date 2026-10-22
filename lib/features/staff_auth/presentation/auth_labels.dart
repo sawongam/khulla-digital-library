@@ -5,6 +5,7 @@ import 'package:khulla/core/form/inputs/confirmed_password.dart';
 import 'package:khulla/core/form/inputs/email.dart';
 import 'package:khulla/core/form/inputs/full_name.dart';
 import 'package:khulla/core/form/inputs/password.dart';
+import 'package:khulla/core/form/inputs/positive_whole_number.dart';
 import 'package:khulla/core/form/inputs/required_text.dart';
 import 'package:khulla/core/money/currency.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -60,6 +61,17 @@ extension FullNameErrorX on FullName {
 extension RequiredTextErrorX on RequiredText {
   String? messageFor(AppLocalizations l10n) =>
       isPure || isValid ? null : l10n.validationFieldRequired;
+}
+
+extension PositiveWholeNumberErrorX on PositiveWholeNumber {
+  String? messageFor(AppLocalizations l10n) => isPure || isValid
+      ? null
+      : switch (error!) {
+          PositiveWholeNumberValidationError.empty =>
+            l10n.validationFieldRequired,
+          PositiveWholeNumberValidationError.invalid =>
+            l10n.validationWholeNumberMin1,
+        };
 }
 
 extension AppCurrencyLabelX on AppCurrency {

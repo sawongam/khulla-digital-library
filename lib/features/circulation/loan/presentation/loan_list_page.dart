@@ -8,11 +8,11 @@ import 'package:go_router/go_router.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/feedback/app_toast.dart';
 import 'package:khulla/core/router/routes.dart';
-import 'package:khulla/features/circulation/circulation/presentation/cubit/loan_list_cubit.dart';
-import 'package:khulla/features/circulation/circulation/presentation/cubit/loan_list_state.dart';
-import 'package:khulla/features/circulation/circulation/presentation/widgets/loan_list_columns.dart';
-import 'package:khulla/features/circulation/circulation/presentation/widgets/loan_list_widgets.dart';
 import 'package:khulla/features/circulation/loan/domain/models/loan.dart';
+import 'package:khulla/features/circulation/loan/presentation/cubit/loan_list_cubit.dart';
+import 'package:khulla/features/circulation/loan/presentation/cubit/loan_list_state.dart';
+import 'package:khulla/features/circulation/loan/presentation/widgets/loan_list_columns.dart';
+import 'package:khulla/features/circulation/loan/presentation/widgets/loan_list_widgets.dart';
 import 'package:khulla/features/circulation/shared/domain/loan_status.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -32,8 +32,8 @@ import 'package:khulla_ui/khulla_ui.dart';
 ///
 /// Stats, toolbar, columns and card live in `presentation/widgets/`; renew
 /// toasts at its call site here.
-class CirculationPage extends StatelessWidget {
-  const CirculationPage({super.key});
+class LoanListPage extends StatelessWidget {
+  const LoanListPage({super.key});
 
   bool _isFiltered(LoanListState state) =>
       state.query.search.isNotEmpty || state.query.status != null;
@@ -54,11 +54,7 @@ class CirculationPage extends StatelessWidget {
     final l10n = context.l10n;
     final barcode = loan.barcode;
     if (barcode == null || barcode.trim().isEmpty) {
-      AppToast.error(
-        context,
-        message: const NotFoundException('That copy has no barcode.')
-            .localizedMessage(l10n),
-      );
+      AppToast.error(context, message: l10n.errorReasonCopyHasNoBarcode);
       return;
     }
     final confirmed = await AppDialog.confirmDestructive(

@@ -40,7 +40,7 @@ class StaffProfileDialog extends StatelessWidget {
         create: (_) {
           final cubit = getIt<StaffFormCubit>();
           unawaited(
-            cubit.load(
+            cubit.loadStaffForm(
               mode: StaffFormMode.profile,
               staffId: staff.id,
             ),

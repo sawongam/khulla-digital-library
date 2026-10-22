@@ -34,7 +34,7 @@ class CirculationLoanWrites {
     required Money ruleFinePerDay,
     required int ruleGraceDays,
     required Money ruleMaximumFine,
-    String? staffId,
+    required String staffId,
   }) => guardDatabase(
     () async {
       final loanId = _uuid.v4();
@@ -63,7 +63,7 @@ class CirculationLoanWrites {
   Future<void> markLoanReturned({
     required String loanId,
     required CopyCondition condition,
-    String? staffId,
+    required String staffId,
   }) => guardDatabase(
     () async {
       final now = DateTime.now();
@@ -89,7 +89,7 @@ class CirculationLoanWrites {
         _db.loans,
       )..where((loan) => loan.id.equals(loanId))).getSingleOrNull();
       if (loanRow == null) {
-        throw const NotFoundException('That loan was not found.');
+        throw const NotFoundException.because(AppErrorReason.loanNotFound);
       }
       await (_db.update(
         _db.loans,

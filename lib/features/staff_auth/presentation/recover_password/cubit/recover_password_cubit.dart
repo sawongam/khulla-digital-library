@@ -9,18 +9,18 @@ import 'package:khulla/core/form/inputs/confirmed_password.dart';
 import 'package:khulla/core/form/inputs/email.dart';
 import 'package:khulla/core/form/inputs/password.dart';
 import 'package:khulla/core/form/inputs/required_text.dart';
-import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
+import 'package:khulla/features/staff_auth/domain/session_repository.dart';
 import 'package:khulla/features/staff_auth/presentation/recover_password/cubit/recover_password_state.dart';
 import 'package:khulla/features/users/domain/staff_repository.dart';
 
 /// Resets the first administrator's password with a one-time recovery code.
 @injectable
 class RecoverPasswordCubit extends Cubit<RecoverPasswordState> {
-  RecoverPasswordCubit(this._staff, this._auth)
+  RecoverPasswordCubit(this._staff, this._session)
     : super(const RecoverPasswordState());
 
   final StaffRepository _staff;
-  final AuthCubit _auth;
+  final SessionRepository _session;
 
   void emailChanged(String value) => emit(
     state.copyWith(
@@ -114,7 +114,7 @@ class RecoverPasswordCubit extends Cubit<RecoverPasswordState> {
       }
 
       emit(state.copyWith(status: FormzSubmissionStatus.success));
-      await _auth.startSession(staff);
+      await _session.startSession(staff);
     } on AppException catch (error) {
       if (isClosed) return;
       emit(

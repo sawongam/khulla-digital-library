@@ -14,6 +14,7 @@ import 'package:khulla/features/circulation/shared/domain/reservation_status.dar
 
 import '../helpers/catalog_fixtures.dart';
 import '../helpers/test_database.dart';
+import '../helpers/test_session.dart';
 
 /// [ReservationExpiryScheduler] against a real database - the periodic timer
 /// itself is trivial; what matters is that a single tick actually expires a
@@ -26,11 +27,14 @@ void main() {
 
   setUp(() async {
     db = await openTestDatabase();
+    final session = await openTestSession(db);
+    await signInTestStaff(db, session);
     repository = CirculationRepositoryImpl(
       db,
       LocalLoanDataSource(db),
       LocalFineDataSource(db),
       LocalReservationDataSource(db),
+      session,
     );
     refresh = ReservationListRefresh();
     scheduler = ReservationExpiryScheduler(repository, refresh);

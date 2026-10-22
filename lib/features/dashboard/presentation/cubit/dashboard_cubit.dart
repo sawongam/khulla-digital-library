@@ -4,8 +4,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
-import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart'
-    show dateOnly;
+import 'package:khulla/core/time/calendar_days.dart';
 import 'package:khulla/features/dashboard/domain/dashboard_repository.dart';
 import 'package:khulla/features/dashboard/presentation/cubit/dashboard_state.dart';
 import 'package:khulla/features/dashboard/presentation/widgets/dashboard_header.dart';
@@ -22,7 +21,7 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   final DashboardRepository _repository;
 
-  Future<void> load() => _load(state.period);
+  Future<void> loadDashboard() => _load(state.period);
 
   Future<void> changePeriod(DashboardPeriod period) => _load(period);
 
@@ -53,12 +52,12 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   _Range _rangeFor(DashboardPeriod period) {
     final today = dateOnly(DateTime.now());
-    final end = today.add(const Duration(days: 1));
+    final end = addCalendarDays(today, 1);
     return switch (period) {
       DashboardPeriod.today => (start: today, end: end),
       // Sunday-first week, matching the usage chart's weekday labels.
       DashboardPeriod.week => (
-        start: today.subtract(Duration(days: today.weekday % 7)),
+        start: addCalendarDays(today, -(today.weekday % 7)),
         end: end,
       ),
       DashboardPeriod.month => (
@@ -71,7 +70,7 @@ class DashboardCubit extends Cubit<DashboardState> {
   /// The immediately preceding period of the same length - what a stat
   /// tile's trend compares against.
   _Range _previousRangeFor(_Range range) {
-    final length = range.end.difference(range.start);
-    return (start: range.start.subtract(length), end: range.start);
+    final days = daysBetween(range.start, range.end);
+    return (start: addCalendarDays(range.start, -days), end: range.start);
   }
 }

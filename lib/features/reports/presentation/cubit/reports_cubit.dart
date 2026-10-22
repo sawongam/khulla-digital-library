@@ -4,8 +4,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
-import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart'
-    show dateOnly;
+import 'package:khulla/core/time/calendar_days.dart';
 import 'package:khulla/features/reports/domain/reports_repository.dart';
 import 'package:khulla/features/reports/presentation/cubit/reports_state.dart';
 import 'package:khulla/features/reports/presentation/reports_page.dart';
@@ -21,7 +20,7 @@ class ReportsCubit extends Cubit<ReportsState> {
 
   final ReportsRepository _repository;
 
-  Future<void> load() => _load(state.period);
+  Future<void> loadReports() => _load(state.period);
 
   Future<void> changePeriod(ReportPeriod period) => _load(period);
 
@@ -52,7 +51,7 @@ class ReportsCubit extends Cubit<ReportsState> {
 
   _Range _rangeFor(ReportPeriod period) {
     final today = dateOnly(DateTime.now());
-    final end = today.add(const Duration(days: 1));
+    final end = addCalendarDays(today, 1);
     return switch (period) {
       ReportPeriod.month => (
         start: DateTime(today.year, today.month),
@@ -67,7 +66,7 @@ class ReportsCubit extends Cubit<ReportsState> {
   }
 
   _Range _previousRangeFor(_Range range) {
-    final length = range.end.difference(range.start);
-    return (start: range.start.subtract(length), end: range.start);
+    final days = daysBetween(range.start, range.end);
+    return (start: addCalendarDays(range.start, -days), end: range.start);
   }
 }
