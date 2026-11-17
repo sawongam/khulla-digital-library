@@ -177,7 +177,7 @@ The full guide lives in [docs/architecture](./docs/architecture/) - folder conve
 
 ## Contributing
 
-Contributions are welcome. See [docs/contributing](./docs/contributing/) for setup, conventions and the pull-request flow.
+Contributions are welcome. See [docs/contributing](./docs/contributing/) for setup, conventions and the pull-request flow. Everyone taking part is expected to follow the [Code of Conduct](./CODE_OF_CONDUCT.md).
 
 Commits follow a conventional format - `type(scope): message` with types `feat`, `fix`, `chore`, `refactor`, `sync`, `ci` - enforced by a git hook. Branch off `dev`; direct commits to `dev` and `prod` are blocked.
 
