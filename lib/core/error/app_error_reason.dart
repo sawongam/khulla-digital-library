@@ -96,4 +96,10 @@ enum AppErrorReason {
   backupFromNewerVersion,
   backupDamaged,
   restoreNotApplied,
+
+  // App updates.
+  updateCheckFailed,
+  updateDownloadFailed,
+  updateDownloadDamaged,
+  updateInstallFailed,
 }

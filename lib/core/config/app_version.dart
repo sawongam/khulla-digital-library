@@ -30,6 +30,17 @@ abstract final class AppVersion {
     }
   }
 
+  /// The build number, the `4` of `1.2.3+4`, or null when the platform does
+  /// not report one. It only ever goes up between releases, so it is what
+  /// the update check compares.
+  static Future<int?> buildNumber() async {
+    try {
+      return int.tryParse((await _info()).buildNumber);
+    } on Object {
+      return null;
+    }
+  }
+
   /// Version and build together, `1.2.3+4`. Use this where a bug report has
   /// to name an exact build; [version] is what a person reads.
   static Future<String> fullVersion() async {

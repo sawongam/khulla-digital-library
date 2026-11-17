@@ -58,92 +58,152 @@ class HelpAboutPanel extends StatelessWidget {
     final typography = context.appTextStyles;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Center(
-          child: Column(
-            children: [
-              const AppLogo.submark(size: 64),
-              SizedBox(height: spacing.sm),
-              Text(
-                l10n.appName,
-                style: typography.title.copyWith(color: colors.textHigh),
-              ),
-              SizedBox(height: spacing.xxs),
-              Text(
-                l10n.helpAboutTagline,
-                textAlign: TextAlign.center,
-                style: typography.body.copyWith(color: colors.textMuted),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: spacing.md),
-        AppDetailRow(
-          label: l10n.helpAboutVersionLabel,
-          child: FutureBuilder<String>(
-            future: AppVersion.version(),
-            builder: (context, snapshot) {
-              final version = snapshot.data;
-              if (version == null) {
-                return Text(
-                  '…',
-                  style: typography.body.copyWith(color: colors.textHigh),
-                );
-              }
-              return Text(
-                version,
-                style: typography.body.copyWith(color: colors.textHigh),
-              );
-            },
-          ),
-        ),
-        SizedBox(height: spacing.md),
-        AppSectionHeader(title: l10n.helpAboutHelpTitle, dense: true),
-        SizedBox(height: spacing.xs),
+        const Center(child: AppLogo.submark(size: 64)),
+        SizedBox(height: spacing.sm),
         Text(
-          l10n.helpAboutHelpBody,
+          l10n.appName,
+          textAlign: TextAlign.center,
+          style: typography.title.copyWith(color: colors.textHigh),
+        ),
+        SizedBox(height: spacing.xxs),
+        Text(
+          l10n.helpAboutTagline,
+          textAlign: TextAlign.center,
           style: typography.body.copyWith(color: colors.textMuted),
         ),
         SizedBox(height: spacing.sm),
-        _LinkRow(
-          icon: AppIcons.email,
-          label: l10n.helpAboutContactEmail,
-          url: 'mailto:${AppInfo.email}',
-          display: AppInfo.email,
-          hint: l10n.helpAboutOpenMail,
-          section: const _WhatsappSection(),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: spacing.xs,
+          runSpacing: spacing.xs,
+          children: [
+            FutureBuilder<String>(
+              future: AppVersion.version(),
+              builder: (context, snapshot) => AppStatusBadge(
+                label: '${l10n.helpAboutVersionLabel} ${snapshot.data ?? '…'}',
+                tone: AppStatusTone.brand,
+              ),
+            ),
+            const AppStatusBadge(label: AppInfo.license),
+          ],
+        ),
+        SizedBox(height: spacing.lg),
+        _Section(
+          icon: AppIcons.support,
+          title: l10n.helpAboutHelpTitle,
+          body: l10n.helpAboutHelpBody,
+          children: [
+            _LinkRow(
+              icon: AppIcons.email,
+              label: l10n.helpAboutContactEmail,
+              url: 'mailto:${AppInfo.email}',
+              display: AppInfo.email,
+              hint: l10n.helpAboutOpenMail,
+              section: const _WhatsappSection(),
+            ),
+          ],
         ),
         SizedBox(height: spacing.md),
-        AppSectionHeader(title: l10n.helpAboutSupportTitle, dense: true),
-        SizedBox(height: spacing.xs),
-        Text(
-          l10n.helpAboutSupportBody,
-          style: typography.body.copyWith(color: colors.textMuted),
-        ),
-        SizedBox(height: spacing.md),
-        AppSectionHeader(title: l10n.helpAboutLinksTitle, dense: true),
-        SizedBox(height: spacing.sm),
-        _LinkRow(
+        _Section(
           icon: AppIcons.discover,
-          label: l10n.helpAboutLinkWebsite,
-          url: AppInfo.websiteUrl,
+          title: l10n.helpAboutLinksTitle,
+          children: [
+            _LinkRow(
+              icon: AppIcons.discover,
+              label: l10n.helpAboutLinkWebsite,
+              url: AppInfo.websiteUrl,
+            ),
+            _LinkRow(
+              icon: AppIcons.article,
+              label: l10n.helpAboutLinkRepository,
+              url: AppInfo.repositoryUrl,
+            ),
+            _LinkRow(
+              icon: AppIcons.error,
+              label: l10n.helpAboutLinkIssues,
+              url: AppInfo.issuesUrl,
+            ),
+          ],
         ),
-        _LinkRow(
-          icon: AppIcons.article,
-          label: l10n.helpAboutLinkRepository,
-          url: AppInfo.repositoryUrl,
+        SizedBox(height: spacing.md),
+        _Section(
+          icon: AppIcons.people,
+          title: l10n.helpAboutSupportTitle,
+          body: l10n.helpAboutSupportBody,
+          tone: AppStatusTone.brand,
+          children: [
+            _LinkRow(
+              icon: AppIcons.email,
+              label: l10n.helpAboutSupportContact,
+              url: 'mailto:${AppInfo.fundingEmail}',
+              display: AppInfo.fundingEmail,
+              hint: l10n.helpAboutOpenMail,
+            ),
+          ],
         ),
-        _LinkRow(
-          icon: AppIcons.error,
-          label: l10n.helpAboutLinkIssues,
-          url: AppInfo.issuesUrl,
-        ),
-        SizedBox(height: spacing.sm),
+        SizedBox(height: spacing.md),
         Text(
           l10n.helpAboutOpenSource,
+          textAlign: TextAlign.center,
           style: typography.caption.copyWith(color: colors.mutedForeground),
+        ),
+      ],
+    );
+  }
+}
+
+/// One labelled block of the panel: a heading, an optional sentence of
+/// context, and its links in a bordered card, split by hairlines.
+class _Section extends StatelessWidget {
+  const _Section({
+    required this.icon,
+    required this.title,
+    required this.children,
+    this.body,
+    this.tone,
+  });
+
+  final AppIconSpec icon;
+  final String title;
+  final String? body;
+  final AppStatusTone? tone;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.appSpacing;
+    final colors = context.appColors;
+    final typography = context.appTextStyles;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppSectionHeader(title: title, icon: icon, dense: true),
+        SizedBox(height: spacing.xs),
+        AppCard(
+          tone: tone,
+          padding: EdgeInsets.all(spacing.xs),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (body != null)
+                Padding(
+                  padding: EdgeInsets.all(spacing.xs),
+                  child: Text(
+                    body!,
+                    style: typography.body.copyWith(color: colors.textMuted),
+                  ),
+                ),
+              for (var i = 0; i < children.length; i++) ...[
+                if (i > 0 || body != null)
+                  Divider(height: 1, thickness: 1, color: colors.hairline),
+                children[i],
+              ],
+            ],
+          ),
         ),
       ],
     );
@@ -185,66 +245,63 @@ class _LinkRow extends StatelessWidget {
     final typography = context.appTextStyles;
     final radius = BorderRadius.circular(context.appRadius.control);
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: spacing.xxs),
-      child: Row(
-        children: [
-          Expanded(
-            child: Tooltip(
-              message: hint ?? l10n.helpAboutOpenLink,
-              child: InkWell(
-                onTap: () => HelpAboutPanel.openLink(context, url),
-                borderRadius: radius,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: spacing.xs,
-                    vertical: spacing.xs,
-                  ),
-                  child: Row(
-                    children: [
-                      AppIcon(icon, size: 18, color: colors.mutedForeground),
-                      SizedBox(width: spacing.sm),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              label,
-                              style: typography.label.copyWith(
-                                color: colors.textHigh,
-                              ),
+    return Row(
+      children: [
+        Expanded(
+          child: Tooltip(
+            message: hint ?? l10n.helpAboutOpenLink,
+            child: InkWell(
+              onTap: () => HelpAboutPanel.openLink(context, url),
+              borderRadius: radius,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing.xs,
+                  vertical: spacing.xs,
+                ),
+                child: Row(
+                  children: [
+                    AppIcon(icon, size: 18, color: colors.mutedForeground),
+                    SizedBox(width: spacing.sm),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            label,
+                            style: typography.label.copyWith(
+                              color: colors.textHigh,
                             ),
-                            Text(
-                              display ??
-                                  url.replaceFirst(RegExp('^https?://'), ''),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: typography.caption.copyWith(
-                                color: colors.mutedForeground,
-                              ),
+                          ),
+                          Text(
+                            display ??
+                                url.replaceFirst(RegExp('^https?://'), ''),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: typography.caption.copyWith(
+                              color: colors.mutedForeground,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      AppIcon(
-                        AppIcons.openExternal,
-                        size: 16,
-                        color: colors.mutedForeground,
-                      ),
-                    ],
-                  ),
+                    ),
+                    AppIcon(
+                      AppIcons.openExternal,
+                      size: 16,
+                      color: colors.mutedForeground,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-          if (section != null) ...[
-            SizedBox(width: spacing.xs),
-            Container(width: 1, height: 28, color: colors.hairline),
-            SizedBox(width: spacing.xs),
-            section!,
-          ],
+        ),
+        if (section != null) ...[
+          SizedBox(width: spacing.xs),
+          Container(width: 1, height: 28, color: colors.hairline),
+          SizedBox(width: spacing.xs),
+          section!,
         ],
-      ),
+      ],
     );
   }
 }

@@ -123,6 +123,9 @@ abstract final class AppIcons {
   /// Push data into the app.
   static const AppIconSpec upload = AppIconSpec(SolarIcons.upload);
 
+  /// A newer version of the app itself.
+  static const AppIconSpec appUpdate = AppIconSpec(SolarIcons.refreshCircle);
+
   /// Look at a record without opening it for editing.
   static const AppIconSpec preview = AppIconSpec(SolarIcons.eye);
 

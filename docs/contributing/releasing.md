@@ -60,8 +60,10 @@ codegen step to forget - bumping `version:` is enough, on every target,
 because the Flutter tool carries it into the build.
 
 The workflow reads that version, builds all four targets in parallel, checksums
-them into `SHA256SUMS.txt`, and publishes a GitHub Release tagged `v1.0.0` with
-generated notes and a download table. Roughly 15–25 minutes end to end. Nobody
+them into `SHA256SUMS.txt`, writes the update manifest `latest.json` (see
+[How installed copies update](#how-installed-copies-update)), and publishes a
+GitHub Release tagged `v1.0.0` with generated notes and a download table. The
+Android APK is built but not attached - Android ships through Google Play. Roughly 15–25 minutes end to end. Nobody
 creates the tag by hand - the release job does, and that tag is the record of
 what shipped.
 
@@ -100,7 +102,7 @@ does not touch `prod`, the releases page, or the version.
 | ------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | Windows | `khulla-<version>-windows-x64-setup.exe` | Per-user installer (Inno Setup) - Start Menu entry + uninstaller, no admin required. Same build as the zip, just easier for normal users. |
 | Windows | `khulla-<version>-windows-x64.zip`       | Portable fallback. Unzip anywhere and run `khulla.exe`. Useful when an installer is blocked.                                              |
-| Android | `khulla-<version>-android.apk`           | One universal APK, not per-ABI splits - a tester sideloading should not need to know what an ABI is.                                      |
+| Android | (not attached)                           | Built as a workflow artifact for testers only. Android users install from Google Play - see below.                                       |
 | Web     | `khulla-<version>-web.tar.gz`            | Built for the site root. Serve the extracted folder from any static host.                                                                 |
 | Linux   | `khulla-<version>-linux-x64.tar.gz`      | Extract, run `./khulla`.                                                                                                                  |
 
@@ -113,6 +115,34 @@ still warns about an unknown publisher while the binaries are unsigned.
 
 macOS and iOS build from the same source but are not released: both need an
 Apple Developer account to produce anything a user can open.
+
+## How installed copies update
+
+Every release carries `latest.json`, and every installed copy finds it at
+`<repo>/releases/latest/download/latest.json` - a plain redirect to the newest
+non-prerelease, with none of the REST API's per-address rate limit. The app
+compares the release's `build` with its own `+build` and, from **Account menu
+→ Check for updates** (or on its own once a day, which the dialog can switch
+off), does what fits how it was installed:
+
+| Installed from                | What *update* does                                                                                                                                                                                                                  |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Windows installer             | Downloads the next `setup.exe`, checks its SHA-256 and size against `latest.json`, snapshots the catalogue into `backups/` beside it, starts the installer with `/SILENT /UPDATE=1` and exits. The installer reopens the app. |
+| Windows portable zip, Linux   | Says a newer version exists and opens the release page. Replacing files wherever the folder happens to live is not safe.                                                                                                           |
+| Web                           | Compares the server's `version.json` (written by `flutter build web`) with the running build, and offers a reload.                                                                                                                  |
+| Android (Google Play)         | Never asks GitHub - Play reviews a build after the release lands, so GitHub would announce an update Play cannot deliver yet. Opens the store listing.                                                                              |
+
+`latest.json` is a contract with every build ever shipped. `version`, `build`
+and `notes` must never change meaning; anything new is an added field, which
+old readers ignore. The installer is told apart from the portable zip by
+`unins000.exe` beside `khulla.exe`.
+
+**The updater only helps from the release that contains it.** An install
+older than that has to be updated by hand once.
+
+Google Play publishing is still manual: build an app bundle signed with the
+upload key and upload it in the Play Console. Bump `+build` as for any release
+- Play refuses a `versionCode` it has seen.
 
 ## The web demo
 

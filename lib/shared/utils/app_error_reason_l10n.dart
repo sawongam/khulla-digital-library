@@ -94,6 +94,11 @@ extension AppErrorReasonL10n on AppErrorReason {
       l10n.errorReasonBackupFromNewerVersion,
     AppErrorReason.backupDamaged => l10n.errorReasonBackupDamaged,
     AppErrorReason.restoreNotApplied => l10n.errorReasonRestoreNotApplied,
+    AppErrorReason.updateCheckFailed => l10n.errorReasonUpdateCheckFailed,
+    AppErrorReason.updateDownloadFailed => l10n.errorReasonUpdateDownloadFailed,
+    AppErrorReason.updateDownloadDamaged =>
+      l10n.errorReasonUpdateDownloadDamaged,
+    AppErrorReason.updateInstallFailed => l10n.errorReasonUpdateInstallFailed,
   };
 }
 

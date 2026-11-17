@@ -26,8 +26,27 @@ abstract final class AppInfo {
   /// feature it needs. The same address as the website's.
   static const String email = 'info@khulladigitallibrary.com';
 
+  /// Where funding and sponsorship enquiries go.
+  static const String fundingEmail = 'funding@khulladigitallibrary.com';
+
   /// The same inbox, on WhatsApp.
   static const String whatsappUrl = 'https://wa.me/9779819102869';
+
+  /// The newest published release's manifest, written by `release.yaml`.
+  ///
+  /// `releases/latest/download/` is a plain redirect to the newest
+  /// non-prerelease's file - unlike the REST API it has no per-address rate
+  /// limit, which a library sharing one connection across desks would hit.
+  static const String latestReleaseManifestUrl =
+      '$repositoryUrl/releases/latest/download/latest.json';
+
+  /// The page of one release, by its tag.
+  static String releaseUrl(String version) =>
+      '$repositoryUrl/releases/tag/v$version';
+
+  /// Khulla's Google Play listing - where Android updates come from.
+  static const String playStoreUrl =
+      'https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app';
 
   /// The licence the source is released under.
   static const String license = 'AGPL-3.0-only';

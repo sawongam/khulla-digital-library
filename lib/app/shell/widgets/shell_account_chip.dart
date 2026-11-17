@@ -8,6 +8,9 @@ import 'package:go_router/go_router.dart';
 import 'package:khulla/app/shell/help/about_dialog.dart';
 import 'package:khulla/core/router/routes.dart';
 import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
+import 'package:khulla/features/updates/domain/models/update_channel.dart';
+import 'package:khulla/features/updates/presentation/cubit/update_cubit.dart';
+import 'package:khulla/features/updates/presentation/widgets/update_dialog.dart';
 import 'package:khulla/features/users/presentation/user_labels.dart';
 import 'package:khulla/features/users/presentation/widgets/staff_profile_dialog.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -38,8 +41,14 @@ class ShellAccountChip extends StatelessWidget {
     final spacing = context.appSpacing;
     final colors = context.appColors;
     final staff = context.watch<AuthCubit>().state.staff;
+    final updates = context.watch<UpdateCubit>().state;
 
     if (staff == null) return const SizedBox.shrink();
+
+    final avatar = _UpdateDot(
+      visible: updates.hasUpdate,
+      child: AppAvatar(initials: staff.initials, size: 34),
+    );
 
     // The cursor sits on the trigger itself, inside the button:
     // PopupMenuButton wraps its child in an InkWell whose default cursor
@@ -90,6 +99,20 @@ class ShellAccountChip extends StatelessWidget {
             label: l10n.shellAbout,
           ),
         ),
+        if (updates.channel != UpdateChannel.unsupported)
+          PopupMenuItem<int>(
+            mouseCursor: SystemMouseCursors.click,
+            onTap: () => WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (context.mounted) unawaited(UpdateDialog.show(context));
+            }),
+            child: _MenuRow(
+              icon: AppIcons.appUpdate,
+              label: updates.hasUpdate
+                  ? l10n.shellUpdateAvailable
+                  : l10n.shellCheckForUpdates,
+              highlighted: updates.hasUpdate,
+            ),
+          ),
         const PopupMenuDivider(),
         PopupMenuItem<int>(
           mouseCursor: SystemMouseCursors.click,
@@ -113,10 +136,10 @@ class ShellAccountChip extends StatelessWidget {
               vertical: spacing.xxs,
             ),
             child: compact
-                ? Center(child: AppAvatar(initials: staff.initials, size: 34))
+                ? Center(child: avatar)
                 : Row(
                     children: [
-                      AppAvatar(initials: staff.initials, size: 34),
+                      avatar,
                       SizedBox(width: spacing.xs),
                       Flexible(
                         child: Column(
@@ -175,16 +198,22 @@ class _MenuRow extends StatelessWidget {
     required this.icon,
     required this.label,
     this.destructive = false,
+    this.highlighted = false,
   });
 
   final AppIconSpec icon;
   final String label;
   final bool destructive;
 
+  /// Drawn in the brand color - something here is waiting for the operator.
+  final bool highlighted;
+
   @override
   Widget build(BuildContext context) {
     final color = destructive
         ? context.colorScheme.error
+        : highlighted
+        ? context.colorScheme.primary
         : context.colorScheme.onSurface;
 
     return Row(
@@ -194,6 +223,40 @@ class _MenuRow extends StatelessWidget {
         Text(
           label,
           style: context.textTheme.bodyMedium?.copyWith(color: color),
+        ),
+      ],
+    );
+  }
+}
+
+/// A brand dot on the avatar's corner while a newer version is waiting, so
+/// the menu that holds *Update available* says so before it is opened.
+class _UpdateDot extends StatelessWidget {
+  const _UpdateDot({required this.visible, required this.child});
+
+  final bool visible;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!visible) return child;
+    final spacing = context.appSpacing;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        child,
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Container(
+            width: spacing.sm,
+            height: spacing.sm,
+            decoration: BoxDecoration(
+              color: context.colorScheme.primary,
+              shape: BoxShape.circle,
+              border: Border.all(color: context.colorScheme.surface, width: 2),
+            ),
+          ),
         ),
       ],
     );
