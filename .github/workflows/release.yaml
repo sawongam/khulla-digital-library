@@ -31,6 +31,7 @@ jobs:
       version: ${{ steps.resolve.outputs.version }}
       tag: ${{ steps.resolve.outputs.tag }}
       build: ${{ steps.resolve.outputs.build }}
+      build_number: ${{ steps.resolve.outputs.build_number }}
       release: ${{ steps.resolve.outputs.release }}
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +45,9 @@ jobs:
           # via package_info_plus - so the number in the release, the tag and
           # the About line cannot disagree.
           version="$(grep -E '^version:' pubspec.yaml | sed -E 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')"
+          # The +build half. It is what an installed app compares to decide
+          # whether a release is newer, so latest.json carries it.
+          build_number="$(grep -E '^version:' pubspec.yaml | sed -E 's/^version:[^+]*\+([0-9]+).*/\1/')"
           tag="v$version"
 
           # A manual run is for handing someone a build, never for publishing:
@@ -83,6 +87,7 @@ jobs:
             echo "version=$version"
             echo "tag=$tag"
             echo "build=true"
+            echo "build_number=$build_number"
             echo "release=true"
           } >> "$GITHUB_OUTPUT"
           echo "Releasing **$tag** from \`pubspec.yaml\`." >> "$GITHUB_STEP_SUMMARY"
@@ -187,11 +192,38 @@ jobs:
         with:
           bootstrap: pub
 
-      # One universal APK rather than per-ABI splits: a tester sideloading from
-      # a release page should not have to know what a CPU architecture is.
-      # Signed with debug keys (see android/app/build.gradle.kts) - fine for
-      # sideloading, not for Play. docs/contributing/releasing.md says how to
-      # add a real signing key when that day comes.
+      # The APK has to be signed with the same key every release, or Android
+      # refuses to install it over the last one - and the only way past that
+      # is uninstalling, which deletes the library's data on the phone. A
+      # runner's debug key is generated fresh on every run, so it cannot be
+      # that key: this writes android/key.properties from the repository's
+      # sideload key, which build.gradle.kts then signs with.
+      #
+      # Without the secrets it falls back to the debug key and warns - a
+      # manual test build still works, but its APK cannot update anything.
+      # See "Signing the APK" in docs/contributing/releasing.md.
+      - name: Load the APK signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::No ANDROID_KEYSTORE_BASE64 secret - the APK is" \
+                 "debug-signed and cannot be installed over another release's APK."
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/sideload-keystore.jks
+          {
+            echo "storeFile=sideload-keystore.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > android/key.properties
+
+      # One universal APK rather than per-ABI splits: someone sideloading from
+      # the release page should not have to know what a CPU architecture is.
       - name: Build
         run: flutter build apk --release -t lib/main_prod.dart
 
@@ -258,6 +290,50 @@ jobs:
           sha256sum * > SHA256SUMS.txt
           ls -lh
 
+      # What every installed copy of Khulla reads to find out whether it is
+      # out of date: GET <repo>/releases/latest/download/latest.json. See
+      # lib/features/updates/data/http_update_manifest_data_source.dart.
+      #
+      # It is a contract with every build ever shipped - old installs keep
+      # reading it for as long as they run. `version`, `build` and `notes`
+      # never change meaning; anything new is an added field.
+      - name: Write the update manifest
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
+          BUILD: ${{ needs.version.outputs.build_number }}
+          TAG: ${{ needs.version.outputs.tag }}
+        run: |
+          cd dist
+          base="https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG"
+          entry() {
+            jq -n \
+              --arg url "$base/$1" \
+              --arg sha256 "$(sha256sum "$1" | cut -d' ' -f1)" \
+              --argjson size "$(stat -c%s "$1")" \
+              '{url: $url, sha256: $sha256, size: $size}'
+          }
+          jq -n \
+            --arg version "$VERSION" \
+            --argjson build "$BUILD" \
+            --arg notes "https://github.com/$GITHUB_REPOSITORY/releases/tag/$TAG" \
+            --argjson windowsSetup "$(entry "khulla-$VERSION-windows-x64-setup.exe")" \
+            --argjson windowsZip "$(entry "khulla-$VERSION-windows-x64.zip")" \
+            --argjson linux "$(entry "khulla-$VERSION-linux-x64.tar.gz")" \
+            --argjson web "$(entry "khulla-$VERSION-web.tar.gz")" \
+            '{
+              schema: 1,
+              version: $version,
+              build: $build,
+              notes: $notes,
+              downloads: {
+                "windows-setup": $windowsSetup,
+                "windows-zip": $windowsZip,
+                "linux": $linux,
+                "web": $web
+              }
+            }' > latest.json
+          cat latest.json
+
       # Creates the tag as well as the release - nobody tags by hand, and the
       # tag is what tells the next push to prod that this version has shipped.
       - uses: softprops/action-gh-release@v2
@@ -274,14 +350,27 @@ jobs:
             | --- | --- | --- |
             | Windows | `khulla-${{ needs.version.outputs.version }}-windows-x64-setup.exe` | **Recommended.** Run the installer - adds Start Menu entry + uninstaller (no admin required). SmartScreen will warn about an unknown publisher - *More info* → *Run anyway*. |
             | Windows (portable) | `khulla-${{ needs.version.outputs.version }}-windows-x64.zip` | Unzip anywhere, run `khulla.exe`. No install needed. |
-            | Android | `khulla-${{ needs.version.outputs.version }}-android.apk` | Sideload it; allow installs from your browser or file manager. |
+            | Android | [Google Play](https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app) | **Recommended.** Install from the Play Store, which keeps it up to date. |
+            | Android (APK) | `khulla-${{ needs.version.outputs.version }}-android.apk` | For phones without Play. Allow installs from your browser or file manager; install each new APK over the last. |
             | Web | `khulla-${{ needs.version.outputs.version }}-web.tar.gz` | Serve the extracted folder from any static host. |
             | Linux | `khulla-${{ needs.version.outputs.version }}-linux-x64.tar.gz` | Extract and run `./khulla`. |
 
             Verify a download against `SHA256SUMS.txt`.
 
+            **On Android, pick Play or the APK and stay with it.** They are
+            signed with different keys, so Android treats them as different
+            apps and neither can update the other. To switch, take a backup
+            (**Settings → Backup**), uninstall, install the other, and restore
+            the backup. Uninstalling without a backup deletes the catalogue.
+
+            Already running Khulla? **Account menu → Check for updates.** The
+            Windows installer updates itself in one click, after backing up
+            the catalogue; the portable zip and Linux point you here.
+
             Khulla is local-first: your catalogue is a SQLite file on your own
-            machine, and nothing is sent anywhere. Uninstalling the app does not
+            machine and never leaves it. The only thing the app asks the
+            internet is whether a newer version exists - once a day, and it
+            can be switched off in the same dialog. Uninstalling the app does not
             delete it - take a backup from **Settings → Backup** before moving
             between machines. The installer and the portable zip share the same
             data location, so you can switch between them.

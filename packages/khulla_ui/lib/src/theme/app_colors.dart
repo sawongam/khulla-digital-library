@@ -86,7 +86,7 @@ class AppColors extends ThemeExtension<AppColors> {
     onDanger: AppPalette.white100,
     dangerSoft: _wash(AppPalette.danger),
     neutralSoft: AppPalette.secondaryLight,
-    brandSoft: _tint(brand.accent, 0.2),
+    brandSoft: _tint(brand.accent, 0.12),
     brandStrong: brand.strong,
     brandDeep: brand.deep,
     textHigh: AppPalette.ink100Light,

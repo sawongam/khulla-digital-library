@@ -60,8 +60,9 @@ codegen step to forget - bumping `version:` is enough, on every target,
 because the Flutter tool carries it into the build.
 
 The workflow reads that version, builds all four targets in parallel, checksums
-them into `SHA256SUMS.txt`, and publishes a GitHub Release tagged `v1.0.0` with
-generated notes and a download table. Roughly 15–25 minutes end to end. Nobody
+them into `SHA256SUMS.txt`, writes the update manifest `latest.json` (see
+[How installed copies update](#how-installed-copies-update)), and publishes a
+GitHub Release tagged `v1.0.0` with generated notes and a download table. Roughly 15–25 minutes end to end. Nobody
 creates the tag by hand - the release job does, and that tag is the record of
 what shipped.
 
@@ -100,7 +101,7 @@ does not touch `prod`, the releases page, or the version.
 | ------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | Windows | `khulla-<version>-windows-x64-setup.exe` | Per-user installer (Inno Setup) - Start Menu entry + uninstaller, no admin required. Same build as the zip, just easier for normal users. |
 | Windows | `khulla-<version>-windows-x64.zip`       | Portable fallback. Unzip anywhere and run `khulla.exe`. Useful when an installer is blocked.                                              |
-| Android | `khulla-<version>-android.apk`           | One universal APK, not per-ABI splits - a tester sideloading should not need to know what an ABI is.                                      |
+| Android | `khulla-<version>-android.apk`           | For phones without Google Play, which the release notes recommend first. One universal APK, signed with the sideload key - see below.     |
 | Web     | `khulla-<version>-web.tar.gz`            | Built for the site root. Serve the extracted folder from any static host.                                                                 |
 | Linux   | `khulla-<version>-linux-x64.tar.gz`      | Extract, run `./khulla`.                                                                                                                  |
 
@@ -113,6 +114,66 @@ still warns about an unknown publisher while the binaries are unsigned.
 
 macOS and iOS build from the same source but are not released: both need an
 Apple Developer account to produce anything a user can open.
+
+## How installed copies update
+
+Every release carries `latest.json`, and every installed copy finds it at
+`<repo>/releases/latest/download/latest.json` - a plain redirect to the newest
+non-prerelease, with none of the REST API's per-address rate limit. The app
+compares the release's `build` with its own `+build` and, from **Account menu
+→ Check for updates** (or on its own once a day, which the dialog can switch
+off), does what fits how it was installed:
+
+| Installed from                | What *update* does                                                                                                                                                                                                                  |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Windows installer             | Downloads the next `setup.exe`, checks its SHA-256 and size against `latest.json`, snapshots the catalogue into `backups/` beside it, starts the installer with `/SILENT /UPDATE=1` and exits. The installer reopens the app. |
+| Windows portable zip, Linux   | Says a newer version exists and opens the release page. Replacing files wherever the folder happens to live is not safe.                                                                                                           |
+| Web                           | Compares the server's `version.json` (written by `flutter build web`) with the running build, and offers a reload.                                                                                                                  |
+| Android (Google Play)         | Never asks GitHub - Play reviews a build after the release lands, so GitHub would announce an update Play cannot deliver yet. Opens the store listing.                                                                              |
+| Android (release-page APK)    | Says a newer version exists and opens the release page, to install the new APK over the old one. Android records who installed the app, which is how it is told apart from a Play install.                                       |
+
+`latest.json` is a contract with every build ever shipped. `version`, `build`
+and `notes` must never change meaning; anything new is an added field, which
+old readers ignore. The installer is told apart from the portable zip by
+`unins000.exe` beside `khulla.exe`.
+
+**The updater only helps from the release that contains it.** An install
+older than that has to be updated by hand once.
+
+Google Play publishing is still manual: build an app bundle signed with the
+upload key and upload it in the Play Console. Bump `+build` as for any release
+- Play refuses a `versionCode` it has seen.
+
+## Signing the APK
+
+Android installs an APK over an existing install only when both are signed
+with the same key. A GitHub runner's debug key is generated fresh on every
+run, so a debug-signed APK can never update the previous release's - the
+only way forward is uninstalling, which deletes the library's data on that
+phone. The release APK is therefore signed with one **sideload key**, kept in
+repository secrets and never changed.
+
+Use a key of its own, not the Play upload key: the APK and the Play build
+cannot update each other anyway (Play re-signs with its app signing key), and
+keeping the upload key off GitHub keeps a leak here from touching Play.
+
+Once:
+
+```sh
+keytool -genkeypair -v -keystore sideload-keystore.jks -alias sideload \
+  -keyalg RSA -keysize 4096 -validity 36500
+base64 -w0 sideload-keystore.jks   # the value of ANDROID_KEYSTORE_BASE64
+```
+
+Add four repository secrets (**Settings → Secrets and variables → Actions**):
+`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`
+(`sideload`), `ANDROID_KEY_PASSWORD`. Keep the `.jks` and its passwords
+somewhere safe off GitHub too: **losing the key means every APK install has to
+be uninstalled to take the next release.**
+
+Without the secrets the `android` job warns and falls back to the debug key.
+APKs from before the key existed were debug-signed, so their users have to
+back up, uninstall and reinstall once.
 
 ## The web demo
 
@@ -131,21 +192,16 @@ wipes it.
 
 ## Signing, when it matters
 
-Both desktop and Android ship unsigned today, which is honest for a pre-1.0
+The Windows build ships unsigned today, which is honest for a pre-1.0
 open-source tool a librarian installs deliberately. It costs the user one
-"unknown publisher" dialog.
+"unknown publisher" dialog. Android is signed: the release APK with the
+sideload key (above), the Play build with the upload key kept off GitHub.
 
-Signing becomes worth the cost when Khulla goes on Google Play (which refuses
-debug keys outright) or when the SmartScreen warning starts costing installs.
-Both follow the same shape: put the key in repository secrets, decode it in the
-job, and point the build at it.
-
-- **Android** - replace the debug `signingConfig` in
-  `android/app/build.gradle.kts` with one reading a `key.properties` file, and
-  write that file in the `android` job from a base64 secret.
-- **Windows** - sign `build/windows/x64/runner/Release/khulla.exe` with
-  `signtool` before the packaging step, using an EV or OV code-signing
-  certificate.
+Signing Windows becomes worth the cost when the SmartScreen warning starts
+costing installs: sign `build/windows/x64/runner/Release/khulla.exe` with
+`signtool` before the packaging step, using an EV or OV code-signing
+certificate held in repository secrets. (The in-app updater is not affected
+either way - a file the app downloads itself carries no mark-of-the-web.)
 
 Do not commit a keystore, a certificate, or a password. If a key does get
 committed, rotate it - a rewrite of history is not a revocation.

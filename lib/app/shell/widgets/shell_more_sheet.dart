@@ -10,6 +10,9 @@ import 'package:khulla/app/shell/widgets/shell_destinations.dart';
 import 'package:khulla/app/shell/widgets/shell_version_label.dart';
 import 'package:khulla/core/router/routes.dart';
 import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
+import 'package:khulla/features/updates/domain/models/update_channel.dart';
+import 'package:khulla/features/updates/presentation/cubit/update_cubit.dart';
+import 'package:khulla/features/updates/presentation/widgets/update_dialog.dart';
 import 'package:khulla/features/users/presentation/user_labels.dart';
 import 'package:khulla/features/users/presentation/widgets/staff_profile_dialog.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -53,6 +56,7 @@ class _MoreList extends StatelessWidget {
     final spacing = context.appSpacing;
     final l10n = context.l10n;
     final staff = context.watch<AuthCubit>().state.staff;
+    final updates = context.watch<UpdateCubit>().state;
 
     // The sheet chrome already scrolls a fixed-height body, so this is a
     // plain column of menu rows.
@@ -109,8 +113,8 @@ class _MoreList extends StatelessWidget {
         Divider(height: 1, color: context.appColors.hairline),
         SizedBox(height: spacing.xs),
         // Phones never see the rail footer, and the account menu that carries
-        // the guide and the about panel on a window lives in it - so both
-        // hang here instead, below the sections and above the version line.
+        // the guide, the about panel and updates on a window lives in it - so
+        // they hang here instead, below the sections and above the version line.
         _SheetTap(
           onTap: () => context.go(Routes.guide),
           child: _MenuRow(
@@ -123,6 +127,16 @@ class _MoreList extends StatelessWidget {
           onTap: () => unawaited(HelpAboutDialog.show(context)),
           child: _MenuRow(label: l10n.shellAbout, icon: AppIcons.info),
         ),
+        if (updates.channel != UpdateChannel.unsupported)
+          _SheetTap(
+            onTap: () => unawaited(UpdateDialog.show(context)),
+            child: _MenuRow(
+              label: updates.hasUpdate
+                  ? l10n.shellUpdateAvailable
+                  : l10n.shellCheckForUpdates,
+              icon: AppIcons.appUpdate,
+            ),
+          ),
         if (staff != null)
           _SheetTap(
             onTap: () => unawaited(context.read<AuthCubit>().signOut()),

@@ -58,89 +58,247 @@ class HelpAboutPanel extends StatelessWidget {
     final typography = context.appTextStyles;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Center(
-          child: Column(
-            children: [
-              const AppLogo.submark(size: 64),
-              SizedBox(height: spacing.sm),
-              Text(
-                l10n.appName,
-                style: typography.title.copyWith(color: colors.textHigh),
+        // Logo beside the name keeps the identity to two lines, so the
+        // actions below start on screen instead of under a tall banner.
+        Row(
+          children: [
+            const AppLogo.submark(size: 56),
+            SizedBox(width: spacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: spacing.xs,
+                    runSpacing: spacing.xxs,
+                    children: [
+                      Text(
+                        l10n.appName,
+                        style: typography.title.copyWith(
+                          color: colors.textHigh,
+                        ),
+                      ),
+                      FutureBuilder<String>(
+                        future: AppVersion.version(),
+                        builder: (context, snapshot) => AppStatusBadge(
+                          label:
+                              '${l10n.helpAboutVersionLabel} '
+                              '${snapshot.data ?? '…'}',
+                          tone: AppStatusTone.brand,
+                        ),
+                      ),
+                      const AppStatusBadge(label: AppInfo.license),
+                    ],
+                  ),
+                  SizedBox(height: spacing.xxs),
+                  Text(
+                    l10n.helpAboutTagline,
+                    style: typography.body.copyWith(color: colors.textMuted),
+                  ),
+                ],
               ),
-              SizedBox(height: spacing.xxs),
-              Text(
-                l10n.helpAboutTagline,
-                textAlign: TextAlign.center,
-                style: typography.body.copyWith(color: colors.textMuted),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-        SizedBox(height: spacing.md),
-        AppDetailRow(
-          label: l10n.helpAboutVersionLabel,
-          child: FutureBuilder<String>(
-            future: AppVersion.version(),
-            builder: (context, snapshot) {
-              final version = snapshot.data;
-              if (version == null) {
-                return Text(
-                  '…',
-                  style: typography.body.copyWith(color: colors.textHigh),
-                );
-              }
-              return Text(
-                version,
-                style: typography.body.copyWith(color: colors.textHigh),
+        SizedBox(height: spacing.lg),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final wide = constraints.maxWidth >= 640;
+            final helpSection = _Section(
+              icon: AppIcons.support,
+              title: l10n.helpAboutHelpTitle,
+              body: l10n.helpAboutHelpBody,
+              fill: wide,
+              children: [
+                _LinkRow(
+                  icon: AppIcons.email,
+                  label: l10n.helpAboutContactEmail,
+                  url: 'mailto:${AppInfo.email}',
+                  display: AppInfo.email,
+                  hint: l10n.helpAboutOpenMail,
+                  section: const _WhatsappSection(),
+                ),
+              ],
+            );
+            final supportSection = _Section(
+              icon: AppIcons.people,
+              title: l10n.helpAboutSupportTitle,
+              body: l10n.helpAboutSupportBody,
+              tone: AppStatusTone.brand,
+              fill: wide,
+              children: [
+                _LinkRow(
+                  icon: AppIcons.email,
+                  label: l10n.helpAboutSupportContact,
+                  url: 'mailto:${AppInfo.fundingEmail}',
+                  display: AppInfo.fundingEmail,
+                  hint: l10n.helpAboutOpenMail,
+                ),
+              ],
+            );
+            final links = [
+              _LinkRow(
+                icon: AppIcons.discover,
+                label: l10n.helpAboutLinkWebsite,
+                url: AppInfo.websiteUrl,
+              ),
+              _LinkRow(
+                icon: AppIcons.article,
+                label: l10n.helpAboutLinkRepository,
+                url: AppInfo.repositoryUrl,
+              ),
+              _LinkRow(
+                icon: AppIcons.error,
+                label: l10n.helpAboutLinkIssues,
+                url: AppInfo.issuesUrl,
+              ),
+            ];
+            final linksSection = _Section(
+              icon: AppIcons.discover,
+              title: l10n.helpAboutLinksTitle,
+              // Side by side when wide: three short rows in one line read as
+              // a footer of destinations, not a third competing card.
+              inline: wide,
+              children: links,
+            );
+
+            if (!wide) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  helpSection,
+                  SizedBox(height: spacing.md),
+                  supportSection,
+                  SizedBox(height: spacing.md),
+                  linksSection,
+                ],
               );
-            },
-          ),
+            }
+            // The two prose cards share a height so their actions line up on
+            // one baseline; the links run full width beneath them.
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(child: helpSection),
+                      SizedBox(width: spacing.md),
+                      Expanded(child: supportSection),
+                    ],
+                  ),
+                ),
+                SizedBox(height: spacing.md),
+                linksSection,
+              ],
+            );
+          },
         ),
         SizedBox(height: spacing.md),
-        AppSectionHeader(title: l10n.helpAboutHelpTitle, dense: true),
-        SizedBox(height: spacing.xs),
-        Text(
-          l10n.helpAboutHelpBody,
-          style: typography.body.copyWith(color: colors.textMuted),
-        ),
-        SizedBox(height: spacing.sm),
-        _LinkRow(
-          icon: AppIcons.email,
-          label: l10n.helpAboutContactEmail,
-          url: 'mailto:${AppInfo.email}',
-          display: AppInfo.email,
-          hint: l10n.helpAboutOpenMail,
-          section: const _WhatsappSection(),
-        ),
-        SizedBox(height: spacing.md),
-        AppSectionHeader(title: l10n.helpAboutLinksTitle, dense: true),
-        SizedBox(height: spacing.sm),
-        _LinkRow(
-          icon: AppIcons.discover,
-          label: l10n.helpAboutLinkWebsite,
-          url: AppInfo.websiteUrl,
-        ),
-        _LinkRow(
-          icon: AppIcons.article,
-          label: l10n.helpAboutLinkRepository,
-          url: AppInfo.repositoryUrl,
-        ),
-        _LinkRow(
-          icon: AppIcons.error,
-          label: l10n.helpAboutLinkIssues,
-          url: AppInfo.issuesUrl,
-        ),
-        SizedBox(height: spacing.sm),
         Text(
           l10n.helpAboutOpenSource,
+          textAlign: TextAlign.center,
           style: typography.caption.copyWith(color: colors.mutedForeground),
         ),
       ],
     );
   }
+}
+
+/// One labelled block of the panel: a heading, an optional sentence of
+/// context, and its links in a bordered card, split by hairlines.
+class _Section extends StatelessWidget {
+  const _Section({
+    required this.icon,
+    required this.title,
+    required this.children,
+    this.body,
+    this.tone,
+    this.fill = false,
+    this.inline = false,
+  });
+
+  /// Stretch the card to the height it is given, pinning the links to its foot.
+  final bool fill;
+
+  /// Lay the children out in one row, split by vertical hairlines.
+  final bool inline;
+  final AppIconSpec icon;
+  final String title;
+  final String? body;
+  final AppStatusTone? tone;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final spacing = context.appSpacing;
+    final colors = context.appColors;
+    final typography = context.appTextStyles;
+
+    final bodyText = body == null
+        ? null
+        : Padding(
+            padding: EdgeInsets.all(spacing.xs),
+            child: Text(
+              body!,
+              style: typography.body.copyWith(color: colors.textMuted),
+            ),
+          );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppSectionHeader(title: title, icon: icon, dense: true),
+        SizedBox(height: spacing.xs),
+        _maybeExpand(
+          AppCard(
+            tone: tone,
+            padding: EdgeInsets.all(spacing.xs),
+            child: inline
+                ? IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (var i = 0; i < children.length; i++) ...[
+                          if (i > 0)
+                            VerticalDivider(
+                              width: 1,
+                              thickness: 1,
+                              color: colors.hairline,
+                            ),
+                          Expanded(child: children[i]),
+                        ],
+                      ],
+                    ),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (bodyText != null && fill) Expanded(child: bodyText),
+                      if (bodyText != null && !fill) bodyText,
+                      for (var i = 0; i < children.length; i++) ...[
+                        if (i > 0 || bodyText != null)
+                          Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: colors.hairline,
+                          ),
+                        children[i],
+                      ],
+                    ],
+                  ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _maybeExpand(Widget card) => fill ? Expanded(child: card) : card;
 }
 
 /// One link: what it is, where it points, and the button that opens it.
@@ -178,66 +336,64 @@ class _LinkRow extends StatelessWidget {
     final typography = context.appTextStyles;
     final radius = BorderRadius.circular(context.appRadius.control);
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: spacing.xxs),
-      child: Row(
-        children: [
-          Expanded(
-            child: Tooltip(
-              message: hint ?? l10n.helpAboutOpenLink,
-              child: InkWell(
-                onTap: () => HelpAboutPanel.openLink(context, url),
-                borderRadius: radius,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: spacing.xs,
-                    vertical: spacing.xs,
-                  ),
-                  child: Row(
-                    children: [
-                      AppIcon(icon, size: 18, color: colors.mutedForeground),
-                      SizedBox(width: spacing.sm),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              label,
-                              style: typography.label.copyWith(
-                                color: colors.textHigh,
-                              ),
+    return Row(
+      children: [
+        Expanded(
+          child: Tooltip(
+            message: hint ?? l10n.helpAboutOpenLink,
+            waitDuration: const Duration(milliseconds: 700),
+            child: InkWell(
+              onTap: () => HelpAboutPanel.openLink(context, url),
+              borderRadius: radius,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing.xs,
+                  vertical: spacing.xs,
+                ),
+                child: Row(
+                  children: [
+                    AppIcon(icon, size: 18, color: colors.mutedForeground),
+                    SizedBox(width: spacing.sm),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            label,
+                            style: typography.label.copyWith(
+                              color: colors.textHigh,
                             ),
-                            Text(
-                              display ??
-                                  url.replaceFirst(RegExp('^https?://'), ''),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: typography.caption.copyWith(
-                                color: colors.mutedForeground,
-                              ),
+                          ),
+                          Text(
+                            display ??
+                                url.replaceFirst(RegExp('^https?://'), ''),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: typography.caption.copyWith(
+                              color: colors.mutedForeground,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      AppIcon(
-                        AppIcons.openExternal,
-                        size: 16,
-                        color: colors.mutedForeground,
-                      ),
-                    ],
-                  ),
+                    ),
+                    AppIcon(
+                      AppIcons.openExternal,
+                      size: 16,
+                      color: colors.mutedForeground,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-          if (section != null) ...[
-            SizedBox(width: spacing.xs),
-            Container(width: 1, height: 28, color: colors.hairline),
-            SizedBox(width: spacing.xs),
-            section!,
-          ],
+        ),
+        if (section != null) ...[
+          SizedBox(width: spacing.xs),
+          Container(width: 1, height: 28, color: colors.hairline),
+          SizedBox(width: spacing.xs),
+          section!,
         ],
-      ),
+      ],
     );
   }
 }

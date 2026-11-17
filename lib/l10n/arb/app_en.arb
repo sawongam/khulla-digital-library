@@ -831,6 +831,132 @@
     "@errorReasonRestoreNotApplied": {
         "description": "Errors - a restore that was validated but could not replace the catalogue file"
     },
+    "errorReasonUpdateCheckFailed": "Couldn't reach the update server. Check the internet connection and try again.",
+    "@errorReasonUpdateCheckFailed": {
+        "description": "Errors - the update check could not fetch the latest release"
+    },
+    "errorReasonUpdateDownloadFailed": "The download didn't finish. Check the internet connection and try again.",
+    "@errorReasonUpdateDownloadFailed": {
+        "description": "Errors - the update installer download broke off"
+    },
+    "errorReasonUpdateDownloadDamaged": "The download arrived damaged, so it was not installed. Try again.",
+    "@errorReasonUpdateDownloadDamaged": {
+        "description": "Errors - the downloaded installer did not match its checksum"
+    },
+    "errorReasonUpdateInstallFailed": "The installer could not be started, and nothing was changed. Try again, or download the new version from the release page.",
+    "@errorReasonUpdateInstallFailed": {
+        "description": "Errors - the update installer would not launch"
+    },
+    "shellCheckForUpdates": "Check for updates",
+    "@shellCheckForUpdates": {
+        "description": "Account menu - opens the update dialog"
+    },
+    "shellUpdateAvailable": "Update available",
+    "@shellUpdateAvailable": {
+        "description": "Account menu - the update entry when a newer version was found"
+    },
+    "updateDialogTitle": "Updates",
+    "@updateDialogTitle": {
+        "description": "Update dialog - heading"
+    },
+    "updateChecking": "Looking for a newer version…",
+    "@updateChecking": {
+        "description": "Update dialog - while the check runs"
+    },
+    "updateUpToDate": "You're on the latest version, {version}.",
+    "@updateUpToDate": {
+        "description": "Update dialog - nothing newer was found",
+        "placeholders": {
+            "version": {
+                "type": "String",
+                "example": "1.2.0"
+            }
+        }
+    },
+    "updateAvailable": "Version {latest} is available. You have {running}.",
+    "@updateAvailable": {
+        "description": "Update dialog - a newer version was found",
+        "placeholders": {
+            "latest": {
+                "type": "String",
+                "example": "1.3.0"
+            },
+            "running": {
+                "type": "String",
+                "example": "1.2.0"
+            }
+        }
+    },
+    "updateWhatsNew": "See what's new",
+    "@updateWhatsNew": {
+        "description": "Update dialog - link to the release notes"
+    },
+    "updateDownloadAction": "Download update",
+    "@updateDownloadAction": {
+        "description": "Update dialog - starts downloading the installer"
+    },
+    "updateDownloading": "Downloading the update",
+    "@updateDownloading": {
+        "description": "Update dialog - progress bar caption"
+    },
+    "updateDownloadProgress": "{percent}%",
+    "@updateDownloadProgress": {
+        "description": "Update dialog - progress bar figure",
+        "placeholders": {
+            "percent": {
+                "type": "String",
+                "example": "42"
+            }
+        }
+    },
+    "updateReadyBody": "Downloaded and checked. Khulla will back up your catalogue, close, install the update and open again. It takes about a minute.",
+    "@updateReadyBody": {
+        "description": "Update dialog - the installer is ready to run"
+    },
+    "updateInstallAction": "Restart and update",
+    "@updateInstallAction": {
+        "description": "Update dialog - hands over to the installer"
+    },
+    "updateInstalling": "Backing up your catalogue and starting the installer…",
+    "@updateInstalling": {
+        "description": "Update dialog - while handing over to the installer"
+    },
+    "updateWebBody": "Reload to start using it. Your catalogue stays as it is.",
+    "@updateWebBody": {
+        "description": "Update dialog - web build, a newer version is on the server"
+    },
+    "updateWebAction": "Reload now",
+    "@updateWebAction": {
+        "description": "Update dialog - reloads the web app"
+    },
+    "updateManualBody": "Download the new version and replace this copy. Your catalogue is stored separately, so it carries over.",
+    "@updateManualBody": {
+        "description": "Update dialog - portable Windows and Linux, which cannot update in place"
+    },
+    "updateApkBody": "Download the new APK from the release page and install it over this one. Your catalogue stays on this phone.",
+    "@updateApkBody": {
+        "description": "Update dialog - Android installed from the release-page APK"
+    },
+    "updateManualAction": "Open download page",
+    "@updateManualAction": {
+        "description": "Update dialog - opens the release page in the browser"
+    },
+    "updatePlayBody": "On Android, Khulla updates through Google Play. Open the store listing to see whether a newer version is ready.",
+    "@updatePlayBody": {
+        "description": "Update dialog - Android, where Play owns updates"
+    },
+    "updatePlayAction": "Open Google Play",
+    "@updatePlayAction": {
+        "description": "Update dialog - opens the Play Store listing"
+    },
+    "updateAutoCheckLabel": "Check automatically",
+    "@updateAutoCheckLabel": {
+        "description": "Update dialog - switch for the daily background check"
+    },
+    "updateAutoCheckDescription": "Once a day, Khulla asks GitHub whether a newer version exists. Nothing about your library is sent.",
+    "@updateAutoCheckDescription": {
+        "description": "Update dialog - what the automatic check does"
+    },
     "navReports": "Reports",
     "navUsers": "Staff",
     "navMore": "More",
@@ -863,6 +989,9 @@
     "helpAboutVersionLabel": "Version",
     "helpAboutHelpTitle": "Need a hand?",
     "helpAboutHelpBody": "We can help you install Khulla, move your records over from a register or spreadsheet, or add a feature your library needs.",
+    "helpAboutSupportTitle": "Support the project",
+    "helpAboutSupportBody": "We are working toward an online catalogue and a public app, so a library's members can see what is available and what they have borrowed. That needs a server, which a small team cannot pay for alone. If you would like to help fund it, or contribute code, write to us.",
+    "helpAboutSupportContact": "Fund or contribute",
     "helpAboutContactEmail": "Send an email",
     "helpAboutLinksTitle": "Links",
     "helpAboutLinkWebsite": "Website",
