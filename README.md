@@ -185,6 +185,14 @@ Found a bug? Open an issue with the platform, the version from Settings → Abou
 
 Merging into `prod` publishes a release at the version in `pubspec.yaml` and redeploys the web demo - see [releasing](./docs/contributing/releasing.md).
 
+## Contributors
+
+Thanks to everyone who has helped build Khulla. This list is generated from GitHub, so it stays current on its own.
+
+<a href="https://github.com/sawongam/khulla-digital-library/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sawongam/khulla-digital-library" alt="Khulla contributors" />
+</a>
+
 ## License
 
 Khulla is dual-licensed:
