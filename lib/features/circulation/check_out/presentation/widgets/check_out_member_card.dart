@@ -5,6 +5,7 @@ import 'package:khulla/core/money/money.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/section_card.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla/shared/widgets/empty_result_view.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
@@ -144,7 +145,7 @@ class CheckOutMemberCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (outstandingFines.isPositive)
+                if (context.chargesFines && outstandingFines.isPositive)
                   AppStatusBadge(
                     label: outstandingFines.display(),
                     tone: AppStatusTone.danger,

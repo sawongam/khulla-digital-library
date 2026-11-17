@@ -14,7 +14,6 @@ part 'fine.freezed.dart';
 abstract class Fine with _$Fine {
   const factory Fine({
     required String id,
-    required String memberId,
     required FineReason reason,
     required Money assessed,
     required Money paid,
@@ -22,6 +21,7 @@ abstract class Fine with _$Fine {
     required DateTime raisedAt,
     required DateTime createdAt,
     required DateTime updatedAt,
+    String? memberId,
     String? loanId,
     String? memberName,
     String? titleName,

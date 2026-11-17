@@ -18,7 +18,7 @@ If the AGPL's source-sharing terms do not work for you, a commercial licence fro
 - offer Khulla, or a modified version, as a hosted service or SaaS without publishing your source;
 - ship a white-label or rebranded version under your own name as closed software.
 
-Contact **Sangam Adhikari** at [info@sangamadhikari.com](mailto:info@sangamadhikari.com) with a short description of what you want to build. Terms are agreed case by case.
+Contact the maintainers at [info@khulladigitallibrary.com](mailto:info@khulladigitallibrary.com) with a short description of what you want to build. Terms are agreed case by case.
 
 ## What is not covered
 

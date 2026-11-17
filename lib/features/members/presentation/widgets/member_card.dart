@@ -4,6 +4,7 @@
 import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/presentation/member_labels.dart';
 import 'package:khulla/l10n/l10n.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// One borrower as a card, for the window classes too narrow for the table.
@@ -15,6 +16,7 @@ class MemberCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chargesFines = context.chargesFines;
     final l10n = context.l10n;
     final spacing = context.appSpacing;
     final scheme = context.colorScheme;
@@ -46,16 +48,26 @@ class MemberCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      AppStatusBadge(
-                        dense: true,
-                        label: member.status.label(l10n),
-                        tone: member.status.tone,
-                      ),
+                      if (member.isArchived)
+                        AppStatusBadge(
+                          dense: true,
+                          label: l10n.membersArchivedBadge,
+                        )
+                      else
+                        AppStatusBadge(
+                          dense: true,
+                          label: member.status.label(l10n),
+                          tone: member.status.tone,
+                        ),
                     ],
                   ),
                   SizedBox(height: spacing.xxs),
                   Text(
-                    '${member.barcode} · ${member.memberTypeName}',
+                    [
+                      member.barcode,
+                      member.memberTypeName,
+                      if (member.grade != null) member.grade!,
+                    ].join(' · '),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: context.textTheme.bodySmall?.copyWith(
@@ -64,13 +76,13 @@ class MemberCard extends StatelessWidget {
                   ),
                   SizedBox(height: spacing.xs),
                   Text(
-                    member.finesOwed.isZero
+                    !chargesFines || member.finesOwed.isZero
                         ? '${l10n.membersColumnLoans} ${member.loansOut}'
                         : '${l10n.membersColumnLoans} ${member.loansOut} · ${member.finesOwed.display()}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: context.textTheme.bodySmall?.copyWith(
-                      color: member.finesOwed.isZero
+                      color: !chargesFines || member.finesOwed.isZero
                           ? scheme.onSurfaceVariant
                           : scheme.error,
                     ),

@@ -46,7 +46,10 @@ enum ReportsExportKind {
   acquisitions,
 }
 
-List<SavedReport> reportsSaved(AppLocalizations l10n) => [
+List<SavedReport> reportsSaved(
+  AppLocalizations l10n, {
+  bool chargesFines = true,
+}) => [
   SavedReport(
     title: l10n.reportsSavedCirculation,
     body: l10n.reportsSavedCirculationBody,
@@ -68,13 +71,14 @@ List<SavedReport> reportsSaved(AppLocalizations l10n) => [
     tone: AppStatusTone.success,
     kind: ReportsExportKind.members,
   ),
-  SavedReport(
-    title: l10n.reportsSavedFines,
-    body: l10n.reportsSavedFinesBody,
-    icon: AppIcons.wallet,
-    tone: AppStatusTone.warning,
-    kind: ReportsExportKind.fines,
-  ),
+  if (chargesFines)
+    SavedReport(
+      title: l10n.reportsSavedFines,
+      body: l10n.reportsSavedFinesBody,
+      icon: AppIcons.wallet,
+      tone: AppStatusTone.warning,
+      kind: ReportsExportKind.fines,
+    ),
   SavedReport(
     title: l10n.reportsSavedOverdue,
     body: l10n.reportsSavedOverdueBody,

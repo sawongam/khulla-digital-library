@@ -14,7 +14,7 @@ import 'package:khulla/features/catalog/title/domain/models/title_query.dart';
 import 'package:khulla/features/catalog/title/domain/title_repository.dart';
 import 'package:khulla/shared/models/load_status.dart';
 
-/// Add-copy modal: resolve a title, then insert through [CopyRepository].
+/// Add/edit-copy modal: resolve a title, then insert through [CopyRepository].
 @injectable
 class CopyFormCubit extends Cubit<CopyFormState> {
   CopyFormCubit(this._copies, this._titles) : super(const CopyFormState());
@@ -25,14 +25,31 @@ class CopyFormCubit extends Cubit<CopyFormState> {
   Timer? _titleLookupTimer;
 
   /// Loads a fixed title when [titleId] is set; otherwise starts empty.
-  Future<void> loadCopyForm({String? titleId}) async {
+  ///
+  /// With [copyId] the form edits that copy, and its title is fixed.
+  Future<void> loadCopyForm({String? titleId, String? copyId}) async {
     emit(state.copyWith(status: LoadStatus.loading, error: null));
     try {
-      final fixed = titleId == null ? null : await _titles.findTitle(titleId);
+      final existing = copyId == null ? null : await _copies.findCopy(copyId);
+      if (isClosed) return;
+      if (copyId != null && existing == null) {
+        emit(
+          state.copyWith(
+            status: LoadStatus.failure,
+            error: const NotFoundException.because(
+              AppErrorReason.copyNotFound,
+            ),
+          ),
+        );
+        return;
+      }
+      final fixedId = existing?.titleId ?? titleId;
+      final fixed = fixedId == null ? null : await _titles.findTitle(fixedId);
       if (isClosed) return;
       emit(
         state.copyWith(
           status: LoadStatus.loaded,
+          existing: existing,
           fixedTitle: fixed,
           selectedTitle: fixed,
           error: null,
@@ -84,12 +101,32 @@ class CopyFormCubit extends Cubit<CopyFormState> {
     }
   }
 
-  /// Inserts one copy for the chosen title. Rethrows on failure.
+  /// Inserts one copy for the chosen title, or - when editing - updates the
+  /// loaded copy's barcode, shelf and notes. Rethrows on failure.
   Future<Copy> saveCopy({
     required String shelf,
     required String barcode,
     required String notes,
   }) async {
+    final existing = state.existing;
+    if (existing != null) {
+      emit(state.copyWith(isSaving: true, error: null));
+      try {
+        final saved = await _copies.updateCopyDetails(
+          existing.id,
+          barcode: barcode,
+          shelf: shelf,
+          notes: notes,
+        );
+        if (isClosed) return saved;
+        emit(state.copyWith(isSaving: false));
+        return saved;
+      } on AppException catch (error) {
+        if (isClosed) rethrow;
+        emit(state.copyWith(isSaving: false, error: error));
+        rethrow;
+      }
+    }
     final title = state.selectedTitle ?? state.fixedTitle;
     if (title == null) {
       throw const InvalidInputException.because(

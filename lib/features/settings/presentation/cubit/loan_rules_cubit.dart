@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/money/money.dart';
+import 'package:khulla/features/members/domain/member_optional_field.dart';
+import 'package:khulla/features/settings/domain/library_settings_repository.dart';
 import 'package:khulla/features/settings/domain/loan_rules_repository.dart';
 import 'package:khulla/features/settings/domain/models/loan_rules.dart';
 import 'package:khulla/features/settings/presentation/cubit/loan_rules_state.dart';
@@ -16,20 +18,24 @@ import 'package:khulla/shared/models/load_status.dart';
 /// [loadRules] failures emit into state; [saveRules] emits and rethrows.
 @injectable
 class LoanRulesCubit extends Cubit<LoanRulesState> {
-  LoanRulesCubit(this._repository) : super(const LoanRulesState());
+  LoanRulesCubit(this._repository, this._settings)
+    : super(const LoanRulesState());
 
   final LoanRulesRepository _repository;
+  final LibrarySettingsRepository _settings;
 
   /// Loads the single loan-rules row.
   Future<void> loadRules() async {
     emit(state.copyWith(status: LoadStatus.loading, error: null));
     try {
       final rules = await _repository.findRules();
+      final profile = await _settings.findProfile();
       if (isClosed) return;
       emit(
         state.copyWith(
           status: LoadStatus.loaded,
           rules: rules,
+          profile: profile,
           error: null,
         ),
       );
@@ -40,12 +46,30 @@ class LoanRulesCubit extends Cubit<LoanRulesState> {
   }
 
   /// Persists edited rules. Emits and rethrows on failure.
-  Future<void> saveRules(LoanRules rules) async {
+  ///
+  /// The library-wide switches the page edits beside the rules - whether fines
+  /// are charged, which member-form fields are hidden - save with them.
+  Future<void> saveRules(
+    LoanRules rules, {
+    required bool chargesFines,
+    required Set<MemberOptionalField> hiddenMemberFields,
+  }) async {
     emit(state.copyWith(isSaving: true, error: null));
     try {
       final saved = await _repository.saveRules(rules);
+      await _settings.saveChargesFines(chargesFines: chargesFines);
+      final profile = await _settings.saveHiddenMemberFields(
+        hiddenMemberFields,
+      );
       if (isClosed) return;
-      emit(state.copyWith(rules: saved, isSaving: false, error: null));
+      emit(
+        state.copyWith(
+          rules: saved,
+          profile: profile,
+          isSaving: false,
+          error: null,
+        ),
+      );
     } on AppException catch (error) {
       if (isClosed) return;
       emit(state.copyWith(isSaving: false, error: error));

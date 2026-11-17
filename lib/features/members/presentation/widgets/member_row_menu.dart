@@ -6,11 +6,11 @@ import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// The members-permission half of a member row menu, shared by the list and
-/// the detail page: edit, renew, suspend/unsuspend, archive.
+/// the detail page: edit, renew, suspend/unsuspend, archive, delete; for an archived member just restore and delete.
 ///
 /// Dumb by design - taps call back out so each page owns its cubit writes
 /// and toasts. Callers add their own extras around it: the list prepends
-/// the circulation check-out action, the detail page appends delete.
+/// the circulation check-out action,
 List<AppMenuAction> memberManageMenuActions(
   BuildContext context,
   Member member, {
@@ -19,8 +19,26 @@ List<AppMenuAction> memberManageMenuActions(
   required VoidCallback onSuspend,
   required VoidCallback onUnsuspend,
   required VoidCallback onArchive,
+  required VoidCallback onRestore,
+  required VoidCallback onDelete,
 }) {
   final l10n = context.l10n;
+  // An archived member can only be brought back or removed for good.
+  if (member.isArchived) {
+    return [
+      AppMenuAction(
+        label: l10n.memberRestore,
+        icon: AppIcons.restore,
+        onSelected: onRestore,
+      ),
+      AppMenuAction(
+        label: l10n.memberDetailDelete,
+        icon: AppIcons.delete,
+        isDestructive: true,
+        onSelected: onDelete,
+      ),
+    ];
+  }
   return [
     AppMenuAction(
       label: l10n.memberDetailEdit,
@@ -50,6 +68,12 @@ List<AppMenuAction> memberManageMenuActions(
       icon: AppIcons.delete,
       isDestructive: true,
       onSelected: onArchive,
+    ),
+    AppMenuAction(
+      label: l10n.memberDetailDelete,
+      icon: AppIcons.delete,
+      isDestructive: true,
+      onSelected: onDelete,
     ),
   ];
 }

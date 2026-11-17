@@ -17,6 +17,7 @@ class TitleCopiesCard extends StatelessWidget {
   const TitleCopiesCard({
     required this.copies,
     this.onAddCopy,
+    this.onEdit,
     this.onMarkLost,
     this.onMarkDamaged,
     this.onWithdraw,
@@ -31,6 +32,7 @@ class TitleCopiesCard extends StatelessWidget {
 
   /// Per-copy maintenance, passed down to each row. Null for a role that may
   /// read the catalogue but not change it.
+  final void Function(Copy copy)? onEdit;
   final void Function(Copy copy)? onMarkLost;
   final void Function(Copy copy)? onMarkDamaged;
   final void Function(Copy copy)? onWithdraw;
@@ -40,6 +42,7 @@ class TitleCopiesCard extends StatelessWidget {
     final l10n = context.l10n;
     final colors = context.appColors;
     final addCopy = onAddCopy;
+    final edit = onEdit;
     final markLost = onMarkLost;
     final markDamaged = onMarkDamaged;
     final withdraw = onWithdraw;
@@ -69,6 +72,7 @@ class TitleCopiesCard extends StatelessWidget {
                   if (index > 0) Divider(height: 1, color: colors.hairline),
                   TitleCopyRow(
                     copy: copy,
+                    onEdit: edit == null ? null : () => edit(copy),
                     onMarkLost: markLost == null ? null : () => markLost(copy),
                     onMarkDamaged: markDamaged == null
                         ? null

@@ -35,7 +35,7 @@ m.full_name AS member_name,
   static const String _fromClause = '''
 FROM reservations r
 JOIN titles t ON t.id = r.title_id
-JOIN members m ON m.id = r.member_id
+LEFT JOIN members m ON m.id = r.member_id
 ''';
 
   @override
@@ -122,7 +122,7 @@ LIMIT ? OFFSET ?
   Reservation _mapRow(QueryRow row) => Reservation(
     id: row.read<String>('id'),
     titleId: row.read<String>('title_id'),
-    memberId: row.read<String>('member_id'),
+    memberId: row.readNullable<String>('member_id'),
     placedAt: row.read<DateTime>('placed_at'),
     status: ReservationStatus.values.byName(row.read<String>('status')),
     readyCopyId: row.readNullable<String>('ready_copy_id'),
@@ -132,7 +132,7 @@ LIMIT ? OFFSET ?
     createdAt: row.read<DateTime>('created_at'),
     updatedAt: row.read<DateTime>('updated_at'),
     titleName: row.read<String>('title_name'),
-    memberName: row.read<String>('member_name'),
+    memberName: row.readNullable<String>('member_name'),
     queuePosition: row.read<int>('queue_position'),
   );
 

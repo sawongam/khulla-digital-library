@@ -8,10 +8,13 @@ import 'package:khulla/core/database/fts_filter.dart';
 import 'package:khulla/core/error/guard.dart';
 import 'package:khulla/core/money/money.dart';
 import 'package:khulla/core/time/calendar_days.dart';
+import 'package:khulla/features/circulation/shared/data/circulation_hold_queue.dart';
+import 'package:khulla/features/circulation/shared/data/effective_rules_reader.dart';
 import 'package:khulla/features/members/data/mappers/member_row_mappers.dart';
 import 'package:khulla/features/members/data/member_local_data_source.dart';
 import 'package:khulla/features/members/domain/blood_group.dart';
 import 'package:khulla/features/members/domain/gender.dart';
+import 'package:khulla/features/members/domain/member_deletion_rules.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/domain/models/member_query.dart';
 
@@ -84,7 +87,9 @@ EXISTS (SELECT 1 FROM fines f
       final todaySql = _dateToSql(today);
       final expiringEndSql = _dateToSql(addCalendarDays(today, 30));
 
-      final where = StringBuffer('m.archived_at IS NULL');
+      final where = StringBuffer(
+        query.archived ? 'm.archived_at IS NOT NULL' : 'm.archived_at IS NULL',
+      );
       final variables = <Variable<Object>>[];
 
       final search = ftsFilter(
@@ -176,6 +181,7 @@ LIMIT ? OFFSET ?
     memberTypeId: row.read<String>('member_type_id'),
     memberTypeName: row.read<String>('member_type_name'),
     memberTypeCode: row.readNullable<String>('member_type_code'),
+    grade: row.readNullable<String>('grade'),
     joinedAt: row.read<DateTime>('joined_at'),
     createdAt: row.read<DateTime>('created_at'),
     updatedAt: row.read<DateTime>('updated_at'),
@@ -322,38 +328,68 @@ WHERE m.id = ?
   );
 
   @override
-  Future<bool> hasCirculationHistory(String memberId) => guardDatabase(
+  Future<void> restoreMember(String id) => guardDatabase(
     () async {
-      final loanCount = _db.loans.id.count();
-      final loanRow =
-          await (_db.selectOnly(_db.loans)
-                ..addColumns([loanCount])
-                ..where(_db.loans.memberId.equals(memberId)))
-              .getSingle();
-      if ((loanRow.read(loanCount) ?? 0) > 0) return true;
-      final fineCount = _db.fines.id.count();
-      final fineRow =
-          await (_db.selectOnly(_db.fines)
-                ..addColumns([fineCount])
-                ..where(_db.fines.memberId.equals(memberId)))
-              .getSingle();
-      if ((fineRow.read(fineCount) ?? 0) > 0) return true;
-      final reservationCount = _db.reservations.id.count();
-      final reservationRow =
-          await (_db.selectOnly(_db.reservations)
-                ..addColumns([reservationCount])
-                ..where(_db.reservations.memberId.equals(memberId)))
-              .getSingle();
-      return (reservationRow.read(reservationCount) ?? 0) > 0;
+      await (_db.update(_db.members)..where((m) => m.id.equals(id))).write(
+        MembersCompanion(
+          archivedAt: const Value(null),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
     },
-    source: '$_source.hasCirculationHistory',
+    source: '$_source.restoreMember',
   );
 
   @override
   Future<void> deleteMember(String id) => guardDatabase(
-    () async {
+    () => _db.transaction(() async {
+      final openLoanCount = await _count(
+        'SELECT COUNT(*) AS n FROM loans '
+        'WHERE member_id = ? AND returned_at IS NULL',
+        id,
+      );
+      final unpaidFineCount = await _count(
+        'SELECT COUNT(*) AS n FROM fines '
+        'WHERE member_id = ? AND paid + waived < assessed',
+        id,
+      );
+      ensureMemberDeletable(
+        openLoanCount: openLoanCount,
+        unpaidFineCount: unpaidFineCount,
+      );
+
+      // Open holds go the way a cancelled one does - a ready hold gives its
+      // copy back and the next member in the queue is offered it - and then
+      // the row itself is dropped: a hold with nobody behind it is noise.
+      final holdQueue = CirculationHoldQueue(_db, EffectiveRulesReader(_db));
+      final openHolds =
+          await (_db.select(_db.reservations)..where(
+                (hold) => hold.memberId.equals(id) & hold.closedAt.isNull(),
+              ))
+              .get();
+      for (final hold in openHolds) {
+        await holdQueue.cancelOpenHold(hold.id);
+        await (_db.delete(
+          _db.reservations,
+        )..where((row) => row.id.equals(hold.id))).go();
+      }
+
+      // What is left is history: it outlives the person, without a name.
+      for (final table in const ['loans', 'fines', 'reservations']) {
+        await _db.customStatement(
+          'UPDATE $table SET member_id = NULL WHERE member_id = ?',
+          [id],
+        );
+      }
       await (_db.delete(_db.members)..where((m) => m.id.equals(id))).go();
-    },
+    }),
     source: '$_source.deleteMember',
   );
+
+  Future<int> _count(String sql, String memberId) async {
+    final row = await _db
+        .customSelect(sql, variables: [Variable<String>(memberId)])
+        .getSingle();
+    return row.read<int>('n');
+  }
 }

@@ -63,6 +63,15 @@ class LoanListCubit extends Cubit<LoanListState> {
     }
   }
 
+  /// Loads the list already filtered to [status], for a link that arrives
+  /// from elsewhere (the dashboard's overdue count).
+  Future<void> loadLoansWithStatus(LoanStatus status) {
+    emit(
+      state.copyWith(query: state.query.copyWith(status: status, offset: 0)),
+    );
+    return loadOpenLoans();
+  }
+
   void searchChanged(String value) {
     emit(
       state.copyWith(

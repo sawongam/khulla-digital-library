@@ -5,6 +5,7 @@ import 'package:khulla/features/circulation/loan/domain/models/loan.dart';
 import 'package:khulla/features/circulation/shared/presentation/circulation_labels.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/section_card.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// The copies coming back, with what each one costs.
@@ -16,6 +17,7 @@ class ReturnBasket extends StatelessWidget {
   const ReturnBasket({
     required this.loans,
     required this.scanController,
+    required this.scanFocus,
     required this.onScanSubmitted,
     required this.onRemove,
     super.key,
@@ -23,11 +25,17 @@ class ReturnBasket extends StatelessWidget {
 
   final List<Loan> loans;
   final TextEditingController scanController;
+
+  /// The scan field's focus node, owned by the page so focus can return to
+  /// the field after every scan.
+  final FocusNode scanFocus;
+
   final ValueChanged<String> onScanSubmitted;
   final void Function(Loan loan) onRemove;
 
   @override
   Widget build(BuildContext context) {
+    final chargesFines = context.chargesFines;
     final l10n = context.l10n;
     final spacing = context.appSpacing;
     final scheme = context.colorScheme;
@@ -40,6 +48,7 @@ class ReturnBasket extends StatelessWidget {
         children: [
           AppTextField(
             controller: scanController,
+            focusNode: scanFocus,
             hintText: l10n.returnsScanHint,
             prefixIcon: AppIcon(
               AppIcons.scan,
@@ -93,23 +102,24 @@ class ReturnBasket extends StatelessWidget {
                     ),
                   ),
                 ),
-                AppTableColumn<Loan>(
-                  id: 'fine',
-                  label: l10n.returnsColumnFine,
-                  cellBuilder: (context, loan) => Text(
-                    loan.accruedFine.isZero
-                        ? l10n.commonNotSet
-                        : loan.accruedFine.display(),
-                    style: context.textTheme.bodyMedium?.copyWith(
-                      color: loan.accruedFine.isZero
-                          ? scheme.onSurfaceVariant
-                          : scheme.error,
-                      fontWeight: loan.accruedFine.isZero
-                          ? FontWeight.w400
-                          : FontWeight.w500,
+                if (chargesFines)
+                  AppTableColumn<Loan>(
+                    id: 'fine',
+                    label: l10n.returnsColumnFine,
+                    cellBuilder: (context, loan) => Text(
+                      loan.accruedFine.isZero
+                          ? l10n.commonNotSet
+                          : loan.accruedFine.display(),
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: loan.accruedFine.isZero
+                            ? scheme.onSurfaceVariant
+                            : scheme.error,
+                        fontWeight: loan.accruedFine.isZero
+                            ? FontWeight.w400
+                            : FontWeight.w500,
+                      ),
                     ),
                   ),
-                ),
                 AppTableColumn<Loan>(
                   id: 'status',
                   label: l10n.commonStatus,

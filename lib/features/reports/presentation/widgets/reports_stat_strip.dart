@@ -3,6 +3,7 @@
 
 import 'package:khulla/features/reports/domain/models/reports_summary.dart';
 import 'package:khulla/l10n/l10n.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// The four headline figures: borrowed, returned, new members, fines raised.
@@ -65,22 +66,23 @@ class ReportsStatStrip extends StatelessWidget {
           ),
           caption: l10n.commonLastMonth,
         ),
-        AppStatTile(
-          label: l10n.reportsStatFines,
-          value: summary.finesRaised.display(),
-          icon: AppIcons.payment,
-          tone: AppStatusTone.warning,
-          trend: _trendText(
-            summary.finesRaised.minorUnits,
-            summary.finesRaisedPrevious.minorUnits,
+        if (context.chargesFines)
+          AppStatTile(
+            label: l10n.reportsStatFines,
+            value: summary.finesRaised.display(),
+            icon: AppIcons.payment,
+            tone: AppStatusTone.warning,
+            trend: _trendText(
+              summary.finesRaised.minorUnits,
+              summary.finesRaisedPrevious.minorUnits,
+            ),
+            trendValue: _trendValue(
+              summary.finesRaised.minorUnits,
+              summary.finesRaisedPrevious.minorUnits,
+            ),
+            trendInverted: true,
+            caption: l10n.commonLastMonth,
           ),
-          trendValue: _trendValue(
-            summary.finesRaised.minorUnits,
-            summary.finesRaisedPrevious.minorUnits,
-          ),
-          trendInverted: true,
-          caption: l10n.commonLastMonth,
-        ),
       ],
     );
   }

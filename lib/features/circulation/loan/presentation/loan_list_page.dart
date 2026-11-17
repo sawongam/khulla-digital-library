@@ -75,6 +75,12 @@ class LoanListPage extends StatelessWidget {
     }
   }
 
+  /// Opens the member's page; a deleted member has none, so nothing happens.
+  void _openMember(BuildContext context, String? memberId) {
+    if (memberId == null) return;
+    context.go(Routes.member(memberId));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -123,10 +129,10 @@ class LoanListPage extends StatelessWidget {
           ),
           sort: sort,
           onSort: (next) => cubit.sortChanged(next.columnId, next.ascending),
-          onRowTap: (loan) => context.go(Routes.member(loan.memberId)),
+          onRowTap: (loan) => _openMember(context, loan.memberId),
           compactBuilder: (context, loan) => LoanCard(
             loan: loan,
-            onTap: () => context.go(Routes.member(loan.memberId)),
+            onTap: () => _openMember(context, loan.memberId),
             onReturn: context.canManage(StaffPermission.circulation)
                 ? () => unawaited(_returnLoan(context, loan))
                 : null,

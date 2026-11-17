@@ -4,6 +4,7 @@
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/database/app_database.dart';
+import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/error/guard.dart';
 import 'package:khulla/features/catalog/copy/data/copy_local_data_source.dart';
 import 'package:khulla/features/catalog/copy/data/mappers/copy_row_mappers.dart';
@@ -28,7 +29,9 @@ class LocalCopyDataSource implements CopyLocalDataSource {
   Future<CopyListResult> findCopies(CopyQuery query) => guardDatabase(
     () async {
       final needle = query.search.trim().toLowerCase();
-      final where = StringBuffer('c.archived_at IS NULL');
+      final where = StringBuffer(
+        query.archived ? 'c.archived_at IS NOT NULL' : 'c.archived_at IS NULL',
+      );
       final variables = <Variable<Object>>[];
 
       if (needle.isNotEmpty) {
@@ -152,6 +155,46 @@ WHERE c.archived_at IS NULL AND c.barcode = ?
   );
 
   @override
+  Future<Copy?> findCopyHoldingBarcode(String barcode) => guardDatabase(
+    () => _holderOf(barcode),
+    source: '$_source.findCopyHoldingBarcode',
+  );
+
+  Future<Copy?> _holderOf(String barcode, {String? exceptId}) async {
+    final rows = await _db
+        .customSelect(
+          '''
+SELECT c.*,
+       t.title AS title_name,
+       NULL AS borrower,
+       NULL AS due_at
+FROM copies c
+JOIN titles t ON t.id = c.title_id
+WHERE c.barcode = ?
+''',
+          variables: [Variable<String>(barcode.trim())],
+        )
+        .get();
+    for (final row in rows) {
+      final copy = _mapRow(row);
+      if (copy.id != exceptId) return copy;
+    }
+    return null;
+  }
+
+  /// Refuses [barcode] when another copy already holds it, saying which.
+  Future<void> _ensureBarcodeFree(String barcode, {String? exceptId}) async {
+    final holder = await _holderOf(barcode, exceptId: exceptId);
+    if (holder == null) return;
+    throw DuplicateRecordException.because(
+      holder.archivedAt == null
+          ? AppErrorReason.barcodeInUse
+          : AppErrorReason.barcodeInUseByArchivedCopy,
+      args: [barcode.trim(), holder.titleName],
+    );
+  }
+
+  @override
   Future<Copy?> findCopyById(String id) => guardDatabase(
     () async {
       final rows = await _db
@@ -190,16 +233,24 @@ WHERE c.id = ?
                   (s) => s.id.equals(LibrarySettings.singletonId),
                 ))
                 .getSingle();
-        barcode = '${settings.barcodePrefix}${settings.barcodeNextValue}';
+        // Skip over numbers a hand-typed or archived copy already holds, or
+        // the counter would stall on the first clash and fail every add after.
+        var next = settings.barcodeNextValue;
+        while (await _holderOf('${settings.barcodePrefix}$next') != null) {
+          next++;
+        }
+        barcode = '${settings.barcodePrefix}$next';
         await (_db.update(_db.librarySettings)..where(
               (s) => s.id.equals(LibrarySettings.singletonId),
             ))
             .write(
               LibrarySettingsCompanion(
-                barcodeNextValue: Value(settings.barcodeNextValue + 1),
+                barcodeNextValue: Value(next + 1),
                 updatedAt: Value(now),
               ),
             );
+      } else {
+        await _ensureBarcodeFree(barcode);
       }
 
       final toInsert = copy.copyWith(barcode: barcode);
@@ -223,6 +274,65 @@ WHERE c.id = ?
       return (await findCopyById(copy.id))!;
     },
     source: '$_source.updateCopy',
+  );
+
+  @override
+  Future<Copy> updateCopyDetails(
+    String id, {
+    required String barcode,
+    required String shelf,
+    String? notes,
+  }) => guardDatabase(
+    () => _db.transaction(() async {
+      final trimmed = barcode.trim();
+      if (trimmed.isEmpty) {
+        throw const InvalidInputException.because(
+          AppErrorReason.barcodeRequired,
+        );
+      }
+      if (await findCopyById(id) == null) {
+        throw const NotFoundException.because(AppErrorReason.copyNotFound);
+      }
+      await _ensureBarcodeFree(trimmed, exceptId: id);
+      final trimmedNotes = notes?.trim();
+      await (_db.update(_db.copies)..where((c) => c.id.equals(id))).write(
+        CopiesCompanion(
+          barcode: Value(trimmed),
+          shelf: Value(shelf.trim().isEmpty ? null : shelf.trim()),
+          notes: Value(
+            trimmedNotes == null || trimmedNotes.isEmpty ? null : trimmedNotes,
+          ),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
+      return (await findCopyById(id))!;
+    }),
+    source: '$_source.updateCopyDetails',
+  );
+
+  @override
+  Future<void> restoreCopy(String id) => guardDatabase(
+    () => _db.transaction(() async {
+      final copy = await findCopyById(id);
+      if (copy == null) {
+        throw const NotFoundException.because(AppErrorReason.copyNotFound);
+      }
+      final title = await (_db.select(
+        _db.titles,
+      )..where((t) => t.id.equals(copy.titleId))).getSingleOrNull();
+      if (title?.archivedAt != null) {
+        throw const ConflictException.because(
+          AppErrorReason.restoreTitleFirst,
+        );
+      }
+      await (_db.update(_db.copies)..where((c) => c.id.equals(id))).write(
+        CopiesCompanion(
+          archivedAt: const Value(null),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
+    }),
+    source: '$_source.restoreCopy',
   );
 
   @override

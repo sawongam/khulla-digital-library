@@ -2,7 +2,7 @@ name: khulla
 description: "Khulla Digital Library - an open-source library management system."
 publish_to: "none"
 
-version: 1.1.2+6
+version: 1.2.0+7
 
 environment:
   sdk: ">=3.13.0 <4.0.0"
@@ -92,6 +92,7 @@ dependencies:
   # views, so it runs the same on Windows and web as it does on mobile.
   crop_your_image: ^2.0.0
   package_info_plus: ^10.2.1
+  http: ^1.6.0
 
 dev_dependencies:
   # Code generation

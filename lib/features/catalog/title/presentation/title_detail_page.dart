@@ -10,6 +10,7 @@ import 'package:khulla/core/feedback/app_toast.dart';
 import 'package:khulla/core/lifecycle/dispose_bag.dart';
 import 'package:khulla/core/router/routes.dart';
 import 'package:khulla/features/catalog/copy/domain/models/copy.dart';
+import 'package:khulla/features/catalog/copy/presentation/copy_form_dialog.dart';
 import 'package:khulla/features/catalog/title/presentation/cubit/title/title_detail_cubit.dart';
 import 'package:khulla/features/catalog/title/presentation/cubit/title/title_detail_state.dart';
 import 'package:khulla/features/catalog/title/presentation/title_form_dialog.dart';
@@ -63,6 +64,26 @@ class TitleDetailPage extends StatelessWidget {
     }
   }
 
+  Future<void> _confirmArchive(BuildContext context, String name) async {
+    final l10n = context.l10n;
+    final confirmed = await AppDialog.confirmDestructive(
+      context: context,
+      title: l10n.titleDetailArchiveTitle,
+      message: l10n.titleDetailArchiveBody(name),
+      confirmLabel: l10n.titleDetailArchive,
+      cancelLabel: l10n.commonCancel,
+    );
+    if (!context.mounted || !confirmed) return;
+    try {
+      await context.read<TitleDetailCubit>().archiveTitle(titleId);
+      if (!context.mounted) return;
+      AppToast.success(context, message: l10n.titleDetailArchiveSuccess);
+    } on AppException catch (error) {
+      if (!context.mounted) return;
+      AppToast.error(context, message: error.localizedMessage(l10n));
+    }
+  }
+
   Future<int?> _promptAddCopyCount(BuildContext context) {
     return AppFormModal.show<int>(
       context: context,
@@ -98,6 +119,30 @@ class TitleDetailPage extends StatelessWidget {
     final saved = await TitleFormDialog.show(context, titleId: titleId);
     if (saved == true && context.mounted) {
       unawaited(context.read<TitleDetailCubit>().loadTitle(titleId));
+    }
+  }
+
+  Future<void> _editCopy(BuildContext context, Copy copy) async {
+    final l10n = context.l10n;
+    final saved = await CopyFormDialog.show(
+      context,
+      titleId: titleId,
+      copyId: copy.id,
+    );
+    if (saved != true || !context.mounted) return;
+    AppToast.success(context, message: l10n.copiesEditSuccess);
+    unawaited(context.read<TitleDetailCubit>().loadTitle(titleId));
+  }
+
+  Future<void> _restoreTitle(BuildContext context) async {
+    final l10n = context.l10n;
+    try {
+      await context.read<TitleDetailCubit>().restoreTitle(titleId);
+      if (!context.mounted) return;
+      AppToast.success(context, message: l10n.titlesRestoreSuccess);
+    } on AppException catch (error) {
+      if (!context.mounted) return;
+      AppToast.error(context, message: error.localizedMessage(l10n));
     }
   }
 
@@ -195,6 +240,9 @@ class TitleDetailPage extends StatelessWidget {
           onAddCopy: !canManage
               ? null
               : () => unawaited(_addCopy(context, state)),
+          onEdit: !canManage
+              ? null
+              : (copy) => unawaited(_editCopy(context, copy)),
           onMarkLost: !canManage
               ? null
               : (copy) => unawaited(_markCopyLost(context, copy)),
@@ -238,6 +286,14 @@ class TitleDetailPage extends StatelessWidget {
                       onEdit: !canManage
                           ? null
                           : () => unawaited(_edit(context)),
+                      onArchive: !canManage || title.archivedAt != null
+                          ? null
+                          : () => unawaited(
+                              _confirmArchive(context, title.title),
+                            ),
+                      onRestore: !canManage || title.archivedAt == null
+                          ? null
+                          : () => unawaited(_restoreTitle(context)),
                       onDelete: !canManage
                           ? null
                           : () => unawaited(_confirmDelete(context)),

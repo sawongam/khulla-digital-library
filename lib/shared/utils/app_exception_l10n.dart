@@ -16,7 +16,7 @@ import 'package:khulla/shared/utils/app_error_reason_l10n.dart';
 /// reason falls back to the copy for its type.
 extension AppExceptionL10n on AppException {
   String localizedMessage(AppLocalizations l10n) =>
-      reason?.localizedMessage(l10n) ??
+      reason?.localizedMessage(l10n, args: args) ??
       switch (this) {
         DuplicateRecordException() => l10n.errorDuplicateRecord,
         NotFoundException() => l10n.errorNotFound,
@@ -25,6 +25,7 @@ extension AppExceptionL10n on AppException {
         DatabaseUnavailableException() => l10n.errorDatabaseUnavailable,
         DatabaseFailureException() => l10n.errorDatabaseFailure,
         StorageException() => l10n.errorStorage,
+        NetworkException() => l10n.errorNetwork,
         UnknownException() => l10n.errorUnknown,
         SignedOutException() => l10n.errorSignedOut,
       };

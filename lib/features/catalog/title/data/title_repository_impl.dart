@@ -4,6 +4,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/money/money.dart';
+import 'package:khulla/features/catalog/copy/domain/models/copy.dart';
+import 'package:khulla/features/catalog/shared/domain/copy_status.dart';
 import 'package:khulla/features/catalog/title/data/title_local_data_source.dart';
 import 'package:khulla/features/catalog/title/domain/models/title.dart';
 import 'package:khulla/features/catalog/title/domain/models/title_query.dart';
@@ -44,6 +46,7 @@ class TitleRepositoryImpl implements TitleRepository {
     int? pages,
     String? description,
     String? shelf,
+    int initialCopies = 0,
   }) async {
     final now = DateTime.now();
     final recordId = id ?? _uuid.v4();
@@ -73,7 +76,19 @@ class TitleRepositoryImpl implements TitleRepository {
     );
 
     if (existing == null) {
-      return await _dataSource.insertTitle(draft);
+      if (initialCopies <= 0) return await _dataSource.insertTitle(draft);
+      return await _dataSource.insertTitleWithCopies(draft, [
+        for (var i = 0; i < initialCopies; i++)
+          Copy(
+            id: _uuid.v4(),
+            barcode: '',
+            titleId: recordId,
+            titleName: draft.title,
+            shelf: draft.shelf ?? '',
+            status: CopyStatus.available,
+            acquiredAt: now,
+          ),
+      ]);
     }
     return await _dataSource.updateTitle(draft);
   }
@@ -81,6 +96,9 @@ class TitleRepositoryImpl implements TitleRepository {
   @override
   Future<void> archiveTitle(String id) =>
       _dataSource.archiveTitle(id, DateTime.now());
+
+  @override
+  Future<void> restoreTitle(String id) => _dataSource.restoreTitle(id);
 
   @override
   Future<void> removeTitle(String id) async {

@@ -177,13 +177,27 @@ The full guide lives in [docs/architecture](./docs/architecture/) - folder conve
 
 ## Contributing
 
-Contributions are welcome. See [docs/contributing](./docs/contributing/) for setup, conventions and the pull-request flow.
+Contributions are welcome. See [docs/contributing](./docs/contributing/) for setup, conventions and the pull-request flow. Everyone taking part is expected to follow the [Code of Conduct](./CODE_OF_CONDUCT.md).
 
 Commits follow a conventional format - `type(scope): message` with types `feat`, `fix`, `chore`, `refactor`, `sync`, `ci` - enforced by a git hook. Branch off `dev`; direct commits to `dev` and `prod` are blocked.
 
 Found a bug? Open an issue with the platform, the version from Settings → About, and steps to reproduce. For anything security-sensitive, use private vulnerability reporting instead - see [SECURITY.md](./SECURITY.md).
 
 Merging into `prod` publishes a release at the version in `pubspec.yaml` and redeploys the web demo - see [releasing](./docs/contributing/releasing.md).
+
+## Support the project
+
+We are working toward an online catalogue and a public app, so a library's members can see what is available and what they have borrowed. That needs a server to hold the data, which a small team cannot pay for alone.
+
+If you would like to help, with funding or with code, write to [funding@khulladigitallibrary.com](mailto:funding@khulladigitallibrary.com).
+
+## Contributors
+
+Thanks to everyone who has helped build Khulla. This list is generated from GitHub, so it stays current on its own.
+
+<a href="https://github.com/sawongam/khulla-digital-library/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sawongam/khulla-digital-library" alt="Khulla contributors" />
+</a>
 
 ## License
 

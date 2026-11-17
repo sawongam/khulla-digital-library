@@ -203,7 +203,7 @@
   },
   "titleDetailDelete": "शीर्षक मेट्नुहोस्",
   "titleDetailDeleteTitle": "यो शीर्षक मेट्ने?",
-  "titleDetailDeleteBody": "शीर्षक र त्यसअन्तर्गतका सबै प्रतिलिपिहरू क्याटलगबाट हटाइनेछन्। सापटी इतिहास भने सुरक्षित रहनेछ।",
+  "titleDetailDeleteBody": "शीर्षक क्याटलगबाट सधैँका लागि हटाइनेछ। प्रति नभएको शीर्षक मात्र मेटाउन सकिन्छ; प्रति भएको शीर्षक हटाउन बरु संग्रह गर्नुहोस्।",
   "@titleDetailDeleteBody": {
     "description": "क्याटलग - शीर्षक मेट्नुअघि देखाइने पुष्टि"
   },
@@ -708,7 +708,6 @@
   "errorReasonMembershipExpired": "त्यो सदस्यको सदस्यता सकिएको छ। पहिले नवीकरण गर्नुहोस्।",
   "errorReasonMembershipAlreadySuspended": "त्यो सदस्यता पहिले नै निलम्बित छ।",
   "errorReasonMembershipNotSuspended": "त्यो सदस्यता निलम्बित छैन।",
-  "errorReasonMemberHasHistory": "त्यो सदस्यको ऋण इतिहास छ, त्यसैले मेटाउन सकिँदैन। बरु अभिलेखमा राख्नुहोस्।",
   "errorReasonCopyArchived": "त्यो प्रतिलाई अभिलेखमा राखिएको छ।",
   "errorReasonTitleArchived": "त्यो शीर्षकलाई अभिलेखमा राखिएको छ।",
   "errorReasonTitleNotLendable": "त्यो शीर्षक सन्दर्भका लागि मात्र हो, ऋणमा दिन सकिँदैन।",
@@ -731,8 +730,28 @@
   "errorReasonFineAlreadySettled": "त्यो जरिवाना पहिले नै फछ्र्यौट भइसकेको छ।",
   "errorReasonFineAmountNotPositive": "जरिवाना शून्यभन्दा बढी हुनुपर्छ।",
   "errorReasonCopyOnLoan": "त्यो प्रति ऋणमा छ। पहिले काउन्टरमा फिर्ता गर्नुहोस्।",
+  "errorReasonCopyHasOpenLoan": "यो प्रति उपलब्ध देखिए पनि अभिलेखमा अझै ऋणमा छ। सेटिङ, ब्याकअप, अभिलेख जाँच र मर्मत प्रयोग गरेर सच्याउनुहोस्।",
+  "errorReasonMemberHasOpenLoans": "यो सदस्य मेटाउनुअघि उनका ऋणहरू फिर्ता गर्नुहोस्।",
+  "errorReasonMemberHasUnpaidFines": "यो सदस्य मेटाउनुअघि उनका जरिवाना तिर्नुहोस् वा मिनाहा गर्नुहोस्।",
+  "errorReasonBarcodeInUse": "बारकोड {barcode} पहिले नै “{title}” को एउटा प्रतिमा छ।",
+  "errorReasonBarcodeInUseByArchivedCopy": "बारकोड {barcode} “{title}” को एउटा संग्रहित प्रतिमा छ। बरु संग्रहित प्रतिहरूको सूचीबाट त्यसलाई पुनर्स्थापित गर्नुहोस्।",
+  "errorReasonBarcodeRequired": "प्रतिलाई बारकोड चाहिन्छ।",
+  "errorReasonRestoreTitleFirst": "पहिले शीर्षक पुनर्स्थापित गर्नुहोस्।",
   "errorReasonCopyHeldForReservation": "त्यो प्रति आरक्षणका लागि छुट्याइएको छ। पहिले आरक्षण रद्द वा पूरा गर्नुहोस्।",
   "errorReasonTitleHasCopies": "त्यो शीर्षकका प्रतिहरू अझै छन्, त्यसैले मेटाउन सकिँदैन।",
+  "errorReasonTitleHasCopiesOnLoan": "यो शीर्षक अभिलेखमा राख्नुअघि यसका प्रतिहरू फिर्ता गर्नुहोस्।",
+  "errorReasonIsbnInvalid": "यो ISBN जस्तो देखिँदैन। यसमा १० वा १३ अङ्क हुनुपर्छ।",
+  "errorReasonIsbnNotFound": "यो ISBN को कुनै पुस्तक फेला परेन। विवरण आफैँ भर्नुहोस्।",
+  "errorReasonIsbnLookupOffline": "पुस्तक खोज सेवासम्म पुग्न सकिएन। इन्टरनेट जडान जाँच्नुहोस्, वा विवरण आफैँ भर्नुहोस्।",
+  "errorNetwork": "सेवासम्म पुग्न सकिएन। इन्टरनेट जडान जाँचेर फेरि प्रयास गर्नुहोस्।",
+  "isbnLookUp": "खोज्नुहोस्",
+  "isbnLookUpTooltip": "Open Library बाट खाली फिल्डहरू भर्नुहोस्",
+  "isbnLookUpFilled": "{count, plural, =1{Open Library बाट १ फिल्ड भरियो।} other{Open Library बाट {count} फिल्ड भरिए।}}",
+  "isbnLookUpNothingNew": "पुस्तक फेला पर्‍यो, तर भर्न सकिने सबै फिल्डमा पहिले नै मान छ।",
+  "titleDetailArchive": "अभिलेखमा राख्नुहोस्",
+  "titleDetailArchiveTitle": "यो शीर्षक अभिलेखमा राख्ने?",
+  "titleDetailArchiveBody": "\u201c{title}\u201d अभिलेखमा राख्ने? यो क्याटलग र खोजीबाट हराउँछ। अभिलेख फिल्टरबाट फर्काउन सकिन्छ।",
+  "titleDetailArchiveSuccess": "शीर्षक अभिलेखमा राखियो।",
   "errorReasonCannotChangeOwnRole": "तपाईं आफ्नो भूमिका परिवर्तन गर्न सक्नुहुन्न।",
   "errorReasonRecoveryCodeUsed": "त्यो रिकभरी कोड पहिले नै प्रयोग भइसकेको छ।",
   "errorReasonPasswordTooLong": "त्यो पासवर्ड धेरै लामो छ।",
@@ -747,6 +766,132 @@
   "errorReasonRestoreNotApplied": "ब्याकअप ठाउँमा राख्न सकिएन, र तपाईंको सूचीमा कुनै परिवर्तन भएन। अगाडि बढ्नुअघि एप बन्द गरेर फेरि खोल्नुहोस्।",
   "@errorReasonRestoreNotApplied": {
     "description": "Errors - a restore that was validated but could not replace the catalogue file"
+  },
+  "errorReasonUpdateCheckFailed": "अपडेट सर्भरमा पुग्न सकिएन। इन्टरनेट जडान जाँच गरेर फेरि प्रयास गर्नुहोस्।",
+  "@errorReasonUpdateCheckFailed": {
+    "description": "Errors - the update check could not fetch the latest release"
+  },
+  "errorReasonUpdateDownloadFailed": "डाउनलोड पूरा भएन। इन्टरनेट जडान जाँच गरेर फेरि प्रयास गर्नुहोस्।",
+  "@errorReasonUpdateDownloadFailed": {
+    "description": "Errors - the update installer download broke off"
+  },
+  "errorReasonUpdateDownloadDamaged": "डाउनलोड बिग्रिएर आयो, त्यसैले यो इन्स्टल गरिएन। फेरि प्रयास गर्नुहोस्।",
+  "@errorReasonUpdateDownloadDamaged": {
+    "description": "Errors - the downloaded installer did not match its checksum"
+  },
+  "errorReasonUpdateInstallFailed": "इन्स्टलर सुरु हुन सकेन, र केही परिवर्तन भएन। फेरि प्रयास गर्नुहोस्, वा रिलिज पेजबाट नयाँ संस्करण डाउनलोड गर्नुहोस्।",
+  "@errorReasonUpdateInstallFailed": {
+    "description": "Errors - the update installer would not launch"
+  },
+  "shellCheckForUpdates": "अपडेट जाँच गर्नुहोस्",
+  "@shellCheckForUpdates": {
+    "description": "Account menu - opens the update dialog"
+  },
+  "shellUpdateAvailable": "अपडेट उपलब्ध छ",
+  "@shellUpdateAvailable": {
+    "description": "Account menu - the update entry when a newer version was found"
+  },
+  "updateDialogTitle": "अपडेटहरू",
+  "@updateDialogTitle": {
+    "description": "Update dialog - heading"
+  },
+  "updateChecking": "नयाँ संस्करण खोज्दै…",
+  "@updateChecking": {
+    "description": "Update dialog - while the check runs"
+  },
+  "updateUpToDate": "तपाईं नवीनतम संस्करण {version} मा हुनुहुन्छ।",
+  "@updateUpToDate": {
+    "description": "Update dialog - nothing newer was found",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.2.0"
+      }
+    }
+  },
+  "updateAvailable": "संस्करण {latest} उपलब्ध छ। तपाईंसँग {running} छ।",
+  "@updateAvailable": {
+    "description": "Update dialog - a newer version was found",
+    "placeholders": {
+      "latest": {
+        "type": "String",
+        "example": "1.3.0"
+      },
+      "running": {
+        "type": "String",
+        "example": "1.2.0"
+      }
+    }
+  },
+  "updateWhatsNew": "के नयाँ छ हेर्नुहोस्",
+  "@updateWhatsNew": {
+    "description": "Update dialog - link to the release notes"
+  },
+  "updateDownloadAction": "अपडेट डाउनलोड गर्नुहोस्",
+  "@updateDownloadAction": {
+    "description": "Update dialog - starts downloading the installer"
+  },
+  "updateDownloading": "अपडेट डाउनलोड हुँदैछ",
+  "@updateDownloading": {
+    "description": "Update dialog - progress bar caption"
+  },
+  "updateDownloadProgress": "{percent}%",
+  "@updateDownloadProgress": {
+    "description": "Update dialog - progress bar figure",
+    "placeholders": {
+      "percent": {
+        "type": "String",
+        "example": "42"
+      }
+    }
+  },
+  "updateReadyBody": "डाउनलोड र जाँच भयो। खुल्लाले तपाईंको सूचीको ब्याकअप लिनेछ, बन्द हुनेछ, अपडेट इन्स्टल गर्नेछ र फेरि खुल्नेछ। करिब एक मिनेट लाग्छ।",
+  "@updateReadyBody": {
+    "description": "Update dialog - the installer is ready to run"
+  },
+  "updateInstallAction": "पुनः सुरु गरेर अपडेट गर्नुहोस्",
+  "@updateInstallAction": {
+    "description": "Update dialog - hands over to the installer"
+  },
+  "updateInstalling": "सूचीको ब्याकअप लिँदै र इन्स्टलर सुरु गर्दै…",
+  "@updateInstalling": {
+    "description": "Update dialog - while handing over to the installer"
+  },
+  "updateWebBody": "प्रयोग सुरु गर्न पृष्ठ रिलोड गर्नुहोस्। तपाईंको सूची जस्ताको तस्तै रहन्छ।",
+  "@updateWebBody": {
+    "description": "Update dialog - web build, a newer version is on the server"
+  },
+  "updateWebAction": "अहिले रिलोड गर्नुहोस्",
+  "@updateWebAction": {
+    "description": "Update dialog - reloads the web app"
+  },
+  "updateManualBody": "नयाँ संस्करण डाउनलोड गरेर यो प्रति बदल्नुहोस्। तपाईंको सूची छुट्टै राखिएको छ, त्यसैले त्यो सँगै आउँछ।",
+  "@updateManualBody": {
+    "description": "Update dialog - portable Windows and Linux, which cannot update in place"
+  },
+  "updateApkBody": "रिलिज पेजबाट नयाँ APK डाउनलोड गरेर यसैमाथि इन्स्टल गर्नुहोस्। तपाईंको सूची यही फोनमा रहन्छ।",
+  "@updateApkBody": {
+    "description": "Update dialog - Android installed from the release-page APK"
+  },
+  "updateManualAction": "डाउनलोड पेज खोल्नुहोस्",
+  "@updateManualAction": {
+    "description": "Update dialog - opens the release page in the browser"
+  },
+  "updatePlayBody": "एन्ड्रोइडमा खुल्ला गुगल प्लेमार्फत अपडेट हुन्छ। नयाँ संस्करण तयार छ कि छैन हेर्न स्टोर पेज खोल्नुहोस्।",
+  "@updatePlayBody": {
+    "description": "Update dialog - Android, where Play owns updates"
+  },
+  "updatePlayAction": "गुगल प्ले खोल्नुहोस्",
+  "@updatePlayAction": {
+    "description": "Update dialog - opens the Play Store listing"
+  },
+  "updateAutoCheckLabel": "स्वतः जाँच गर्नुहोस्",
+  "@updateAutoCheckLabel": {
+    "description": "Update dialog - switch for the daily background check"
+  },
+  "updateAutoCheckDescription": "दिनमा एक पटक, खुल्लाले GitHub सँग नयाँ संस्करण छ कि छैन सोध्छ। तपाईंको पुस्तकालयबारे केही पठाइँदैन।",
+  "@updateAutoCheckDescription": {
+    "description": "Update dialog - what the automatic check does"
   },
   "navReports": "रिपोर्टहरू",
   "navUsers": "कर्मचारी",
@@ -778,20 +923,18 @@
   "helpGuideStep8Body": "सेटिङ्स → ब्याकअप र पुनर्स्थापनाले पूरा क्याटलग एउटै फाइलमा लेख्छ। एउटा प्रति यस मेसिनबाहिर राख्नुहोस् - यी नै पुस्तकालयका एकमात्र अभिलेख हुन्।",
   "helpAboutTagline": "विद्यालय, क्याम्पस र सामुदायिक पुस्तकालयका लागि खुल्ला स्रोत पुस्तकालय व्यवस्थापन प्रणाली - लोकल-फर्स्ट, इन्टरनेट बिना चल्ने र निःशुल्क।",
   "helpAboutVersionLabel": "संस्करण",
-  
-  "helpAboutAuthorTitle": "निर्माता",
-  "helpAboutAuthorLinkHint": "{name} को वेबसाइट खोल्नुहोस्",
-  "@helpAboutAuthorLinkHint": {"placeholders": {"name": {"type": "String"}}},
-  "helpAboutAuthorRole": "डिजाइन र विकास",
   "helpAboutHelpTitle": "सहयोग चाहिन्छ?",
   "helpAboutHelpBody": "खुल्ला इन्स्टल गर्न, पुरानो रजिस्टर वा स्प्रेडसिटबाट रेकर्ड सार्न, वा तपाईंको पुस्तकालयलाई चाहिने सुविधा थप्न हामी सहयोग गर्न सक्छौं।",
-  "helpAboutContactWhatsapp": "WhatsApp मा सन्देश पठाउनुहोस्",
+  "helpAboutSupportTitle": "परियोजनालाई सहयोग गर्नुहोस्",
+  "helpAboutSupportBody": "हामी अनलाइन क्याटलग र सार्वजनिक एप बनाउन काम गरिरहेका छौं, जसले पुस्तकालयका सदस्यहरूलाई के उपलब्ध छ र आफूले के लिएका छन् भनेर हेर्न दिन्छ। यसका लागि सर्भर चाहिन्छ, जुन सानो टोलीले एक्लै धान्न सक्दैन। आर्थिक सहयोग वा कोड योगदान गर्न चाहनुहुन्छ भने हामीलाई लेख्नुहोस्।",
+  "helpAboutSupportContact": "सहयोग वा योगदान",
   "helpAboutContactEmail": "इमेल पठाउनुहोस्",
   "helpAboutLinksTitle": "लिङ्कहरू",
   "helpAboutLinkWebsite": "वेबसाइट",
   "helpAboutLinkRepository": "स्रोत कोड",
   "helpAboutLinkIssues": "समस्या जनाउनुहोस्",
   "helpAboutOpenLink": "ब्राउजरमा खोल्नुहोस्",
+  "helpAboutContactWhatsapp": "WhatsApp मा सन्देश पठाउनुहोस्",
   "helpAboutOpenWhatsapp": "WhatsApp खोल्नुहोस्",
   "helpAboutOpenMail": "इमेल एपमा खोल्नुहोस्",
   "helpAboutLinkFailed": "ब्राउजर खोल्न सकिएन। लिङ्क प्रतिलिपि गरियो।",

@@ -8,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:khulla/core/di/injection.dart';
 import 'package:khulla/core/theme/cubit/theme_cubit.dart';
 import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
+import 'package:khulla/features/updates/presentation/cubit/update_cubit.dart';
 import 'package:khulla/shared/presentation/cubit/library_branding_cubit.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_cubit.dart';
 import 'package:khulla/shared/presentation/cubit/reference_data_cubit.dart';
 
 /// Root [BlocProvider]s for the widget tree.
@@ -27,6 +29,10 @@ class AppBlocProviders extends StatelessWidget {
     unawaited(referenceData.loadReferenceData());
     final branding = getIt<LibraryBrandingCubit>();
     unawaited(branding.loadLogo());
+    // At most once a day, release builds only, and never in the way of the
+    // first frame - see UpdateRepository.isAutomaticCheckDue.
+    final updates = getIt<UpdateCubit>();
+    unawaited(updates.checkForUpdateIfDue());
 
     return MultiBlocProvider(
       providers: [
@@ -34,6 +40,10 @@ class AppBlocProviders extends StatelessWidget {
         BlocProvider<AuthCubit>.value(value: getIt<AuthCubit>()),
         BlocProvider<ReferenceDataCubit>.value(value: referenceData),
         BlocProvider<LibraryBrandingCubit>.value(value: branding),
+        BlocProvider<LibraryFeaturesCubit>.value(
+          value: getIt<LibraryFeaturesCubit>(),
+        ),
+        BlocProvider<UpdateCubit>.value(value: updates),
       ],
       child: child,
     );

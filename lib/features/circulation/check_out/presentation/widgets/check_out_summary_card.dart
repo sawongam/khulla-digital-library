@@ -4,6 +4,7 @@
 import 'package:khulla/core/money/money.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/section_card.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// What this checkout amounts to, and the button that commits it.
@@ -75,18 +76,20 @@ class CheckOutSummaryCard extends StatelessWidget {
             label: l10n.checkOutSummaryDueBack,
             child: Text(dueDate),
           ),
-          SizedBox(height: spacing.sm),
-          AppDetailRow(
-            label: l10n.checkOutSummaryOutstanding,
-            child: Text(
-              outstandingFines.display(),
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: outstandingFines.isPositive
-                    ? scheme.error
-                    : scheme.onSurface,
+          if (context.chargesFines) ...[
+            SizedBox(height: spacing.sm),
+            AppDetailRow(
+              label: l10n.checkOutSummaryOutstanding,
+              child: Text(
+                outstandingFines.display(),
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: outstandingFines.isPositive
+                      ? scheme.error
+                      : scheme.onSurface,
+                ),
               ),
             ),
-          ),
+          ],
           SizedBox(height: spacing.lg),
           AppButton(
             onPressed: onConfirm,

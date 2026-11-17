@@ -2,7 +2,7 @@
 
 Khulla Digital Library is released under the AGPL-3.0 and also offered under a commercial licence (see [COMMERCIAL-LICENSE.md](./COMMERCIAL-LICENSE.md)). This agreement is what lets the project do both with code you contribute. You keep the copyright in your contribution; you grant a licence to use it.
 
-"**Maintainer**" means Sangam Adhikari, the copyright holder and maintainer of Khulla Digital Library, and any successor the Maintainer names. "**Contribution**" means any code, documentation or other material you submit to the project, in a pull request or otherwise.
+"**Maintainer**" means the copyright holder and maintainers of Khulla Digital Library, and any successor they name. "**Contribution**" means any code, documentation or other material you submit to the project, in a pull request or otherwise.
 
 By submitting a Contribution, you agree that:
 

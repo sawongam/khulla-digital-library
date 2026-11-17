@@ -6,6 +6,7 @@ import 'package:khulla/core/money/money.dart';
 import 'package:khulla/core/router/routes.dart';
 import 'package:khulla/features/catalog/shared/domain/copy_status.dart';
 import 'package:khulla/features/catalog/shared/presentation/catalog_labels.dart';
+import 'package:khulla/features/circulation/shared/domain/loan_status.dart';
 import 'package:khulla/features/dashboard/domain/models/dashboard_summary.dart'
     hide DashboardActivityKind;
 import 'package:khulla/features/dashboard/domain/models/dashboard_summary.dart'
@@ -37,7 +38,11 @@ final DateFormat _monthFormat = DateFormat('MMM');
 /// widgets draw - computed for real and localized here rather than in the
 /// repository, which returns facts, not display strings.
 extension DashboardSummaryX on DashboardSummary {
-  List<DashboardStat> stats(AppLocalizations l10n, DashboardPeriod period) {
+  List<DashboardStat> stats(
+    AppLocalizations l10n,
+    DashboardPeriod period, {
+    bool chargesFines = true,
+  }) {
     final caption = switch (period) {
       DashboardPeriod.today => l10n.commonYesterday,
       DashboardPeriod.week => l10n.commonLastWeek,
@@ -67,7 +72,7 @@ extension DashboardSummaryX on DashboardSummary {
       ),
       DashboardStat(
         label: l10n.dashboardStatOverdue,
-        route: Routes.circulation,
+        route: Routes.circulationLoansWithStatus(LoanStatus.overdue),
         value: '$overdueCount',
         icon: AppIcons.error,
         tone: AppStatusTone.danger,
@@ -76,23 +81,24 @@ extension DashboardSummaryX on DashboardSummary {
         trendValue: _trendValueOrZero(overdueCount, overduePreviousCount),
         trendInverted: true,
       ),
-      DashboardStat(
-        label: l10n.dashboardStatFines,
-        route: Routes.circulationFines,
-        value: finesOutstanding.display(),
-        icon: AppIcons.wallet,
-        tone: AppStatusTone.warning,
-        caption: caption,
-        trend: _trendText(
-          finesAssessed.minorUnits,
-          finesAssessedPrevious.minorUnits,
+      if (chargesFines)
+        DashboardStat(
+          label: l10n.dashboardStatFines,
+          route: Routes.circulationFines,
+          value: finesOutstanding.display(),
+          icon: AppIcons.wallet,
+          tone: AppStatusTone.warning,
+          caption: caption,
+          trend: _trendText(
+            finesAssessed.minorUnits,
+            finesAssessedPrevious.minorUnits,
+          ),
+          trendValue: _trendValueOrZero(
+            finesAssessed.minorUnits,
+            finesAssessedPrevious.minorUnits,
+          ),
+          trendInverted: true,
         ),
-        trendValue: _trendValueOrZero(
-          finesAssessed.minorUnits,
-          finesAssessedPrevious.minorUnits,
-        ),
-        trendInverted: true,
-      ),
     ];
   }
 
@@ -164,30 +170,34 @@ extension DashboardSummaryX on DashboardSummary {
       (label: share.label, count: '${share.count}', share: share.share),
   ];
 
-  List<DashboardActivityEntry> activity(AppLocalizations l10n) => [
+  List<DashboardActivityEntry> activity(
+    AppLocalizations l10n, {
+    bool chargesFines = true,
+  }) => [
     for (final event in recentActivity)
-      DashboardActivityEntry(
-        kind: switch (event.kind) {
-          domain.DashboardActivityKind.borrow => DashboardActivityKind.borrow,
-          domain.DashboardActivityKind.returned =>
-            DashboardActivityKind.returned,
-          domain.DashboardActivityKind.reserved =>
-            DashboardActivityKind.reserved,
-          domain.DashboardActivityKind.fine => DashboardActivityKind.fine,
-        },
-        item: event.item,
-        itemCode: event.itemCode,
-        member: event.member,
-        memberCode: event.memberCode,
-        when: _activityWhenFormat.format(event.when),
-        due: event.due == null ? null : _dueFormat.format(event.due!),
-        tone: switch (event.kind) {
-          domain.DashboardActivityKind.borrow => AppStatusTone.brand,
-          domain.DashboardActivityKind.returned => AppStatusTone.success,
-          domain.DashboardActivityKind.reserved => AppStatusTone.info,
-          domain.DashboardActivityKind.fine => AppStatusTone.danger,
-        },
-      ),
+      if (chargesFines || event.kind != domain.DashboardActivityKind.fine)
+        DashboardActivityEntry(
+          kind: switch (event.kind) {
+            domain.DashboardActivityKind.borrow => DashboardActivityKind.borrow,
+            domain.DashboardActivityKind.returned =>
+              DashboardActivityKind.returned,
+            domain.DashboardActivityKind.reserved =>
+              DashboardActivityKind.reserved,
+            domain.DashboardActivityKind.fine => DashboardActivityKind.fine,
+          },
+          item: event.item,
+          itemCode: event.itemCode,
+          member: event.member.isEmpty ? l10n.memberFormerMember : event.member,
+          memberCode: event.memberCode,
+          when: _activityWhenFormat.format(event.when),
+          due: event.due == null ? null : _dueFormat.format(event.due!),
+          tone: switch (event.kind) {
+            domain.DashboardActivityKind.borrow => AppStatusTone.brand,
+            domain.DashboardActivityKind.returned => AppStatusTone.success,
+            domain.DashboardActivityKind.reserved => AppStatusTone.info,
+            domain.DashboardActivityKind.fine => AppStatusTone.danger,
+          },
+        ),
   ];
 
   List<DashboardAttentionItem> attentionItems(AppLocalizations l10n) => [
@@ -197,7 +207,7 @@ extension DashboardSummaryX on DashboardSummary {
         count: '$overdueCount',
         icon: AppIcons.error,
         tone: AppStatusTone.danger,
-        route: Routes.circulation,
+        route: Routes.circulationLoansWithStatus(LoanStatus.overdue),
       ),
     if (holdsReadyCount > 0)
       DashboardAttentionItem(
@@ -237,7 +247,7 @@ extension DashboardSummaryX on DashboardSummary {
   List<DashboardRankedEntry> topMemberEntries(AppLocalizations l10n) => [
     for (final ranking in topMembers)
       DashboardRankedEntry(
-        name: ranking.name,
+        name: ranking.name.isEmpty ? l10n.memberFormerMember : ranking.name,
         detail: ranking.detail,
         figure: l10n.dashboardBorrowCount('${ranking.count}'),
       ),

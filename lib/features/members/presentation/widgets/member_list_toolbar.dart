@@ -3,6 +3,7 @@
 
 import 'package:khulla/features/members/domain/models/member_query.dart';
 import 'package:khulla/l10n/l10n.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// Search plus the desk's four questions of the register - who is holding
@@ -20,6 +21,7 @@ class MemberListToolbar extends StatelessWidget {
     required this.onOwesFinesChanged,
     required this.onExpiringChanged,
     required this.onSuspendedChanged,
+    required this.onArchivedChanged,
     required this.onClearFilters,
     super.key,
   });
@@ -32,6 +34,7 @@ class MemberListToolbar extends StatelessWidget {
   final ValueChanged<bool> onOwesFinesChanged;
   final ValueChanged<bool> onExpiringChanged;
   final ValueChanged<bool> onSuspendedChanged;
+  final ValueChanged<bool> onArchivedChanged;
   final VoidCallback onClearFilters;
 
   @override
@@ -52,13 +55,14 @@ class MemberListToolbar extends StatelessWidget {
           selected: query.withLoans,
           onSelected: onWithLoansChanged,
         ),
-        AppFilterChip(
-          label: l10n.membersFilterOwesFines,
-          icon: AppIcons.wallet,
-          tone: AppStatusTone.danger,
-          selected: query.owesFines,
-          onSelected: onOwesFinesChanged,
-        ),
+        if (context.chargesFines)
+          AppFilterChip(
+            label: l10n.membersFilterOwesFines,
+            icon: AppIcons.wallet,
+            tone: AppStatusTone.danger,
+            selected: query.owesFines,
+            onSelected: onOwesFinesChanged,
+          ),
         AppFilterChip(
           label: l10n.membersFilterExpiring,
           icon: AppIcons.clock,
@@ -72,6 +76,12 @@ class MemberListToolbar extends StatelessWidget {
           tone: AppStatusTone.danger,
           selected: query.suspended,
           onSelected: onSuspendedChanged,
+        ),
+        AppFilterChip(
+          label: l10n.membersFilterArchived,
+          icon: AppIcons.inventory,
+          selected: query.archived,
+          onSelected: onArchivedChanged,
         ),
       ],
       actions: [

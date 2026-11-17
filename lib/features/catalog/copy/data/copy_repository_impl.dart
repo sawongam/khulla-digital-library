@@ -58,8 +58,27 @@ class CopyRepositoryImpl implements CopyRepository {
   }
 
   @override
+  Future<Copy?> findCopy(String id) => _dataSource.findCopyById(id);
+
+  @override
+  Future<Copy> updateCopyDetails(
+    String id, {
+    required String barcode,
+    required String shelf,
+    String? notes,
+  }) => _dataSource.updateCopyDetails(
+    id,
+    barcode: barcode,
+    shelf: shelf,
+    notes: notes,
+  );
+
+  @override
   Future<void> archiveCopy(String id) =>
       _dataSource.archiveCopy(id, DateTime.now());
+
+  @override
+  Future<void> restoreCopy(String id) => _dataSource.restoreCopy(id);
 
   @override
   Future<Copy> updateCopyStatus(

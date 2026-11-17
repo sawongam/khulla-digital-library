@@ -20,6 +20,8 @@ class TitleDetailHeader extends StatelessWidget {
   const TitleDetailHeader({
     required this.title,
     this.onEdit,
+    this.onArchive,
+    this.onRestore,
     this.onDelete,
     super.key,
   });
@@ -30,6 +32,14 @@ class TitleDetailHeader extends StatelessWidget {
   /// not change it - the button is absent rather than disabled, because a
   /// control that can never be pressed is furniture.
   final VoidCallback? onEdit;
+
+  /// Takes the title out of the catalogue. Null once it is archived, or for a
+  /// role that may not change the catalogue.
+  final VoidCallback? onArchive;
+
+  /// Brings an archived title back. Null unless the title is archived and the
+  /// role may change the catalogue.
+  final VoidCallback? onRestore;
 
   /// Removes the title. Null for the same reason.
   final VoidCallback? onDelete;
@@ -89,6 +99,10 @@ class TitleDetailHeader extends StatelessWidget {
                 ),
                 style: metaStyle,
               ),
+              if (title.archivedAt != null) ...[
+                const _MetaDot(),
+                AppStatusBadge(label: l10n.catalogArchivedBadge),
+              ],
               if (!title.lendable) ...[
                 const _MetaDot(),
                 AppStatusBadge(
@@ -112,6 +126,21 @@ class TitleDetailHeader extends StatelessWidget {
             child: Text(
               compact ? l10n.commonDelete : l10n.titleDetailDelete,
             ),
+          ),
+        if (onArchive != null)
+          AppButton(
+            variant: AppButtonVariant.outline,
+            size: AppButtonSize.medium,
+            icon: AppIcons.archive,
+            onPressed: onArchive,
+            child: Text(l10n.titleDetailArchive),
+          ),
+        if (onRestore != null)
+          AppButton(
+            size: AppButtonSize.medium,
+            icon: AppIcons.restore,
+            onPressed: onRestore,
+            child: Text(l10n.titlesRestore),
           ),
         if (onEdit != null)
           AppButton(

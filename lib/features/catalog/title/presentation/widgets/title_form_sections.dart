@@ -31,6 +31,8 @@ class TitleFormBibliographicSection extends StatelessWidget {
     required this.onAuthorChanged,
     required this.onFormatChanged,
     required this.onAddFormat,
+    required this.isLookingUpIsbn,
+    required this.onLookUpIsbn,
     super.key,
   });
 
@@ -52,6 +54,12 @@ class TitleFormBibliographicSection extends StatelessWidget {
   final VoidCallback onAuthorChanged;
   final ValueChanged<TitleFormat?> onFormatChanged;
   final VoidCallback onAddFormat;
+
+  /// True while the ISBN lookup request is out.
+  final bool isLookingUpIsbn;
+
+  /// Asks the online catalogue about the ISBN field's value.
+  final VoidCallback onLookUpIsbn;
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +91,10 @@ class TitleFormBibliographicSection extends StatelessWidget {
         ),
         AppFormRow(
           children: [
-            AppTextField(
-              label: l10n.fieldIsbn,
+            _IsbnField(
               controller: isbn,
-              onChanged: (_) {},
+              isLookingUp: isLookingUpIsbn,
+              onLookUp: onLookUpIsbn,
             ),
             AppTextField(
               label: l10n.fieldPublisher,
@@ -142,6 +150,60 @@ class TitleFormBibliographicSection extends StatelessWidget {
           minLines: 2,
           textCapitalization: TextCapitalization.sentences,
           onChanged: (_) {},
+        ),
+      ],
+    );
+  }
+}
+
+/// The ISBN field with its "Look up" button beside it.
+///
+/// The button is disabled until the field has text, and shows a spinner while
+/// the request is out. It listens to the controller itself so typing does not
+/// rebuild the whole form.
+class _IsbnField extends StatelessWidget {
+  const _IsbnField({
+    required this.controller,
+    required this.isLookingUp,
+    required this.onLookUp,
+  });
+
+  final TextEditingController controller;
+  final bool isLookingUp;
+  final VoidCallback onLookUp;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final spacing = context.appSpacing;
+    final size = context.appMetrics.fieldHeight >= 44
+        ? AppButtonSize.medium
+        : AppButtonSize.small;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: AppTextField(
+            label: l10n.fieldIsbn,
+            controller: controller,
+            onChanged: (_) {},
+          ),
+        ),
+        SizedBox(width: spacing.sm),
+        ListenableBuilder(
+          listenable: controller,
+          builder: (context, _) => Tooltip(
+            message: l10n.isbnLookUpTooltip,
+            child: AppButton(
+              variant: AppButtonVariant.secondary,
+              size: size,
+              icon: AppIcons.search,
+              isLoading: isLookingUp,
+              onPressed: controller.text.trim().isEmpty ? null : onLookUp,
+              child: Text(l10n.isbnLookUp),
+            ),
+          ),
         ),
       ],
     );

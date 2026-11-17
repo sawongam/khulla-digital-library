@@ -6,6 +6,7 @@ import 'package:khulla/features/catalog/shared/domain/copy_condition.dart';
 import 'package:khulla/features/catalog/shared/presentation/catalog_labels.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/section_card.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// What this return adds up to, the condition it is recorded in, and the
@@ -44,6 +45,7 @@ class ReturnSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chargesFines = context.chargesFines;
     final l10n = context.l10n;
     final spacing = context.appSpacing;
     final scheme = context.colorScheme;
@@ -68,17 +70,19 @@ class ReturnSummaryCard extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: spacing.sm),
-          AppDetailRow(
-            label: l10n.returnsSummaryFines,
-            child: Text(
-              finesDue.display(),
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: finesDue.isZero ? scheme.onSurface : scheme.error,
-                fontWeight: FontWeight.w500,
+          if (chargesFines) ...[
+            SizedBox(height: spacing.sm),
+            AppDetailRow(
+              label: l10n.returnsSummaryFines,
+              child: Text(
+                finesDue.display(),
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: finesDue.isZero ? scheme.onSurface : scheme.error,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
+          ],
           SizedBox(height: spacing.md),
           AppDropdownField<CopyCondition>(
             label: l10n.returnsConditionSection,
@@ -94,13 +98,15 @@ class ReturnSummaryCard extends StatelessWidget {
               color: scheme.onSurfaceVariant,
             ),
           ),
-          SizedBox(height: spacing.md),
-          AppCheckboxField(
-            value: waiveFines,
-            label: l10n.returnsWaiveFines,
-            description: l10n.returnsWaiveFinesDescription,
-            onChanged: (value) => onWaiveChanged(value ?? false),
-          ),
+          if (chargesFines) ...[
+            SizedBox(height: spacing.md),
+            AppCheckboxField(
+              value: waiveFines,
+              label: l10n.returnsWaiveFines,
+              description: l10n.returnsWaiveFinesDescription,
+              onChanged: (value) => onWaiveChanged(value ?? false),
+            ),
+          ],
           SizedBox(height: spacing.lg),
           AppButton(
             onPressed: onConfirm,

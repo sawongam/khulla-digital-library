@@ -16,24 +16,29 @@ import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/utils/app_exception_l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
-/// Adds one physical copy to an existing title.
+/// Adds one physical copy to an existing title, or - given a [copyId] - edits
+/// that copy's barcode, shelf and notes with its title fixed.
 class CopyFormDialog extends StatelessWidget {
-  const CopyFormDialog({this.titleId, super.key});
+  const CopyFormDialog({this.titleId, this.copyId, super.key});
 
   final String? titleId;
+  final String? copyId;
 
-  static Future<bool?> show(BuildContext context, {String? titleId}) =>
-      AppFormModal.show<bool>(
-        context: context,
-        builder: (_) => BlocProvider(
-          create: (_) {
-            final cubit = getIt<CopyFormCubit>();
-            unawaited(cubit.loadCopyForm(titleId: titleId));
-            return cubit;
-          },
-          child: CopyFormDialog(titleId: titleId),
-        ),
-      );
+  static Future<bool?> show(
+    BuildContext context, {
+    String? titleId,
+    String? copyId,
+  }) => AppFormModal.show<bool>(
+    context: context,
+    builder: (_) => BlocProvider(
+      create: (_) {
+        final cubit = getIt<CopyFormCubit>();
+        unawaited(cubit.loadCopyForm(titleId: titleId, copyId: copyId));
+        return cubit;
+      },
+      child: CopyFormDialog(titleId: titleId, copyId: copyId),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +48,9 @@ class CopyFormDialog extends StatelessWidget {
       builder: (context, state) {
         if (state.isLoading) {
           return AppFormModal(
-            title: l10n.copyFormHeading,
+            title: copyId == null
+                ? l10n.copyFormHeading
+                : l10n.copyFormEditHeading,
             width: AppDialogWidth.xxxl,
             actions: const [],
             children: const [Center(child: AppSpinner())],
@@ -51,7 +58,7 @@ class CopyFormDialog extends StatelessWidget {
         }
 
         return _CopyFormBody(
-          key: ValueKey(titleId ?? 'pick'),
+          key: ValueKey(copyId ?? titleId ?? 'pick'),
           state: state,
         );
       },
@@ -70,10 +77,14 @@ class _CopyFormBody extends StatefulWidget {
 
 class _CopyFormBodyState extends State<_CopyFormBody> with DisposeBag {
   late final TextEditingController _shelf = textController(
-    widget.state.fixedTitle?.shelf,
+    widget.state.existing?.shelf ?? widget.state.fixedTitle?.shelf,
   );
-  late final TextEditingController _barcode = textController();
-  late final TextEditingController _notes = textController();
+  late final TextEditingController _barcode = textController(
+    widget.state.existing?.barcode,
+  );
+  late final TextEditingController _notes = textController(
+    widget.state.existing?.notes,
+  );
 
   Future<void> _save() async {
     final l10n = context.l10n;
@@ -99,8 +110,10 @@ class _CopyFormBodyState extends State<_CopyFormBody> with DisposeBag {
     final fixed = state.fixedTitle;
     final selected = state.selectedTitle;
 
+    final editing = state.isEditing;
+
     return AppFormModal(
-      title: l10n.copyFormHeading,
+      title: editing ? l10n.copyFormEditHeading : l10n.copyFormHeading,
       width: AppDialogWidth.xxxl,
       actions: [
         AppDialog.secondaryAction(
@@ -110,7 +123,7 @@ class _CopyFormBodyState extends State<_CopyFormBody> with DisposeBag {
         ),
         AppDialog.primaryAction(
           context: context,
-          label: l10n.copyFormSave,
+          label: editing ? l10n.copyFormEditSave : l10n.copyFormSave,
           isLoading: state.isSaving,
           onPressed: () => unawaited(_save()),
         ),
@@ -167,7 +180,7 @@ class _CopyFormBodyState extends State<_CopyFormBody> with DisposeBag {
                 AppTextField(
                   label: l10n.fieldBarcode,
                   controller: _barcode,
-                  hintText: l10n.copyFormBarcodeHint,
+                  hintText: editing ? null : l10n.copyFormBarcodeHint,
                   onChanged: (_) {},
                 ),
               ],

@@ -6,6 +6,7 @@ import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/presentation/member_labels.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/section_card.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// Membership and contact fields the detail header does not repeat.
@@ -41,6 +42,7 @@ class MemberDetailsCard extends StatelessWidget {
               for (final (index, row) in <(String, String)>[
                 (l10n.fieldBarcode, member.barcode),
                 (l10n.fieldCategory, member.memberTypeName),
+                (l10n.fieldGrade, member.grade ?? notSet),
                 (l10n.commonStatus, member.status.label(l10n)),
                 (l10n.fieldJoined, member.joined),
                 (
@@ -150,14 +152,15 @@ class MemberDetailStats extends StatelessWidget {
               ? AppStatusTone.danger
               : AppStatusTone.neutral,
         ),
-        AppStatTile(
-          label: l10n.memberDetailStatFines,
-          value: member.finesOwed.display(),
-          icon: AppIcons.wallet,
-          tone: member.finesOwed.isPositive
-              ? AppStatusTone.danger
-              : AppStatusTone.neutral,
-        ),
+        if (context.chargesFines)
+          AppStatTile(
+            label: l10n.memberDetailStatFines,
+            value: member.finesOwed.display(),
+            icon: AppIcons.wallet,
+            tone: member.finesOwed.isPositive
+                ? AppStatusTone.danger
+                : AppStatusTone.neutral,
+          ),
         AppStatTile(
           label: l10n.memberDetailStatBorrowed,
           value: '${member.borrowedAllTime}',

@@ -18,6 +18,7 @@ abstract class TitleFormState with _$TitleFormState {
     @Default(<TitleFormat>[]) List<TitleFormat> formats,
     AppException? error,
     @Default(false) bool isSaving,
+    @Default(false) bool isLookingUpIsbn,
   }) = _TitleFormState;
 
   const TitleFormState._();

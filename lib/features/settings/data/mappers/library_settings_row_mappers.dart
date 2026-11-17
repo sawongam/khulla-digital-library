@@ -4,6 +4,7 @@
 import 'package:drift/drift.dart';
 import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/money/currency.dart';
+import 'package:khulla/features/members/domain/member_optional_field.dart';
 import 'package:khulla/features/settings/data/tables/library_settings.dart';
 import 'package:khulla/features/settings/domain/models/library_profile.dart';
 
@@ -29,6 +30,8 @@ extension LibrarySettingsRowX on LibrarySettingsRow {
     staffBarcodeNextValue: staffBarcodeNextValue,
     updatedAt: updatedAt,
     logoRef: logoRef,
+    chargesFines: chargesFines,
+    hiddenMemberFields: MemberOptionalField.parseHidden(hiddenMemberFields),
   );
 }
 
@@ -52,5 +55,7 @@ extension LibraryProfileX on LibraryProfile {
     createdAt: Value(createdAt),
     updatedAt: Value(updatedAt),
     logoRef: Value(logoRef),
+    // chargesFines and hiddenMemberFields are left out on purpose: the profile
+    // form does not edit them, so an upsert must not reset them.
   );
 }

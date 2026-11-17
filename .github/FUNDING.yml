@@ -1,0 +1,4 @@
+# Drives the "Sponsor" button on the repo page. GitHub only reads it from the
+# default branch (prod).
+#
+custom: ["https://khulladigitallibrary.com/funding"]

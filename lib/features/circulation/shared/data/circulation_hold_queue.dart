@@ -43,7 +43,7 @@ class CirculationHoldQueue {
             ReservationsCompanion.insert(
               id: id,
               titleId: titleId,
-              memberId: memberId,
+              memberId: Value(memberId),
               placedAt: now,
               status: ReservationStatus.waiting,
               createdAt: now,

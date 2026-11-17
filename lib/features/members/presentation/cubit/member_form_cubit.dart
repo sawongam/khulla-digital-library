@@ -11,6 +11,7 @@ import 'package:khulla/features/members/domain/member_repository.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/domain/models/member_type.dart';
 import 'package:khulla/features/members/presentation/cubit/member_form_state.dart';
+import 'package:khulla/features/settings/domain/library_settings_repository.dart';
 import 'package:khulla/shared/domain/reference_data_repository.dart';
 import 'package:khulla/shared/models/load_status.dart';
 
@@ -20,11 +21,12 @@ import 'package:khulla/shared/models/load_status.dart';
 /// stay in [MemberFormState.error]; [saveMember] emits and rethrows.
 @injectable
 class MemberFormCubit extends Cubit<MemberFormState> {
-  MemberFormCubit(this._members, this._referenceData)
+  MemberFormCubit(this._members, this._referenceData, this._settings)
     : super(const MemberFormState());
 
   final MemberRepository _members;
   final ReferenceDataRepository _referenceData;
+  final LibrarySettingsRepository _settings;
 
   /// Loads member-type options and, when [memberId] is set, the existing member.
   Future<void> loadMemberForm({String? memberId}) async {
@@ -34,11 +36,13 @@ class MemberFormCubit extends Cubit<MemberFormState> {
       final existing = memberId == null
           ? null
           : await _members.findMember(memberId);
+      final profile = await _settings.findProfile();
       if (isClosed) return;
       emit(
         state.copyWith(
           status: LoadStatus.loaded,
           existing: existing,
+          hiddenFields: profile?.hiddenMemberFields ?? const {},
           memberTypes: memberTypes,
           error: null,
         ),
@@ -85,6 +89,7 @@ class MemberFormCubit extends Cubit<MemberFormState> {
     required String memberTypeId,
     required bool sendNotices,
     String? barcode,
+    String? grade,
     Gender? gender,
     BloodGroup? bloodGroup,
     String? municipality,
@@ -114,6 +119,7 @@ class MemberFormCubit extends Cubit<MemberFormState> {
       final saved = await _members.saveMember(
         id: state.existing?.id,
         barcode: barcode,
+        grade: grade,
         fullName: fullName,
         memberTypeId: memberTypeId,
         sendNotices: sendNotices,

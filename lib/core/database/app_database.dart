@@ -72,7 +72,7 @@ class AppDatabase extends _$AppDatabase {
   static const String _source = 'AppDatabase';
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -468,6 +468,24 @@ class AppDatabase extends _$AppDatabase {
             [next],
           );
         }
+      },
+      from15To16: (m, schema) async {
+        // A deleted member's loans, fines and holds stay, without a name, so
+        // their member_id may now be NULL. SQLite cannot relax a column in
+        // place; alterTable rebuilds each table from this version's snapshot
+        // and recreates the indexes that hung off it.
+        await m.alterTable(TableMigration(schema.loans));
+        await m.alterTable(TableMigration(schema.fines));
+        await m.alterTable(TableMigration(schema.reservations));
+        await m.addColumn(schema.members, schema.members.grade);
+        await m.addColumn(
+          schema.librarySettings,
+          schema.librarySettings.chargesFines,
+        );
+        await m.addColumn(
+          schema.librarySettings,
+          schema.librarySettings.hiddenMemberFields,
+        );
       },
     )(m, from, to);
   }

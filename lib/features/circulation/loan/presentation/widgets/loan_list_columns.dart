@@ -7,6 +7,7 @@ import 'package:khulla/features/circulation/loan/domain/models/loan.dart';
 import 'package:khulla/features/circulation/shared/presentation/circulation_labels.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/l10n/l10n.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla/shared/utils/not_wired_action.dart';
 import 'package:khulla/shared/utils/permission_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
@@ -30,6 +31,7 @@ List<AppTableColumn<Loan>> loanListColumns(
   );
   final canWorkTheDesk = context.canManage(StaffPermission.circulation);
   final canSeeMembers = context.canView(StaffPermission.members);
+  final chargesFines = context.chargesFines;
 
   return [
     AppTableColumn<Loan>(
@@ -46,7 +48,7 @@ List<AppTableColumn<Loan>> loanListColumns(
       sortable: true,
       showFrom: FormFactor.medium,
       cellBuilder: (context, loan) =>
-          Text(loan.memberName ?? l10n.commonNotSet),
+          Text(loan.memberName ?? l10n.memberFormerMember),
     ),
     AppTableColumn<Loan>(
       id: 'barcode',
@@ -72,25 +74,26 @@ List<AppTableColumn<Loan>> loanListColumns(
       showFrom: FormFactor.expanded,
       cellBuilder: (context, loan) => Text(loan.dueOn),
     ),
-    AppTableColumn<Loan>(
-      id: 'fine',
-      label: l10n.loansColumnFine,
-      flex: 2,
-      sortable: true,
-      alignment: Alignment.centerRight,
-      showFrom: FormFactor.expanded,
-      cellBuilder: (context, loan) => Text(
-        loan.accruedFine.isZero
-            ? l10n.commonNotSet
-            : loan.accruedFine.display(),
-        style: loan.accruedFine.isZero
-            ? muted
-            : context.textTheme.bodyMedium?.copyWith(
-                color: scheme.error,
-                fontWeight: FontWeight.w500,
-              ),
+    if (chargesFines)
+      AppTableColumn<Loan>(
+        id: 'fine',
+        label: l10n.loansColumnFine,
+        flex: 2,
+        sortable: true,
+        alignment: Alignment.centerRight,
+        showFrom: FormFactor.expanded,
+        cellBuilder: (context, loan) => Text(
+          loan.accruedFine.isZero
+              ? l10n.commonNotSet
+              : loan.accruedFine.display(),
+          style: loan.accruedFine.isZero
+              ? muted
+              : context.textTheme.bodyMedium?.copyWith(
+                  color: scheme.error,
+                  fontWeight: FontWeight.w500,
+                ),
+        ),
       ),
-    ),
     AppTableColumn<Loan>(
       id: 'status',
       label: l10n.commonStatus,
@@ -123,11 +126,11 @@ List<AppTableColumn<Loan>> loanListColumns(
                 onSelected: () => onRenew(loan),
               ),
             ],
-            if (canSeeMembers)
+            if (canSeeMembers && loan.memberId != null)
               AppMenuAction(
                 label: l10n.loansViewMember,
                 icon: AppIcons.person,
-                onSelected: () => context.go(Routes.member(loan.memberId)),
+                onSelected: () => context.go(Routes.member(loan.memberId!)),
               ),
             if (canWorkTheDesk)
               AppMenuAction(
@@ -159,6 +162,7 @@ class LoanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chargesFines = context.chargesFines;
     final l10n = context.l10n;
     final spacing = context.appSpacing;
     final scheme = context.colorScheme;
@@ -193,7 +197,7 @@ class LoanCard extends StatelessWidget {
             ),
             SizedBox(height: spacing.xxs),
             Text(
-              loan.memberName ?? l10n.commonNotSet,
+              loan.memberName ?? l10n.memberFormerMember,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: context.textTheme.bodySmall?.copyWith(
@@ -226,13 +230,13 @@ class LoanCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    loan.accruedFine.isZero
+                    !chargesFines || loan.accruedFine.isZero
                         ? '${l10n.loansColumnDue} ${loan.dueOn}'
                         : '${l10n.loansColumnDue} ${loan.dueOn} · ${loan.accruedFine.display()}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: context.textTheme.bodySmall?.copyWith(
-                      color: loan.accruedFine.isZero
+                      color: !chargesFines || loan.accruedFine.isZero
                           ? scheme.onSurfaceVariant
                           : scheme.error,
                     ),

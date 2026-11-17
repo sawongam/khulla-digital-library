@@ -23,7 +23,9 @@ DefaultDirName={localappdata}\Programs\Khulla
 DefaultGroupName=Khulla
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
+; `commandline` lets the in-app updater pass /CURRENTUSER or /ALLUSERS, so a
+; silent update lands where the original install did rather than beside it.
+PrivilegesRequiredOverridesAllowed=commandline dialog
 OutputDir=dist
 OutputBaseFilename=khulla-{#MyAppVersion}-windows-x64-setup
 Compression=lzma
@@ -51,3 +53,14 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+; The in-app updater runs this installer with /SILENT /UPDATE=1 after closing
+; Khulla, and expects to be reopened when it is done. A silent install run by
+; hand (an administrator deploying to many desks) passes no /UPDATE and is
+; left alone.
+Filename: "{app}\{#MyAppExeName}"; Flags: nowait; Check: IsInAppUpdate
+
+[Code]
+function IsInAppUpdate: Boolean;
+begin
+  Result := ExpandConstant('{param:UPDATE|0}') = '1';
+end;

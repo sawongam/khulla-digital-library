@@ -37,6 +37,13 @@ class CheckOutPage extends StatefulWidget {
 
 class _CheckOutPageState extends State<CheckOutPage> with DisposeBag {
   late final TextEditingController _scan = textController();
+  late final FocusNode _scanFocus = focusNode();
+
+  void _refocusScan() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _scanFocus.requestFocus();
+    });
+  }
 
   Future<void> _scanCopy(String barcode) async {
     final cubit = context.read<CheckOutCubit>();
@@ -48,6 +55,8 @@ class _CheckOutPageState extends State<CheckOutPage> with DisposeBag {
     } on AppException catch (error) {
       if (!mounted) return;
       AppToast.error(context, message: error.localizedMessage(l10n));
+    } finally {
+      if (mounted) _refocusScan();
     }
   }
 
@@ -61,6 +70,8 @@ class _CheckOutPageState extends State<CheckOutPage> with DisposeBag {
     } on AppException catch (error) {
       if (!mounted) return;
       AppToast.error(context, message: error.localizedMessage(l10n));
+    } finally {
+      if (mounted) _refocusScan();
     }
   }
 
@@ -73,8 +84,11 @@ class _CheckOutPageState extends State<CheckOutPage> with DisposeBag {
 
     return BlocConsumer<CheckOutCubit, CheckOutState>(
       listenWhen: (previous, current) =>
-          previous.error != current.error && current.error != null,
+          (previous.error != current.error && current.error != null) ||
+          (previous.member == null && current.member != null),
       listener: (context, state) {
+        // A member was just chosen: the next input is a copy barcode.
+        if (state.member != null && state.error == null) _refocusScan();
         final error = state.error;
         if (error == null) return;
         AppToast.error(context, message: error.localizedMessage(l10n));
@@ -99,6 +113,7 @@ class _CheckOutPageState extends State<CheckOutPage> with DisposeBag {
         final basket = CheckOutBasket(
           copies: state.basket,
           scanController: _scan,
+          scanFocus: _scanFocus,
           onScanSubmitted: (value) => unawaited(_scanCopy(value)),
           onRemove: cubit.removeCopy,
         );

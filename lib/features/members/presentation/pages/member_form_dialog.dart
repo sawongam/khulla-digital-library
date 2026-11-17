@@ -11,6 +11,7 @@ import 'package:khulla/core/format/app_date_format.dart';
 import 'package:khulla/core/lifecycle/dispose_bag.dart';
 import 'package:khulla/features/members/domain/blood_group.dart';
 import 'package:khulla/features/members/domain/gender.dart';
+import 'package:khulla/features/members/domain/member_optional_field.dart';
 import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/domain/models/member_type.dart';
 import 'package:khulla/features/members/presentation/cubit/member_form_cubit.dart';
@@ -71,6 +72,7 @@ class MemberFormDialog extends StatelessWidget {
           existing: state.existing,
           memberTypes: state.memberTypes,
           isSaving: state.isSaving,
+          shows: state.showsField,
         );
       },
     );
@@ -83,6 +85,7 @@ class _MemberFormBody extends StatefulWidget {
     required this.existing,
     required this.memberTypes,
     required this.isSaving,
+    required this.shows,
     super.key,
   });
 
@@ -90,6 +93,7 @@ class _MemberFormBody extends StatefulWidget {
   final Member? existing;
   final List<MemberType> memberTypes;
   final bool isSaving;
+  final MemberFieldVisibility shows;
 
   @override
   State<_MemberFormBody> createState() => _MemberFormBodyState();
@@ -98,6 +102,9 @@ class _MemberFormBody extends StatefulWidget {
 class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
   late final TextEditingController _name = textController(
     widget.existing?.fullName,
+  );
+  late final TextEditingController _grade = textController(
+    widget.existing?.grade,
   );
   late Gender? _gender = widget.existing?.gender;
   late final TextEditingController _email = textController(
@@ -214,6 +221,7 @@ class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
         memberTypeId: _memberTypeId,
         sendNotices: _sendNotices,
         barcode: _barcode.isEmpty ? null : _barcode,
+        grade: _grade.text.trim().isEmpty ? null : _grade.text.trim(),
         gender: _gender,
         bloodGroup: _bloodGroup,
         municipality: _municipality.text.trim().isEmpty
@@ -276,6 +284,8 @@ class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
       children: [
         MemberFormIdentitySection(
           name: _name,
+          grade: _grade,
+          shows: widget.shows,
           gender: _gender,
           onGenderChanged: (v) => setState(() => _gender = v),
           dateOfBirth: _dateOfBirth == null
@@ -294,16 +304,19 @@ class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
           phone: _phone,
           address: _address,
           municipality: _municipality,
+          shows: widget.shows,
         ),
         MemberFormAdditionalSection(
           occupation: _occupation,
           institution: _institution,
           idVerification: _idVerification,
+          shows: widget.shows,
         ),
-        MemberFormEmergencySection(
-          emergencyContactName: _emergencyContactName,
-          emergencyContactPhone: _emergencyContactPhone,
-        ),
+        if (widget.shows(MemberOptionalField.emergencyContact))
+          MemberFormEmergencySection(
+            emergencyContactName: _emergencyContactName,
+            emergencyContactPhone: _emergencyContactPhone,
+          ),
         MemberFormMembershipSection(
           memberTypes: widget.memberTypes,
           selectedType: _selectedType,
@@ -316,6 +329,7 @@ class _MemberFormBodyState extends State<_MemberFormBody> with DisposeBag {
           ),
           onAddCategory: () => unawaited(_addCategory()),
           onSendNoticesChanged: (value) => setState(() => _sendNotices = value),
+          shows: widget.shows,
         ),
       ],
     );

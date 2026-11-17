@@ -16,6 +16,8 @@ abstract interface class CopyRepository {
 
   Future<Copy?> findCopyByBarcode(String barcode);
 
+  Future<Copy?> findCopy(String id);
+
   Future<Copy> addCopy({
     required String titleId,
     required String titleName,
@@ -24,7 +26,19 @@ abstract interface class CopyRepository {
     String? notes,
   });
 
+  /// Changes a copy's barcode, shelf and notes. The barcode must be set and
+  /// not held by another copy, archived or not.
+  Future<Copy> updateCopyDetails(
+    String id, {
+    required String barcode,
+    required String shelf,
+    String? notes,
+  });
+
   Future<void> archiveCopy(String id);
+
+  /// Brings an archived copy back. Refuses while its title is archived.
+  Future<void> restoreCopy(String id);
 
   /// Updates standing. Refuses when the copy is on loan.
   Future<Copy> updateCopyStatus(
