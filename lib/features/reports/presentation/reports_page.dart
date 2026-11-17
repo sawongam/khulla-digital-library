@@ -19,6 +19,7 @@ import 'package:khulla/features/reports/presentation/widgets/saved_report_tile.d
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/navigation_group.dart';
 import 'package:khulla/shared/models/load_status.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla/shared/utils/app_exception_l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
@@ -90,6 +91,7 @@ class _ReportsBoard extends StatelessWidget {
     final l10n = context.l10n;
     final spacing = context.appSpacing;
     final sideBySide = context.formFactor.isAtLeast(FormFactor.expanded);
+    final chargesFines = context.chargesFines;
     final summary = state.summary!;
     final collection = summary.collectionSlices();
     final collectionTotal = collection.fold<double>(
@@ -143,8 +145,10 @@ class _ReportsBoard extends StatelessWidget {
                   ),
                 ],
                 SizedBox(height: spacing.md),
-                ReportsFinesCard(totals: summary.fineTotals(l10n)),
-                SizedBox(height: spacing.md),
+                if (chargesFines) ...[
+                  ReportsFinesCard(totals: summary.fineTotals(l10n)),
+                  SizedBox(height: spacing.md),
+                ],
                 ReportsRankedSection(
                   summary: summary,
                   sideBySide: sideBySide,
@@ -157,7 +161,10 @@ class _ReportsBoard extends StatelessWidget {
                 SizedBox(height: spacing.md),
                 NavigationGroup(
                   children: [
-                    for (final report in reportsSaved(l10n))
+                    for (final report in reportsSaved(
+                      l10n,
+                      chargesFines: chargesFines,
+                    ))
                       SavedReportTile(
                         report: report,
                         onExport: () => unawaited(

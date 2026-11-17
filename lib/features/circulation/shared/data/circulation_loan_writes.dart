@@ -44,7 +44,7 @@ class CirculationLoanWrites {
             LoansCompanion.insert(
               id: loanId,
               copyId: copyId,
-              memberId: memberId,
+              memberId: Value(memberId),
               checkedOutAt: checkedOutAt,
               dueAt: dueAt,
               ruleLoanPeriodDays: ruleLoanPeriodDays,

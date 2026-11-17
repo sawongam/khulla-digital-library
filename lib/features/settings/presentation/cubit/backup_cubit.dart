@@ -4,6 +4,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
+import 'package:khulla/features/circulation/shared/domain/circulation_repository.dart';
+import 'package:khulla/features/circulation/shared/domain/models/copy_repair_result.dart';
 import 'package:khulla/features/settings/domain/backup_repository.dart';
 import 'package:khulla/features/settings/presentation/cubit/backup_state.dart';
 import 'package:khulla/features/users/domain/staff_repository.dart';
@@ -16,9 +18,11 @@ import 'package:khulla/shared/models/load_status.dart';
 /// gets the chance to run again in this process.
 @injectable
 class BackupCubit extends Cubit<BackupState> {
-  BackupCubit(this._repository, this._staff) : super(const BackupState());
+  BackupCubit(this._repository, this._staff, this._circulation)
+    : super(const BackupState());
 
   final BackupRepository _repository;
+  final CirculationRepository _circulation;
   final StaffRepository _staff;
 
   Future<void> loadBackupInfo() async {
@@ -71,6 +75,23 @@ class BackupCubit extends Cubit<BackupState> {
     emit(state.copyWith(isWorking: true, error: null));
     try {
       return await _repository.restoreBackup();
+    } on AppException catch (error) {
+      if (isClosed) rethrow;
+      emit(state.copyWith(isWorking: false, error: error));
+      rethrow;
+    } finally {
+      if (!isClosed && state.isWorking) {
+        emit(state.copyWith(isWorking: false));
+      }
+    }
+  }
+
+  /// Corrects copy statuses that disagree with the loans on record. Rethrows
+  /// on failure so the page can show it as a toast.
+  Future<CopyRepairResult> checkRecords() async {
+    emit(state.copyWith(isWorking: true, error: null));
+    try {
+      return await _circulation.repairCopyStatuses();
     } on AppException catch (error) {
       if (isClosed) rethrow;
       emit(state.copyWith(isWorking: false, error: error));

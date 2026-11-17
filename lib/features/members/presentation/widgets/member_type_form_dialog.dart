@@ -7,6 +7,7 @@ import 'package:khulla/core/money/money.dart';
 import 'package:khulla/features/members/domain/models/member_type.dart';
 import 'package:khulla/features/members/presentation/widgets/member_type_form_sections.dart';
 import 'package:khulla/l10n/l10n.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// The category editor behind the category dialog, used for both a new
@@ -161,12 +162,13 @@ class _MemberTypeFormDialogState extends State<MemberTypeFormDialog>
           renewalLimit: _renewalLimit,
           renewalPeriodDays: _renewalPeriodDays,
         ),
-        MemberTypeFormFineSection(
-          finePerDay: _finePerDay,
-          graceDays: _graceDays,
-          maximumFinePerCopy: _maximumFinePerCopy,
-          maxOutstandingFine: _maxOutstandingFine,
-        ),
+        if (context.chargesFines)
+          MemberTypeFormFineSection(
+            finePerDay: _finePerDay,
+            graceDays: _graceDays,
+            maximumFinePerCopy: _maximumFinePerCopy,
+            maxOutstandingFine: _maxOutstandingFine,
+          ),
         MemberTypeFormMembershipSection(
           membershipDurationMonths: _membershipDurationMonths,
           reservationLimit: _reservationLimit,

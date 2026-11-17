@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/features/users/presentation/user_labels.dart';
 import 'package:khulla/l10n/l10n.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// Every permission against every role.
@@ -39,6 +40,7 @@ class PermissionMatrix extends StatelessWidget {
     // ("BoxConstraints forces an infinite width"). Pin the column to a
     // finite width instead: the content width on a narrow window, the full
     // available width when there is room to stretch into.
+    final chargesFines = context.chargesFines;
     return LayoutBuilder(
       builder: (context, constraints) {
         final contentWidth =
@@ -88,43 +90,44 @@ class PermissionMatrix extends StatelessWidget {
                   ),
                 ),
                 for (final permission in StaffPermission.values)
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: colors.hairline),
+                  if (chargesFines || permission != StaffPermission.fines)
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: colors.hairline),
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: spacing.sm,
-                        vertical: spacing.sm,
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: labelWidth,
-                            child: Text(
-                              permission.label(l10n),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: context.textTheme.bodyMedium?.copyWith(
-                                color: colors.textHigh,
-                              ),
-                            ),
-                          ),
-                          for (final role in UserRole.values)
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: spacing.sm,
+                          vertical: spacing.sm,
+                        ),
+                        child: Row(
+                          children: [
                             SizedBox(
-                              width: roleWidth,
-                              child: Center(
-                                child: _LevelMark(
-                                  level: role.levelOf(permission),
+                              width: labelWidth,
+                              child: Text(
+                                permission.label(l10n),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: context.textTheme.bodyMedium?.copyWith(
+                                  color: colors.textHigh,
                                 ),
                               ),
                             ),
-                        ],
+                            for (final role in UserRole.values)
+                              SizedBox(
+                                width: roleWidth,
+                                child: Center(
+                                  child: _LevelMark(
+                                    level: role.levelOf(permission),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
               ],
             ),
           ),

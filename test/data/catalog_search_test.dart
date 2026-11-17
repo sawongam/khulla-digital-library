@@ -227,7 +227,7 @@ void main() {
             LoansCompanion.insert(
               id: id,
               copyId: copyId,
-              memberId: borrower.memberId,
+              memberId: Value(borrower.memberId),
               checkedOutAt: now.subtract(const Duration(days: 20)),
               dueAt: dueAt,
               returnedAt: Value(returnedAt),
@@ -255,7 +255,7 @@ void main() {
           .insert(
             FinesCompanion.insert(
               id: 'fine',
-              memberId: borrower.memberId,
+              memberId: Value(borrower.memberId),
               loanId: const Value('returned'),
               reason: FineReason.overdue,
               assessed: Money.major(50),
@@ -297,7 +297,7 @@ void main() {
             ReservationsCompanion.insert(
               id: 'hold',
               titleId: title.titleId,
-              memberId: member.memberId,
+              memberId: Value(member.memberId),
               placedAt: now,
               status: ReservationStatus.waiting,
               closedAt: Value(now),

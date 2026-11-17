@@ -223,12 +223,12 @@ LIMIT 6
 SELECT * FROM (
   SELECT * FROM (
     SELECT 'borrow' AS kind, t.title AS item, c.barcode AS item_code,
-           m.full_name AS member, m.barcode AS member_code,
+           COALESCE(m.full_name, '') AS member, COALESCE(m.barcode, '') AS member_code,
            l.checked_out_at AS at, l.due_at AS due
     FROM loans l
     JOIN copies c ON c.id = l.copy_id
     JOIN titles t ON t.id = c.title_id
-    JOIN members m ON m.id = l.member_id
+    LEFT JOIN members m ON m.id = l.member_id
     ORDER BY l.checked_out_at DESC
     LIMIT ?1
   )
@@ -236,12 +236,12 @@ SELECT * FROM (
   UNION ALL
 
   SELECT * FROM (
-    SELECT 'returned', t.title, c.barcode, m.full_name, m.barcode,
+    SELECT 'returned', t.title, c.barcode, COALESCE(m.full_name, ''), COALESCE(m.barcode, ''),
            l.returned_at, NULL
     FROM loans l
     JOIN copies c ON c.id = l.copy_id
     JOIN titles t ON t.id = c.title_id
-    JOIN members m ON m.id = l.member_id
+    LEFT JOIN members m ON m.id = l.member_id
     WHERE l.returned_at IS NOT NULL
     ORDER BY l.returned_at DESC
     LIMIT ?1
@@ -250,11 +250,11 @@ SELECT * FROM (
   UNION ALL
 
   SELECT * FROM (
-    SELECT 'reserved', t.title, '', m.full_name, m.barcode,
+    SELECT 'reserved', t.title, '', COALESCE(m.full_name, ''), COALESCE(m.barcode, ''),
            r.placed_at, NULL
     FROM reservations r
     JOIN titles t ON t.id = r.title_id
-    JOIN members m ON m.id = r.member_id
+    LEFT JOIN members m ON m.id = r.member_id
     ORDER BY r.placed_at DESC
     LIMIT ?1
   )
@@ -263,9 +263,9 @@ SELECT * FROM (
 
   SELECT * FROM (
     SELECT 'fine', COALESCE(t.title, ''), COALESCE(c.barcode, ''),
-           m.full_name, m.barcode, f.raised_at, NULL
+           COALESCE(m.full_name, ''), COALESCE(m.barcode, ''), f.raised_at, NULL
     FROM fines f
-    JOIN members m ON m.id = f.member_id
+    LEFT JOIN members m ON m.id = f.member_id
     LEFT JOIN loans l ON l.id = f.loan_id
     LEFT JOIN copies c ON c.id = l.copy_id
     LEFT JOIN titles t ON t.id = c.title_id
@@ -378,11 +378,13 @@ LIMIT 5
     final rows = await _db
         .customSelect(
           '''
-SELECT m.full_name AS name, m.barcode AS detail, COUNT(*) AS c
+-- Loans of deleted members have no member_id and group together, with
+-- an empty name the presentation shows as "Former member".
+SELECT COALESCE(m.full_name, '') AS name, COALESCE(m.barcode, '') AS detail, COUNT(*) AS c
 FROM loans l
-JOIN members m ON m.id = l.member_id
+LEFT JOIN members m ON m.id = l.member_id
 WHERE l.checked_out_at >= ? AND l.checked_out_at < ?
-GROUP BY m.id
+GROUP BY l.member_id
 ORDER BY c DESC
 LIMIT 5
 ''',

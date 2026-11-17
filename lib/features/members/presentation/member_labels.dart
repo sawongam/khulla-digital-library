@@ -3,6 +3,7 @@
 
 import 'package:khulla/features/members/domain/blood_group.dart';
 import 'package:khulla/features/members/domain/gender.dart';
+import 'package:khulla/features/members/domain/member_optional_field.dart';
 import 'package:khulla/features/members/domain/member_status.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
@@ -52,5 +53,25 @@ extension BloodGroupX on BloodGroup {
     BloodGroup.abNegative => 'AB-',
     BloodGroup.oPositive => 'O+',
     BloodGroup.oNegative => 'O-',
+  };
+}
+
+extension MemberOptionalFieldX on MemberOptionalField {
+  String label(AppLocalizations l10n) => switch (this) {
+    MemberOptionalField.grade => l10n.fieldGrade,
+    MemberOptionalField.gender => l10n.fieldGender,
+    MemberOptionalField.dateOfBirth => l10n.fieldDateOfBirth,
+    MemberOptionalField.bloodGroup => l10n.fieldBloodGroup,
+    MemberOptionalField.email => l10n.fieldEmail,
+    MemberOptionalField.phone => l10n.fieldPhone,
+    MemberOptionalField.address => l10n.fieldAddress,
+    MemberOptionalField.municipality => l10n.fieldMunicipality,
+    MemberOptionalField.occupation => l10n.fieldOccupation,
+    MemberOptionalField.institution => l10n.fieldInstitution,
+    MemberOptionalField.idVerification => l10n.fieldIdVerification,
+    MemberOptionalField.emergencyContact => l10n.memberFormEmergency,
+    MemberOptionalField.guardian => l10n.fieldGuardian,
+    MemberOptionalField.notes => l10n.fieldNotes,
+    MemberOptionalField.sendNotices => l10n.memberFormNotifications,
   };
 }

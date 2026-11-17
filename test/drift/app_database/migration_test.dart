@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 // dart format width=80
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNull;
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:khulla/core/database/app_database.dart';
@@ -123,6 +123,55 @@ void main() {
       [('r1', 'fulfilled', at), ('r2', 'cancelled', at)],
     );
 
+    await db.close();
+  });
+
+  test('v15 to v16 keeps rows and indexes while member_id becomes '
+      'nullable', () async {
+    final schema = await verifier.schemaAt(15);
+    const at = '2026-09-01T10:00:00.000Z';
+    schema.rawDatabase
+      ..execute(
+        'INSERT INTO title_formats (id, name, sort_order, created_at) '
+        "VALUES ('f1', 'Book', 0, '$at')",
+      )
+      ..execute(
+        'INSERT INTO member_types (id, name, sort_order, created_at) '
+        "VALUES ('mt1', 'Student', 0, '$at')",
+      )
+      ..execute(
+        'INSERT INTO titles (id, title, author, format_id, created_at, '
+        "updated_at) VALUES ('t1', 'Muna Madan', 'Devkota', 'f1', '$at', "
+        "'$at')",
+      )
+      ..execute(
+        'INSERT INTO members (id, barcode, full_name, member_type_id, '
+        'joined_at, created_at, updated_at) '
+        "VALUES ('m1', 'KH-1', 'Sita Sharma', 'mt1', '$at', '$at', '$at')",
+      )
+      ..execute(
+        'INSERT INTO reservations (id, title_id, member_id, placed_at, '
+        'status, created_at, updated_at) '
+        "VALUES ('r1', 't1', 'm1', '$at', 'waiting', '$at', '$at')",
+      );
+
+    final db = AppDatabase.connect(schema.newConnection());
+    await verifier.migrateAndValidate(db, 16);
+
+    await db.customStatement(
+      "UPDATE reservations SET member_id = NULL WHERE id = 'r1'",
+    );
+    final holds = await db
+        .customSelect('SELECT member_id FROM reservations')
+        .get();
+    expect(holds.single.readNullable<String>('member_id'), isNull);
+
+    final settings = await db
+        .customSelect(
+          'SELECT charges_fines, hidden_member_fields FROM library_settings',
+        )
+        .get();
+    expect(settings, isEmpty);
     await db.close();
   });
 }

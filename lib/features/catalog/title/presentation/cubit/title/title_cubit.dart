@@ -73,6 +73,22 @@ class TitleCubit extends Cubit<TitleState> {
     unawaited(loadTitles());
   }
 
+  void archivedChanged(bool value) {
+    emit(
+      state.copyWith(
+        query: state.query.copyWith(archived: value, offset: 0),
+      ),
+    );
+    unawaited(loadTitles());
+  }
+
+  /// Brings an archived title back and reloads the list. Rethrows on failure.
+  Future<void> restoreTitle(String id) async {
+    await _repository.restoreTitle(id);
+    if (isClosed) return;
+    await loadTitles();
+  }
+
   void sortChanged(String columnId, bool ascending) {
     emit(
       state.copyWith(

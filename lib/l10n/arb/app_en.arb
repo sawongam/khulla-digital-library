@@ -203,7 +203,7 @@
     },
     "titleDetailDelete": "Delete title",
     "titleDetailDeleteTitle": "Delete this title?",
-    "titleDetailDeleteBody": "The title and every copy under it are removed from the catalogue. Loan history is kept.",
+    "titleDetailDeleteBody": "The title is removed from the catalogue for good. Only a title with no copies can be deleted; to take one with copies out of the catalogue, archive it instead.",
     "@titleDetailDeleteBody": {
         "description": "Catalogue - destructive confirmation for a title"
     },
@@ -271,8 +271,17 @@
     "copiesMarkDamagedSuccess": "Copy marked as damaged",
     "copiesWithdrawBody": "The copy is withdrawn from stock and hidden from the catalogue.",
     "copiesWithdrawSuccess": "Copy withdrawn",
+    "copiesRestore": "Restore",
+    "copiesRestoreSuccess": "Copy restored",
+    "copiesEditSuccess": "Copy updated",
+    "catalogArchivedBadge": "Archived",
+    "catalogFilterArchived": "Archived",
+    "titlesRestore": "Restore title",
+    "titlesRestoreSuccess": "Title restored",
     "copyFormHeading": "Add a copy",
     "copyFormSave": "Add copy",
+    "copyFormEditHeading": "Edit copy",
+    "copyFormEditSave": "Save changes",
     "copyFormTitleSection": "Title",
     "copyFormTitleDescription": "Which work this physical item belongs to.",
     "copyFormDetailsSection": "Copy details",
@@ -520,7 +529,23 @@
     "memberDetailArchiveSuccess": "Member archived",
     "memberDetailDelete": "Delete member",
     "memberDetailDeleteTitle": "Delete this member?",
-    "memberDetailDeleteBody": "The borrower record is removed. Loans and fines already recorded are kept against the copies.",
+    "memberDetailDeleteBody": "Delete {name}? Their past loans stay in reports without a name. This can't be undone.",
+    "@memberDetailDeleteBody": {
+        "description": "Members - delete confirmation body",
+        "placeholders": {"name": {"type": "String", "example": "Asha Rai"}}
+    },
+    "memberFormerMember": "Former member",
+    "membersFilterArchived": "Archived",
+    "membersArchivedBadge": "Archived",
+    "memberRestore": "Restore member",
+    "memberRestoreSuccess": "Member restored",
+    "fieldGrade": "Class / grade",
+    "fieldGradeHint": "e.g. Grade 7B",
+    "settingsFinesToggle": "Library charges fines",
+    "settingsFinesToggleDescription": "Turn off to hide fines everywhere in the app.",
+    "settingsMemberFormTitle": "Member form",
+    "settingsMemberFormDescription": "Choose which optional fields appear when adding or editing a member. Name, barcode and category are always shown, and a field that already has a value is never hidden on that member.",
+    "settingsMemberFormShow": "Show on the member form",
     "memberDetailStatLoans": "On loan",
     "memberDetailStatOverdue": "Overdue",
     "memberDetailStatFines": "Fines owed",
@@ -654,6 +679,17 @@
     "settingsBackupRestoreConfirmTitle": "Restore from a backup?",
     "settingsBackupRestoreConfirmBody": "Everything currently in this library is replaced with the contents of the file you choose next. The app restarts when it finishes.",
     "settingsBackupExported": "Backup exported.",
+    "settingsBackupRepairTitle": "Check and repair records",
+    "settingsBackupRepairBody": "Look for copies whose status disagrees with the loans on record, such as a copy that shows as available but is still on loan, and correct them. Nothing else is changed.",
+    "settingsBackupRepairAction": "Check records",
+    "settingsBackupRepairResult": "Checked {checked} copies, repaired {repaired}.",
+    "@settingsBackupRepairResult": {
+        "description": "Settings - toast after the copy status check",
+        "placeholders": {
+            "checked": {"type": "int"},
+            "repaired": {"type": "int"}
+        }
+    },
     "settingsBackupLastBackup": "Last backup",
     "settingsBackupNever": "Never",
     "settingsBackupDatabaseSize": "Database size",
@@ -686,6 +722,7 @@
     "errorDatabaseUnavailable": "The library database could not be opened.",
     "errorDatabaseFailure": "The database rejected that change.",
     "errorStorage": "A file could not be read or written.",
+    "errorNetwork": "Couldn't reach the service. Check the internet connection and try again.",
     "@errorStorage": {
         "description": "Errors - user-facing copy for every AppException case"
     },
@@ -706,7 +743,8 @@
     "errorReasonMembershipExpired": "That member's membership has expired. Renew it first.",
     "errorReasonMembershipAlreadySuspended": "That membership is already suspended.",
     "errorReasonMembershipNotSuspended": "That membership is not suspended.",
-    "errorReasonMemberHasHistory": "That member has borrowing history and cannot be deleted. Archive them instead.",
+    "errorReasonMemberHasOpenLoans": "Return their loans before deleting this member.",
+    "errorReasonMemberHasUnpaidFines": "Settle or waive their fines before deleting this member.",
     "errorReasonCopyArchived": "That copy has been archived.",
     "errorReasonTitleArchived": "That title has been archived.",
     "errorReasonTitleNotLendable": "That title is for reference only and cannot be lent.",
@@ -729,8 +767,55 @@
     "errorReasonFineAlreadySettled": "That fine has already been settled.",
     "errorReasonFineAmountNotPositive": "A fine must be more than zero.",
     "errorReasonCopyOnLoan": "That copy is on loan. Return it at the desk first.",
+    "errorReasonCopyHasOpenLoan": "This copy is still on loan in the records, although it shows as available. Use Settings, Backup, Check and repair records to fix it.",
     "errorReasonCopyHeldForReservation": "That copy is set aside for a hold. Cancel or fulfil the hold first.",
     "errorReasonTitleHasCopies": "That title still has copies and cannot be deleted.",
+    "errorReasonTitleHasCopiesOnLoan": "Return its copies before archiving this title.",
+    "errorReasonIsbnInvalid": "That doesn't look like an ISBN. It should be 10 or 13 digits.",
+    "errorReasonIsbnNotFound": "No book found for that ISBN. Fill in the details by hand.",
+    "errorReasonIsbnLookupOffline": "Couldn't reach the book lookup service. Check the internet connection, or fill in the details by hand.",
+    "isbnLookUp": "Look up",
+    "isbnLookUpTooltip": "Fill in empty fields from Open Library",
+    "isbnLookUpFilled": "{count, plural, =1{Filled in 1 field from Open Library.} other{Filled in {count} fields from Open Library.}}",
+    "@isbnLookUpFilled": {
+        "description": "Toast after an ISBN lookup filled empty title-form fields",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "isbnLookUpNothingNew": "Found the book, but every field it could fill already has a value.",
+    "titleDetailArchive": "Archive",
+    "titleDetailArchiveTitle": "Archive this title?",
+    "titleDetailArchiveBody": "Archive \u201c{title}\u201d? It disappears from the catalogue and search. You can restore it from the Archived filter.",
+    "@titleDetailArchiveBody": {
+        "description": "Confirm dialog before archiving a title",
+        "placeholders": {
+            "title": {
+                "type": "String"
+            }
+        }
+    },
+    "titleDetailArchiveSuccess": "Title archived.",
+    "errorReasonBarcodeInUse": "Barcode {barcode} already belongs to a copy of \u201c{title}\u201d.",
+    "@errorReasonBarcodeInUse": {
+        "description": "Catalogue - a hand-typed barcode is held by another live copy",
+        "placeholders": {
+            "barcode": {"type": "String", "example": "KDL104"},
+            "title": {"type": "String", "example": "Matilda"}
+        }
+    },
+    "errorReasonBarcodeInUseByArchivedCopy": "Barcode {barcode} belongs to an archived copy of \u201c{title}\u201d. Restore it from the archived copies list instead.",
+    "@errorReasonBarcodeInUseByArchivedCopy": {
+        "description": "Catalogue - a hand-typed barcode is held by an archived copy",
+        "placeholders": {
+            "barcode": {"type": "String", "example": "KDL104"},
+            "title": {"type": "String", "example": "Matilda"}
+        }
+    },
+    "errorReasonBarcodeRequired": "A copy needs a barcode.",
+    "errorReasonRestoreTitleFirst": "Restore the title first.",
     "errorReasonCannotChangeOwnRole": "You cannot change your own role.",
     "errorReasonRecoveryCodeUsed": "That recovery code has already been used.",
     "errorReasonPasswordTooLong": "That password is too long.",
@@ -1180,6 +1265,7 @@
     },
     "validationAmountInvalid": "Enter a valid amount.",
     "validationCopiesMin": "Create at least one copy.",
+    "validationCopiesInvalid": "Enter 0 or more copies.",
     "authBrandTagline": "A library catalogue that lives on your own machine.",
     "authBrandLocalTitle": "Your records stay here",
     "authBrandLocalBody": "The catalogue is a file on this computer. There is no cloud account to set up or lose.",

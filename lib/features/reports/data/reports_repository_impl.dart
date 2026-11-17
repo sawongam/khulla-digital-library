@@ -240,11 +240,13 @@ LIMIT 5
     final rows = await _db
         .customSelect(
           '''
-SELECT m.full_name AS name, m.barcode AS detail, COUNT(*) AS c
+-- Loans of deleted members have no member_id and group together, with
+-- an empty name the presentation shows as "Former member".
+SELECT COALESCE(m.full_name, '') AS name, COALESCE(m.barcode, '') AS detail, COUNT(*) AS c
 FROM loans l
-JOIN members m ON m.id = l.member_id
+LEFT JOIN members m ON m.id = l.member_id
 WHERE l.checked_out_at >= ? AND l.checked_out_at < ?
-GROUP BY m.id
+GROUP BY l.member_id
 ORDER BY c DESC
 LIMIT 5
 ''',
@@ -266,11 +268,11 @@ LIMIT 5
     final rows = await _db
         .customSelect(
           '''
-SELECT t.title AS title, m.full_name AS member, l.due_at AS due_at
+SELECT t.title AS title, COALESCE(m.full_name, '') AS member, l.due_at AS due_at
 FROM loans l
 JOIN copies c ON c.id = l.copy_id
 JOIN titles t ON t.id = c.title_id
-JOIN members m ON m.id = l.member_id
+LEFT JOIN members m ON m.id = l.member_id
 WHERE l.returned_at IS NULL AND l.due_at < ?
 ORDER BY l.due_at ASC
 LIMIT 100

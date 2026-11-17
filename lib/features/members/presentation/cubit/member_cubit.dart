@@ -88,6 +88,15 @@ class MemberCubit extends Cubit<MemberState> {
     unawaited(loadMembers());
   }
 
+  void archivedChanged(bool value) {
+    emit(
+      state.copyWith(
+        query: state.query.copyWith(archived: value, offset: 0),
+      ),
+    );
+    unawaited(loadMembers());
+  }
+
   void sortChanged(String columnId, bool ascending) {
     emit(
       state.copyWith(
@@ -148,6 +157,20 @@ class MemberCubit extends Cubit<MemberState> {
   /// Archives one member and reloads the list. Rethrows on failure.
   Future<void> archiveMember(String id) async {
     await _repository.archiveMember(id);
+    if (isClosed) return;
+    await loadMembers();
+  }
+
+  /// Brings an archived member back and reloads the list. Rethrows on failure.
+  Future<void> restoreMember(String id) async {
+    await _repository.restoreMember(id);
+    if (isClosed) return;
+    await loadMembers();
+  }
+
+  /// Deletes a member for good and reloads the list. Rethrows on failure.
+  Future<void> removeMember(String id) async {
+    await _repository.removeMember(id);
     if (isClosed) return;
     await loadMembers();
   }

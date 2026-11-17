@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import 'package:khulla/features/members/domain/member_optional_field.dart';
 import 'package:khulla/features/settings/domain/models/library_profile.dart';
 
 /// Reads and writes the library's own record.
@@ -10,4 +11,10 @@ abstract interface class LibrarySettingsLocalDataSource {
 
   /// Writes [profile] over the single row, creating it if it is not there.
   Future<LibraryProfile> saveProfile(LibraryProfile profile);
+
+  /// Sets whether the library charges fines.
+  Future<void> saveChargesFines({required bool chargesFines});
+
+  /// Sets the member-form fields the library hides.
+  Future<void> saveHiddenMemberFields(Set<MemberOptionalField> fields);
 }

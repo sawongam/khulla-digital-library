@@ -20,6 +20,7 @@ import 'package:khulla/features/members/presentation/widgets/member_loans_card.d
 import 'package:khulla/features/members/presentation/widgets/member_row_menu.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/l10n/l10n.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla/shared/utils/app_exception_l10n.dart';
 import 'package:khulla/shared/utils/permission_context.dart';
 import 'package:khulla/shared/widgets/error_retry_view.dart';
@@ -42,7 +43,9 @@ class MemberDetailPage extends StatelessWidget {
     final confirmed = await AppDialog.confirmDestructive(
       context: context,
       title: l10n.memberDetailDeleteTitle,
-      message: l10n.memberDetailDeleteBody,
+      message: l10n.memberDetailDeleteBody(
+        context.read<MemberDetailCubit>().state.member?.name ?? '',
+      ),
       confirmLabel: l10n.memberDetailDelete,
       cancelLabel: l10n.commonCancel,
     );
@@ -176,6 +179,18 @@ class MemberDetailPage extends StatelessWidget {
     }
   }
 
+  Future<void> _restoreMember(BuildContext context) async {
+    final l10n = context.l10n;
+    try {
+      await context.read<MemberDetailCubit>().restoreMember(memberId);
+      if (!context.mounted) return;
+      AppToast.success(context, message: l10n.memberRestoreSuccess);
+    } on AppException catch (error) {
+      if (!context.mounted) return;
+      AppToast.error(context, message: error.localizedMessage(l10n));
+    }
+  }
+
   Future<void> _renewMembership(BuildContext context) async {
     final l10n = context.l10n;
     try {
@@ -235,6 +250,7 @@ class MemberDetailPage extends StatelessWidget {
         // needs that permission at `manage`. Fines are their own permission -
         // a desk assistant sees what is owed without being able to settle it
         // - and the checkout button is circulation's.
+        final chargesFines = context.chargesFines;
         final canManage = context.canManage(StaffPermission.members);
         final canSettleFines = context.canManage(StaffPermission.fines);
         final canWorkTheDesk = context.canManage(StaffPermission.circulation);
@@ -302,13 +318,8 @@ class MemberDetailPage extends StatelessWidget {
                             onUnsuspend: () =>
                                 unawaited(_unsuspendMembership(context)),
                             onArchive: () => unawaited(_archiveMember(context)),
-                          ),
-                          AppMenuAction(
-                            label: l10n.memberDetailDelete,
-                            icon: AppIcons.delete,
-                            isDestructive: true,
-                            onSelected: () =>
-                                unawaited(_confirmDelete(context)),
+                            onRestore: () => unawaited(_restoreMember(context)),
+                            onDelete: () => unawaited(_confirmDelete(context)),
                           ),
                         ],
                       ],
@@ -328,8 +339,10 @@ class MemberDetailPage extends StatelessWidget {
                               children: [
                                 loansCard,
                                 SizedBox(height: spacing.md),
-                                finesCard,
-                                SizedBox(height: spacing.md),
+                                if (chargesFines) ...[
+                                  finesCard,
+                                  SizedBox(height: spacing.md),
+                                ],
                                 historyCard,
                               ],
                             ),
@@ -343,8 +356,10 @@ class MemberDetailPage extends StatelessWidget {
                       SizedBox(height: spacing.md),
                       loansCard,
                       SizedBox(height: spacing.md),
-                      finesCard,
-                      SizedBox(height: spacing.md),
+                      if (chargesFines) ...[
+                        finesCard,
+                        SizedBox(height: spacing.md),
+                      ],
                       historyCard,
                     ],
                   ],

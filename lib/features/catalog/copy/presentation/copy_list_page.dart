@@ -67,6 +67,64 @@ class _CopyListPageState extends State<CopyListPage> {
     }
   }
 
+  Future<void> _editCopy(Copy copy) async {
+    final saved = await CopyFormDialog.show(
+      context,
+      titleId: copy.titleId,
+      copyId: copy.id,
+    );
+    if (saved == true && mounted) {
+      AppToast.success(context, message: context.l10n.copiesEditSuccess);
+      await context.read<CopyCubit>().loadCopies();
+    }
+  }
+
+  Future<void> _restore(Copy copy) async {
+    final l10n = context.l10n;
+    try {
+      await context.read<CopyCubit>().restoreCopy(copy.id);
+      if (!mounted) return;
+      AppToast.success(context, message: l10n.copiesRestoreSuccess);
+    } on AppException catch (error) {
+      if (!mounted) return;
+      AppToast.error(context, message: error.localizedMessage(l10n));
+    }
+  }
+
+  /// The row menu: archived copies can be edited or restored, live ones can
+  /// be edited, marked or withdrawn.
+  List<AppMenuAction> _actionsFor(Copy copy, AppLocalizations l10n) => [
+    AppMenuAction(
+      label: l10n.commonEdit,
+      icon: AppIcons.edit,
+      onSelected: () => unawaited(_editCopy(copy)),
+    ),
+    if (copy.archivedAt != null)
+      AppMenuAction(
+        label: l10n.copiesRestore,
+        icon: AppIcons.restore,
+        onSelected: () => unawaited(_restore(copy)),
+      )
+    else ...[
+      AppMenuAction(
+        label: l10n.copiesMarkLost,
+        icon: AppIcons.help,
+        onSelected: () => unawaited(_markLost(copy)),
+      ),
+      AppMenuAction(
+        label: l10n.copiesMarkDamaged,
+        icon: AppIcons.damage,
+        onSelected: () => unawaited(_markDamaged(copy)),
+      ),
+      AppMenuAction(
+        label: l10n.copiesWithdraw,
+        icon: AppIcons.delete,
+        isDestructive: true,
+        onSelected: () => unawaited(_withdraw(copy)),
+      ),
+    ],
+  ];
+
   Future<void> _markLost(Copy copy) async {
     final l10n = context.l10n;
     final confirmed = await AppDialog.confirmDestructive(
@@ -170,7 +228,9 @@ class _CopyListPageState extends State<CopyListPage> {
         id: 'status',
         flex: 2,
         label: l10n.commonStatus,
-        cellBuilder: (context, copy) => CopyStatusBadge(status: copy.status),
+        cellBuilder: (context, copy) => copy.archivedAt != null
+            ? AppStatusBadge(label: l10n.catalogArchivedBadge)
+            : CopyStatusBadge(status: copy.status),
       ),
       AppTableColumn<Copy>(
         id: 'notes',
@@ -194,31 +254,16 @@ class _CopyListPageState extends State<CopyListPage> {
           alignment: Alignment.centerRight,
           cellBuilder: (context, copy) => AppMenuButton(
             tooltip: l10n.commonMoreActions,
-            actions: [
-              AppMenuAction(
-                label: l10n.copiesMarkLost,
-                icon: AppIcons.help,
-                onSelected: () => unawaited(_markLost(copy)),
-              ),
-              AppMenuAction(
-                label: l10n.copiesMarkDamaged,
-                icon: AppIcons.damage,
-                onSelected: () => unawaited(_markDamaged(copy)),
-              ),
-              AppMenuAction(
-                label: l10n.copiesWithdraw,
-                icon: AppIcons.delete,
-                isDestructive: true,
-                onSelected: () => unawaited(_withdraw(copy)),
-              ),
-            ],
+            actions: _actionsFor(copy, l10n),
           ),
         ),
     ];
   }
 
   bool _isFiltered(CopyState state) =>
-      state.query.search.isNotEmpty || state.query.statuses.isNotEmpty;
+      state.query.search.isNotEmpty ||
+      state.query.statuses.isNotEmpty ||
+      state.query.archived;
 
   @override
   Widget build(BuildContext context) {
@@ -259,6 +304,11 @@ class _CopyListPageState extends State<CopyListPage> {
               onChanged: cubit.searchChanged,
             ),
             filters: [
+              AppFilterChip(
+                label: l10n.catalogFilterArchived,
+                selected: state.query.archived,
+                onSelected: cubit.archivedChanged,
+              ),
               for (final status in _filterableStatuses)
                 AppFilterChip(
                   label: status.label(l10n),
@@ -284,6 +334,9 @@ class _CopyListPageState extends State<CopyListPage> {
           compactBuilder: (context, copy) => CopyCard(
             copy: copy,
             onTap: () => context.go(Routes.catalogTitle(copy.titleId)),
+            actions: context.canManage(StaffPermission.catalog)
+                ? _actionsFor(copy, l10n)
+                : const [],
           ),
           emptyState: bootstrapping
               ? const Center(child: AppSpinner())

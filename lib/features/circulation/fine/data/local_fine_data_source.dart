@@ -32,7 +32,7 @@ t.title AS title_name
 
   static const String _fromClause = '''
 FROM fines f
-JOIN members m ON m.id = f.member_id
+LEFT JOIN members m ON m.id = f.member_id
 LEFT JOIN loans l ON l.id = f.loan_id
 LEFT JOIN copies c ON c.id = l.copy_id
 LEFT JOIN titles t ON t.id = c.title_id
@@ -129,7 +129,7 @@ LIMIT ? OFFSET ?
 
   Fine _mapRow(QueryRow row) => Fine(
     id: row.read<String>('id'),
-    memberId: row.read<String>('member_id'),
+    memberId: row.readNullable<String>('member_id'),
     loanId: row.readNullable<String>('loan_id'),
     reason: FineReason.values.byName(row.read<String>('reason')),
     assessed: Money(row.read<int>('assessed')),
@@ -140,7 +140,7 @@ LIMIT ? OFFSET ?
     note: row.readNullable<String>('note'),
     createdAt: row.read<DateTime>('created_at'),
     updatedAt: row.read<DateTime>('updated_at'),
-    memberName: row.read<String>('member_name'),
+    memberName: row.readNullable<String>('member_name'),
     titleName: row.readNullable<String>('title_name'),
   );
 

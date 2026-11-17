@@ -28,6 +28,7 @@ abstract class Member with _$Member {
     required Money finesOwed,
     required int borrowedAllTime,
     String? memberTypeCode,
+    String? grade,
     @Default(true) bool sendNotices,
     Gender? gender,
     DateTime? dateOfBirth,

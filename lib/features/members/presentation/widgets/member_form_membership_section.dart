@@ -1,8 +1,10 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import 'package:khulla/features/members/domain/member_optional_field.dart';
 import 'package:khulla/features/members/domain/models/member_type.dart';
 import 'package:khulla/features/members/presentation/member_labels.dart';
+import 'package:khulla/features/members/presentation/widgets/member_form_sections.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
@@ -23,6 +25,7 @@ class MemberFormMembershipSection extends StatelessWidget {
     required this.onTypeChanged,
     required this.onAddCategory,
     required this.onSendNoticesChanged,
+    required this.shows,
     super.key,
   });
 
@@ -35,6 +38,7 @@ class MemberFormMembershipSection extends StatelessWidget {
   final ValueChanged<MemberType?> onTypeChanged;
   final VoidCallback onAddCategory;
   final ValueChanged<bool> onSendNoticesChanged;
+  final MemberFieldVisibility shows;
 
   @override
   Widget build(BuildContext context) {
@@ -78,27 +82,29 @@ class MemberFormMembershipSection extends StatelessWidget {
           ],
         ),
         MemberExpiresHint(message: l10n.memberFormExpiresHint),
-        AppTextField(
-          label: l10n.fieldNotes,
-          controller: notes,
-          maxLines: 3,
-          minLines: 2,
-          textCapitalization: TextCapitalization.sentences,
-          onChanged: (_) {},
-        ),
-        Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: FractionallySizedBox(
-            widthFactor: 0.4,
-            child: AppSwitchField(
-              value: sendNotices,
-              label: l10n.memberFormNotifications,
-              description: l10n.memberFormNotificationsDescription,
-              stacked: true,
-              onChanged: onSendNoticesChanged,
+        if (shows(MemberOptionalField.notes))
+          AppTextField(
+            label: l10n.fieldNotes,
+            controller: notes,
+            maxLines: 3,
+            minLines: 2,
+            textCapitalization: TextCapitalization.sentences,
+            onChanged: (_) {},
+          ),
+        if (shows(MemberOptionalField.sendNotices))
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: FractionallySizedBox(
+              widthFactor: 0.4,
+              child: AppSwitchField(
+                value: sendNotices,
+                label: l10n.memberFormNotifications,
+                description: l10n.memberFormNotificationsDescription,
+                stacked: true,
+                onChanged: onSendNoticesChanged,
+              ),
             ),
           ),
-        ),
       ],
     );
   }

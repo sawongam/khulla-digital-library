@@ -106,13 +106,17 @@ bool isSelectedShellRoute(
 /// [ShellDestination.permission] set, and it is `AppShell`'s job to skip it
 /// without breaking that index.
 ///
+/// [chargesFines] false drops the fines ledger from the circulation children:
+/// a library that charges none has no ledger to open.
+///
 /// The manual is the one branch with no entry here: it opens from the
 /// account menu (and the phone's *More* sheet) rather than the rail, so it
 /// needs no rail index - only a branch, so it renders inside the shell.
 List<ShellDestination> shellDestinations(
   AppLocalizations l10n,
-  UserRole role,
-) {
+  UserRole role, {
+  bool chargesFines = true,
+}) {
   final canSeeSettings = role.canView(StaffPermission.settings);
   final canWorkTheDesk = role.canManage(StaffPermission.circulation);
 
@@ -165,7 +169,7 @@ List<ShellDestination> shellDestinations(
           label: l10n.navCirculationReservations,
           route: Routes.circulationReservations,
         ),
-        if (role.canView(StaffPermission.fines))
+        if (chargesFines && role.canView(StaffPermission.fines))
           ShellChild(
             label: l10n.navCirculationFines,
             route: Routes.circulationFines,

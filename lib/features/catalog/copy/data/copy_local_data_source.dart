@@ -14,6 +14,10 @@ abstract interface class CopyLocalDataSource {
 
   Future<Copy?> findCopyById(String id);
 
+  /// The copy that holds [barcode], archived or not - the unique index counts
+  /// archived rows, so a clash can be with a copy that is out of sight.
+  Future<Copy?> findCopyHoldingBarcode(String barcode);
+
   Future<Copy> insertCopy({
     required Copy copy,
     String? barcodeOverride,
@@ -21,5 +25,17 @@ abstract interface class CopyLocalDataSource {
 
   Future<Copy> updateCopy(Copy copy);
 
+  /// Changes a copy's barcode, shelf and notes. Throws a duplicate-record
+  /// refusal naming the holder when the barcode belongs to another copy.
+  Future<Copy> updateCopyDetails(
+    String id, {
+    required String barcode,
+    required String shelf,
+    String? notes,
+  });
+
   Future<void> archiveCopy(String id, DateTime archivedAt);
+
+  /// Clears `archived_at`. Refuses while the copy's title is archived.
+  Future<void> restoreCopy(String id);
 }

@@ -15,6 +15,8 @@ import 'package:khulla/core/router/routes.dart';
 import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/l10n/l10n.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_cubit.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// The app's only shell, adapting its navigation to the window it is given.
@@ -45,7 +47,11 @@ class AppShell extends StatelessWidget {
   static const int _compactSlots = 4;
 
   void _goBranch(BuildContext context, int index, UserRole role) {
-    final destinations = shellDestinations(context.l10n, role);
+    final destinations = shellDestinations(
+      context.l10n,
+      role,
+      chargesFines: context.read<LibraryFeaturesCubit>().state.chargesFines,
+    );
     final target = index < destinations.length
         ? destinations[index].route
         : null;
@@ -68,7 +74,12 @@ class AppShell extends StatelessWidget {
     final formFactor = context.formFactor;
     final auth = context.watch<AuthCubit>().state;
     final role = auth.staff?.role ?? UserRole.readOnly;
-    final destinations = shellDestinations(l10n, role);
+    final chargesFines = context.chargesFines;
+    final destinations = shellDestinations(
+      l10n,
+      role,
+      chargesFines: chargesFines,
+    );
     // Every branch stays in `destinations` at its router index - dropping an
     // entry here instead would desync the rail's `onDestinationSelected`
     // from `navigationShell.goBranch`. `visibleIndices` is the list of

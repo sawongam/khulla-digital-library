@@ -3,14 +3,24 @@
 
 import 'package:khulla/features/catalog/copy/domain/models/copy.dart';
 import 'package:khulla/features/catalog/copy/presentation/widgets/copy_status_badge.dart';
+import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// One copy as a card, for the window classes too narrow for the table.
 class CopyCard extends StatelessWidget {
-  const CopyCard({required this.copy, required this.onTap, super.key});
+  const CopyCard({
+    required this.copy,
+    required this.onTap,
+    this.actions = const [],
+    super.key,
+  });
 
   final Copy copy;
   final VoidCallback onTap;
+
+  /// The overflow menu. Empty for a role that may read the catalogue but not
+  /// change it - no menu is drawn then.
+  final List<AppMenuAction> actions;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +48,15 @@ class CopyCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                CopyStatusBadge(status: copy.status),
+                if (copy.archivedAt != null)
+                  AppStatusBadge(label: context.l10n.catalogArchivedBadge)
+                else
+                  CopyStatusBadge(status: copy.status),
+                if (actions.isNotEmpty)
+                  AppMenuButton(
+                    tooltip: context.l10n.commonMoreActions,
+                    actions: actions,
+                  ),
               ],
             ),
             SizedBox(height: spacing.xxs),

@@ -169,7 +169,7 @@ class _ReservationListPageState extends State<ReservationListPage> {
               flex: 3,
               showFrom: FormFactor.medium,
               cellBuilder: (context, hold) =>
-                  Text(hold.memberName ?? l10n.commonNotSet),
+                  Text(hold.memberName ?? l10n.memberFormerMember),
             ),
             AppTableColumn<Reservation>(
               id: 'placed',
@@ -213,12 +213,12 @@ class _ReservationListPageState extends State<ReservationListPage> {
                         enabled: hold.status == ReservationStatus.waiting,
                         onSelected: () => unawaited(_markReady(hold)),
                       ),
-                    if (canSeeMembers)
+                    if (canSeeMembers && hold.memberId != null)
                       AppMenuAction(
                         label: l10n.loansViewMember,
                         icon: AppIcons.person,
                         onSelected: () =>
-                            context.go(Routes.member(hold.memberId)),
+                            context.go(Routes.member(hold.memberId!)),
                       ),
                     if (canWorkTheDesk)
                       AppMenuAction(
@@ -298,7 +298,7 @@ class _ReservationCard extends StatelessWidget {
             ),
             SizedBox(height: spacing.xxs),
             Text(
-              hold.memberName ?? l10n.commonNotSet,
+              hold.memberName ?? l10n.memberFormerMember,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: context.textTheme.bodySmall?.copyWith(

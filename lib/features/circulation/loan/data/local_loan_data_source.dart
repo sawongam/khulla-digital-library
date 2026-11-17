@@ -33,7 +33,7 @@ m.full_name AS member_name
 FROM loans l
 JOIN copies c ON c.id = l.copy_id
 JOIN titles t ON t.id = c.title_id
-JOIN members m ON m.id = l.member_id
+LEFT JOIN members m ON m.id = l.member_id
 ''';
 
   @override
@@ -161,7 +161,7 @@ LIMIT ? OFFSET ?
     return Loan(
       id: row.read<String>('id'),
       copyId: row.read<String>('copy_id'),
-      memberId: row.read<String>('member_id'),
+      memberId: row.readNullable<String>('member_id'),
       checkedOutAt: row.read<DateTime>('checked_out_at'),
       dueAt: DateTime.parse(row.read<String>('due_at')),
       returnedAt: row.readNullable<DateTime>('returned_at'),
@@ -179,7 +179,7 @@ LIMIT ? OFFSET ?
       barcode: row.read<String>('barcode'),
       titleId: row.read<String>('title_id'),
       titleName: row.read<String>('title_name'),
-      memberName: row.read<String>('member_name'),
+      memberName: row.readNullable<String>('member_name'),
     );
   }
 

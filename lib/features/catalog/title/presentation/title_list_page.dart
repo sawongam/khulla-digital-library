@@ -6,6 +6,8 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:khulla/core/di/injection.dart';
+import 'package:khulla/core/error/app_exception.dart';
+import 'package:khulla/core/feedback/app_toast.dart';
 import 'package:khulla/core/router/routes.dart';
 import 'package:khulla/features/catalog/shared/presentation/catalog_labels.dart';
 import 'package:khulla/features/catalog/title/domain/models/title.dart'
@@ -18,6 +20,7 @@ import 'package:khulla/features/catalog/title/presentation/widgets/title_card.da
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/presentation/cubit/reference_data_cubit.dart';
+import 'package:khulla/shared/utils/app_exception_l10n.dart';
 import 'package:khulla/shared/utils/permission_context.dart';
 import 'package:khulla/shared/widgets/collection_page_view.dart';
 import 'package:khulla/shared/widgets/error_retry_view.dart';
@@ -65,10 +68,23 @@ class _TitleListPageState extends State<TitleListPage> {
     }
   }
 
+  Future<void> _restore(catalog.Title title) async {
+    final l10n = context.l10n;
+    try {
+      await context.read<TitleCubit>().restoreTitle(title.id);
+      if (!mounted) return;
+      AppToast.success(context, message: l10n.titlesRestoreSuccess);
+    } on AppException catch (error) {
+      if (!mounted) return;
+      AppToast.error(context, message: error.localizedMessage(l10n));
+    }
+  }
+
   bool _isFiltered(TitleState state) =>
       state.query.search.isNotEmpty ||
       state.query.formatId != null ||
-      state.query.availableOnly;
+      state.query.availableOnly ||
+      state.query.archived;
 
   List<AppTableColumn<catalog.Title>> _columns(AppLocalizations l10n) {
     final scheme = context.colorScheme;
@@ -146,16 +162,30 @@ class _TitleListPageState extends State<TitleListPage> {
         id: 'status',
         label: l10n.commonStatus,
         alignment: Alignment.centerRight,
-        cellBuilder: (context, title) => AppStatusBadge(
-          dense: true,
-          label: title.availableCount > 0
-              ? l10n.statusAvailable
-              : l10n.statusOnLoan,
-          tone: title.availableCount > 0
-              ? AppStatusTone.success
-              : AppStatusTone.brand,
-        ),
+        cellBuilder: (context, title) => title.archivedAt != null
+            ? AppStatusBadge(dense: true, label: l10n.catalogArchivedBadge)
+            : AppStatusBadge(
+                dense: true,
+                label: title.availableCount > 0
+                    ? l10n.statusAvailable
+                    : l10n.statusOnLoan,
+                tone: title.availableCount > 0
+                    ? AppStatusTone.success
+                    : AppStatusTone.brand,
+              ),
       ),
+      if (context.canManage(StaffPermission.catalog))
+        AppTableColumn<catalog.Title>(
+          id: 'actions',
+          label: l10n.commonActions,
+          alignment: Alignment.centerRight,
+          cellBuilder: (context, title) => title.archivedAt == null
+              ? const SizedBox.shrink()
+              : AppTextButton(
+                  onPressed: () => unawaited(_restore(title)),
+                  child: Text(l10n.copiesRestore),
+                ),
+        ),
     ];
   }
 
@@ -198,6 +228,11 @@ class _TitleListPageState extends State<TitleListPage> {
               onChanged: cubit.searchChanged,
             ),
             filters: [
+              AppFilterChip(
+                label: l10n.catalogFilterArchived,
+                selected: state.query.archived,
+                onSelected: cubit.archivedChanged,
+              ),
               AppFilterChip(
                 label: l10n.statusAvailable,
                 icon: AppIcons.success,

@@ -10,6 +10,7 @@ import 'package:khulla/features/circulation/loan/domain/models/loan_query.dart';
 import 'package:khulla/features/circulation/reservation/domain/models/reservation.dart';
 import 'package:khulla/features/circulation/reservation/domain/models/reservation_query.dart';
 import 'package:khulla/features/circulation/shared/domain/fine_reason.dart';
+import 'package:khulla/features/circulation/shared/domain/models/copy_repair_result.dart';
 import 'package:khulla/features/circulation/shared/domain/models/effective_loan_rules.dart';
 
 /// Checkout, return, renew, holds and the ledgers that hang off them.
@@ -79,6 +80,10 @@ abstract interface class CirculationRepository {
   });
 
   Future<void> expireStaleHolds();
+
+  /// Corrects copies whose status disagrees with the open loans on record,
+  /// in one transaction, and reports how many were checked and repaired.
+  Future<CopyRepairResult> repairCopyStatuses();
 
   /// The loan rules that apply to [memberId] - the library's defaults with
   /// their member category's overrides on top. What the check-out desk

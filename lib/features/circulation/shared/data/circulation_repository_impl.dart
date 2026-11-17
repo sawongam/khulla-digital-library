@@ -1,6 +1,7 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import 'package:drift/drift.dart' show BooleanExpressionOperators;
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/error/app_exception.dart';
@@ -19,6 +20,7 @@ import 'package:khulla/features/circulation/reservation/data/reservation_local_d
 import 'package:khulla/features/circulation/reservation/domain/models/reservation.dart';
 import 'package:khulla/features/circulation/reservation/domain/models/reservation_query.dart';
 import 'package:khulla/features/circulation/shared/data/circulation_copies.dart';
+import 'package:khulla/features/circulation/shared/data/circulation_copy_repair.dart';
 import 'package:khulla/features/circulation/shared/data/circulation_fine_writes.dart';
 import 'package:khulla/features/circulation/shared/data/circulation_hold_queue.dart';
 import 'package:khulla/features/circulation/shared/data/circulation_loan_writes.dart';
@@ -27,7 +29,9 @@ import 'package:khulla/features/circulation/shared/domain/circulation_fine.dart'
 import 'package:khulla/features/circulation/shared/domain/circulation_repository.dart';
 import 'package:khulla/features/circulation/shared/domain/circulation_rules.dart';
 import 'package:khulla/features/circulation/shared/domain/fine_reason.dart';
+import 'package:khulla/features/circulation/shared/domain/models/copy_repair_result.dart';
 import 'package:khulla/features/circulation/shared/domain/models/effective_loan_rules.dart';
+import 'package:khulla/features/settings/data/tables/library_settings.dart';
 import 'package:khulla/features/staff_auth/domain/session_repository.dart';
 
 /// [CirculationRepository] over the local catalogue.
@@ -63,8 +67,15 @@ class CirculationRepositoryImpl implements CirculationRepository {
   late final _loanWrites = CirculationLoanWrites(_db);
   late final _fineWrites = CirculationFineWrites(_db);
   late final _holdQueue = CirculationHoldQueue(_db, _rules);
+  late final _copyRepair = CirculationCopyRepair(_db, _holdQueue);
 
   static const String _source = 'CirculationRepositoryImpl';
+
+  @override
+  Future<CopyRepairResult> repairCopyStatuses() => guardDatabase(
+    () => _db.transaction(_copyRepair.repairCopyStatuses),
+    source: '$_source.repairCopyStatuses',
+  );
 
   @override
   Future<Loan> checkOutCopy({
@@ -137,6 +148,18 @@ class CirculationRepositoryImpl implements CirculationRepository {
       throw const NotFoundException.because(AppErrorReason.memberNotFound);
     }
 
+    // A copy that shows as available while a loan row still holds it would
+    // otherwise die on the unique index with a generic conflict. Say so.
+    final openLoanOnCopy =
+        await (_db.select(_db.loans)..where(
+              (loan) =>
+                  loan.copyId.equals(copyRow.id) & loan.returnedAt.isNull(),
+            ))
+            .getSingleOrNull();
+    if (openLoanOnCopy != null && copyRow.status != CopyStatus.onLoan) {
+      throw const ConflictException.because(AppErrorReason.copyHasOpenLoan);
+    }
+
     final rules = await _rules.loadEffectiveRules(memberRow.memberTypeId);
 
     // Checked in this order, and each fact read only once the rules before
@@ -171,7 +194,8 @@ class CirculationRepositoryImpl implements CirculationRepository {
       rules: rules,
     );
     ensureFinesWithinLimit(
-      outstanding: rules.maxOutstandingFine == null
+      // A library that charges no fines has no balance to be held against.
+      outstanding: rules.maxOutstandingFine == null || !await _chargesFines()
           ? Money.zero
           : await _fineDataSource.outstandingForMember(memberId),
       rules: rules,
@@ -285,9 +309,12 @@ class CirculationRepositoryImpl implements CirculationRepository {
       maximumFine: openLoan.ruleMaximumFine,
     );
 
-    if (fineAmount.isPositive && !waiveFine) {
+    // Read here, in the transaction: a library that charges no fines never
+    // assesses one, whatever the screen asked for.
+    if (fineAmount.isPositive && !waiveFine && await _chargesFines()) {
       await _fineWrites.insertOverdueFine(
-        memberId: openLoan.memberId,
+        // An open loan always has its member: deleting one is refused.
+        memberId: openLoan.memberId!,
         loanId: openLoan.id,
         amount: fineAmount,
       );
@@ -299,6 +326,17 @@ class CirculationRepositoryImpl implements CirculationRepository {
     );
 
     return (await _loanDataSource.findLoanById(openLoan.id))!;
+  }
+
+  /// Whether the library charges fines. A catalogue with no settings row yet
+  /// charges them, as the column's default does.
+  Future<bool> _chargesFines() async {
+    final row =
+        await (_db.select(
+              _db.librarySettings,
+            )..where((s) => s.id.equals(LibrarySettings.singletonId)))
+            .getSingleOrNull();
+    return row?.chargesFines ?? true;
   }
 
   @override
@@ -323,7 +361,7 @@ class CirculationRepositoryImpl implements CirculationRepository {
       throw const NotFoundException.because(AppErrorReason.copyNotFound);
     }
 
-    final rules = await _rules.loadEffectiveRulesForMember(loan.memberId);
+    final rules = await _rules.loadEffectiveRulesForMember(loan.memberId!);
 
     ensureRenewable(
       returnedAt: loan.returnedAt,

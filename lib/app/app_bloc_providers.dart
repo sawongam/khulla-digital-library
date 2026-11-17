@@ -9,6 +9,7 @@ import 'package:khulla/core/di/injection.dart';
 import 'package:khulla/core/theme/cubit/theme_cubit.dart';
 import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
 import 'package:khulla/shared/presentation/cubit/library_branding_cubit.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_cubit.dart';
 import 'package:khulla/shared/presentation/cubit/reference_data_cubit.dart';
 
 /// Root [BlocProvider]s for the widget tree.
@@ -34,6 +35,9 @@ class AppBlocProviders extends StatelessWidget {
         BlocProvider<AuthCubit>.value(value: getIt<AuthCubit>()),
         BlocProvider<ReferenceDataCubit>.value(value: referenceData),
         BlocProvider<LibraryBrandingCubit>.value(value: branding),
+        BlocProvider<LibraryFeaturesCubit>.value(
+          value: getIt<LibraryFeaturesCubit>(),
+        ),
       ],
       child: child,
     );

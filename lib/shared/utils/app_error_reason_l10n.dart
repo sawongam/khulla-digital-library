@@ -10,7 +10,12 @@ import 'package:khulla/l10n/l10n.dart';
 /// has copy here, so no refusal can quietly fall back to "that action
 /// conflicts with the current record".
 extension AppErrorReasonL10n on AppErrorReason {
-  String localizedMessage(AppLocalizations l10n) => switch (this) {
+  /// [args] fill the reasons whose sentence names a record - the barcode and
+  /// the title that holds it. A reason with fixed copy ignores them.
+  String localizedMessage(
+    AppLocalizations l10n, {
+    List<String> args = const <String>[],
+  }) => switch (this) {
     AppErrorReason.copyNotFound => l10n.errorReasonCopyNotFound,
     AppErrorReason.titleNotFound => l10n.errorReasonTitleNotFound,
     AppErrorReason.memberNotFound => l10n.errorReasonMemberNotFound,
@@ -29,7 +34,8 @@ extension AppErrorReasonL10n on AppErrorReason {
       l10n.errorReasonMembershipAlreadySuspended,
     AppErrorReason.membershipNotSuspended =>
       l10n.errorReasonMembershipNotSuspended,
-    AppErrorReason.memberHasHistory => l10n.errorReasonMemberHasHistory,
+    AppErrorReason.memberHasOpenLoans => l10n.errorReasonMemberHasOpenLoans,
+    AppErrorReason.memberHasUnpaidFines => l10n.errorReasonMemberHasUnpaidFines,
     AppErrorReason.copyArchived => l10n.errorReasonCopyArchived,
     AppErrorReason.titleArchived => l10n.errorReasonTitleArchived,
     AppErrorReason.titleNotLendable => l10n.errorReasonTitleNotLendable,
@@ -58,9 +64,22 @@ extension AppErrorReasonL10n on AppErrorReason {
     AppErrorReason.fineAmountNotPositive =>
       l10n.errorReasonFineAmountNotPositive,
     AppErrorReason.copyOnLoan => l10n.errorReasonCopyOnLoan,
+    AppErrorReason.copyHasOpenLoan => l10n.errorReasonCopyHasOpenLoan,
     AppErrorReason.copyHeldForReservation =>
       l10n.errorReasonCopyHeldForReservation,
     AppErrorReason.titleHasCopies => l10n.errorReasonTitleHasCopies,
+    AppErrorReason.titleHasCopiesOnLoan => l10n.errorReasonTitleHasCopiesOnLoan,
+    AppErrorReason.isbnInvalid => l10n.errorReasonIsbnInvalid,
+    AppErrorReason.isbnNotFound => l10n.errorReasonIsbnNotFound,
+    AppErrorReason.isbnLookupOffline => l10n.errorReasonIsbnLookupOffline,
+    AppErrorReason.barcodeInUse => l10n.errorReasonBarcodeInUse(
+      _arg(args, 0),
+      _arg(args, 1),
+    ),
+    AppErrorReason.barcodeInUseByArchivedCopy =>
+      l10n.errorReasonBarcodeInUseByArchivedCopy(_arg(args, 0), _arg(args, 1)),
+    AppErrorReason.barcodeRequired => l10n.errorReasonBarcodeRequired,
+    AppErrorReason.restoreTitleFirst => l10n.errorReasonRestoreTitleFirst,
     AppErrorReason.cannotChangeOwnRole => l10n.errorReasonCannotChangeOwnRole,
     AppErrorReason.cannotDisableOwnAccount => l10n.usersSelfDisableError,
     AppErrorReason.lastActiveAdministrator => l10n.usersLastAdministratorError,
@@ -77,3 +96,6 @@ extension AppErrorReasonL10n on AppErrorReason {
     AppErrorReason.restoreNotApplied => l10n.errorReasonRestoreNotApplied,
   };
 }
+
+String _arg(List<String> args, int index) =>
+    index < args.length ? args[index] : '';

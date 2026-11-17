@@ -1,11 +1,13 @@
 // Copyright (c) 2026 Khulla Digital Library contributors.
 // SPDX-License-Identifier: AGPL-3.0-only
 
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/money/money_format.dart';
 import 'package:khulla/core/storage/logo_store.dart' as logo_store;
+import 'package:khulla/features/members/domain/member_optional_field.dart';
 import 'package:khulla/features/settings/data/library_settings_local_data_source.dart';
 import 'package:khulla/features/settings/domain/library_settings_repository.dart';
 import 'package:khulla/features/settings/domain/models/library_profile.dart';
@@ -16,6 +18,16 @@ class LibrarySettingsRepositoryImpl implements LibrarySettingsRepository {
   LibrarySettingsRepositoryImpl(this._dataSource);
 
   final LibrarySettingsLocalDataSource _dataSource;
+  final StreamController<LibraryProfile> _changes =
+      StreamController<LibraryProfile>.broadcast();
+
+  @override
+  Stream<LibraryProfile> get changes => _changes.stream;
+
+  LibraryProfile _announce(LibraryProfile profile) {
+    _changes.add(profile);
+    return profile;
+  }
 
   @override
   Future<LibraryProfile?> findProfile() async {
@@ -35,7 +47,7 @@ class LibrarySettingsRepositoryImpl implements LibrarySettingsRepository {
       ),
     );
     MoneyFormat.current = saved.currency.format;
-    return saved;
+    return _announce(saved);
   }
 
   @override
@@ -54,8 +66,10 @@ class LibrarySettingsRepositoryImpl implements LibrarySettingsRepository {
       await logo_store.deleteLogo(previousRef);
     }
 
-    return await _dataSource.saveProfile(
-      existing.copyWith(logoRef: ref, updatedAt: DateTime.now()),
+    return _announce(
+      await _dataSource.saveProfile(
+        existing.copyWith(logoRef: ref, updatedAt: DateTime.now()),
+      ),
     );
   }
 
@@ -71,9 +85,33 @@ class LibrarySettingsRepositoryImpl implements LibrarySettingsRepository {
     final previousRef = existing.logoRef;
     if (previousRef != null) await logo_store.deleteLogo(previousRef);
 
-    return await _dataSource.saveProfile(
-      existing.copyWith(logoRef: null, updatedAt: DateTime.now()),
+    return _announce(
+      await _dataSource.saveProfile(
+        existing.copyWith(logoRef: null, updatedAt: DateTime.now()),
+      ),
     );
+  }
+
+  @override
+  Future<LibraryProfile> saveChargesFines({required bool chargesFines}) async {
+    await _dataSource.saveChargesFines(chargesFines: chargesFines);
+    return _announce(await _requireProfile());
+  }
+
+  @override
+  Future<LibraryProfile> saveHiddenMemberFields(
+    Set<MemberOptionalField> fields,
+  ) async {
+    await _dataSource.saveHiddenMemberFields(fields);
+    return _announce(await _requireProfile());
+  }
+
+  Future<LibraryProfile> _requireProfile() async {
+    final profile = await _dataSource.findProfile();
+    if (profile == null) {
+      throw StateError('The library profile does not exist yet.');
+    }
+    return profile;
   }
 
   @override

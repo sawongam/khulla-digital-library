@@ -69,6 +69,12 @@ class LibrarySettings extends Table {
   /// interpreted directly outside that pair.
   TextColumn get logoRef => text().nullable()();
 
+  /// Whether this library charges fines at all. Off hides fines everywhere.
+  BoolColumn get chargesFines => boolean().withDefault(const Constant(true))();
+
+  /// Comma-separated `MemberOptionalField` keys the member form hides.
+  TextColumn get hiddenMemberFields => text().withDefault(const Constant(''))();
+
   DateTimeColumn get createdAt => dateTime()();
 
   DateTimeColumn get updatedAt => dateTime().nullable()();

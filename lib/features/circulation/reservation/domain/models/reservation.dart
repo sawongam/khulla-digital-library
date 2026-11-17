@@ -13,12 +13,12 @@ abstract class Reservation with _$Reservation {
   const factory Reservation({
     required String id,
     required String titleId,
-    required String memberId,
     required DateTime placedAt,
     required ReservationStatus status,
     required DateTime createdAt,
     required DateTime updatedAt,
     String? titleName,
+    String? memberId,
     String? memberName,
     String? readyCopyId,
     DateTime? readyAt,

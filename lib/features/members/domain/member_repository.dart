@@ -10,7 +10,7 @@ import 'package:khulla/features/members/domain/models/member_query.dart';
 ///
 /// [saveMember] resolves the type name, builds search text, and sets
 /// membership expiry on first insert from loan rules. [removeMember] refuses
-/// when loans or fines exist.
+/// while loans are open or fines are unpaid.
 
 abstract interface class MemberRepository {
   Future<MemberListResult> findMembers(MemberQuery query);
@@ -24,6 +24,7 @@ abstract interface class MemberRepository {
     required String memberTypeId,
     String? id,
     String? barcode,
+    String? grade,
     bool sendNotices,
     Gender? gender,
     DateTime? dateOfBirth,
@@ -43,11 +44,15 @@ abstract interface class MemberRepository {
 
   Future<void> archiveMember(String id);
 
+  Future<void> restoreMember(String id);
+
   Future<Member> suspendMember(String id, {String? reason});
 
   Future<Member> unsuspendMember(String id);
 
   Future<Member> renewMembership(String id);
 
+  /// Deletes the member; their past loans, fines and holds stay without a
+  /// name. Refused while they hold a loan or owe a fine.
   Future<void> removeMember(String id);
 }

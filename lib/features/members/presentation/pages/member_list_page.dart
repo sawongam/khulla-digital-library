@@ -172,12 +172,43 @@ class _MemberListPageState extends State<MemberListPage> with DisposeBag {
     }
   }
 
+  Future<void> _restoreMember(BuildContext context, Member member) async {
+    final l10n = context.l10n;
+    try {
+      await context.read<MemberCubit>().restoreMember(member.id);
+      if (!context.mounted) return;
+      AppToast.success(context, message: l10n.memberRestoreSuccess);
+    } on AppException catch (error) {
+      if (!context.mounted) return;
+      AppToast.error(context, message: error.localizedMessage(l10n));
+    }
+  }
+
+  Future<void> _deleteMember(BuildContext context, Member member) async {
+    final l10n = context.l10n;
+    final confirmed = await AppDialog.confirmDestructive(
+      context: context,
+      title: l10n.memberDetailDeleteTitle,
+      message: l10n.memberDetailDeleteBody(member.name),
+      confirmLabel: l10n.memberDetailDelete,
+      cancelLabel: l10n.commonCancel,
+    );
+    if (!context.mounted || !confirmed) return;
+    try {
+      await context.read<MemberCubit>().removeMember(member.id);
+    } on AppException catch (error) {
+      if (!context.mounted) return;
+      AppToast.error(context, message: error.localizedMessage(l10n));
+    }
+  }
+
   bool _isFiltered(MemberState state) =>
       state.query.search.isNotEmpty ||
       state.query.withLoans ||
       state.query.owesFines ||
       state.query.suspended ||
-      state.query.expiring;
+      state.query.expiring ||
+      state.query.archived;
 
   @override
   Widget build(BuildContext context) {
@@ -220,6 +251,7 @@ class _MemberListPageState extends State<MemberListPage> with DisposeBag {
             onOwesFinesChanged: cubit.owesFinesChanged,
             onExpiringChanged: cubit.expiringChanged,
             onSuspendedChanged: cubit.suspendedChanged,
+            onArchivedChanged: cubit.archivedChanged,
             onClearFilters: cubit.clearFilters,
           ),
           items: state.members,
@@ -233,6 +265,8 @@ class _MemberListPageState extends State<MemberListPage> with DisposeBag {
             onUnsuspend: (member) =>
                 unawaited(_unsuspendMembership(context, member)),
             onArchive: (member) => unawaited(_archiveMember(context, member)),
+            onRestore: (member) => unawaited(_restoreMember(context, member)),
+            onDelete: (member) => unawaited(_deleteMember(context, member)),
           ),
           sort: sort,
           onSort: (next) => cubit.sortChanged(next.columnId, next.ascending),

@@ -17,7 +17,6 @@ abstract class Loan with _$Loan {
   const factory Loan({
     required String id,
     required String copyId,
-    required String memberId,
     required DateTime checkedOutAt,
     required DateTime dueAt,
     required int renewalCount,
@@ -29,6 +28,7 @@ abstract class Loan with _$Loan {
     String? barcode,
     String? titleId,
     String? titleName,
+    String? memberId,
     String? memberName,
     DateTime? returnedAt,
     CopyCondition? returnCondition,

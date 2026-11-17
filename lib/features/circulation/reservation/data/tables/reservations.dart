@@ -28,8 +28,13 @@ class Reservations extends Table {
   TextColumn get titleId =>
       text().references(Titles, #id, onDelete: KeyAction.restrict)();
 
-  TextColumn get memberId =>
-      text().references(Members, #id, onDelete: KeyAction.restrict)();
+  /// Null once the member is deleted: the record outlives the person, and
+  /// reads show it as a former member.
+  TextColumn get memberId => text().nullable().references(
+    Members,
+    #id,
+    onDelete: KeyAction.restrict,
+  )();
 
   DateTimeColumn get placedAt => dateTime()();
 

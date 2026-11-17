@@ -32,7 +32,8 @@ enum AppErrorReason {
   membershipExpired,
   membershipAlreadySuspended,
   membershipNotSuspended,
-  memberHasHistory,
+  memberHasOpenLoans,
+  memberHasUnpaidFines,
 
   // Check-out.
   copyArchived,
@@ -67,8 +68,17 @@ enum AppErrorReason {
 
   // Catalogue.
   copyOnLoan,
+  copyHasOpenLoan,
   copyHeldForReservation,
   titleHasCopies,
+  titleHasCopiesOnLoan,
+  isbnInvalid,
+  isbnNotFound,
+  isbnLookupOffline,
+  barcodeInUse,
+  barcodeInUseByArchivedCopy,
+  barcodeRequired,
+  restoreTitleFirst,
 
   // Staff accounts.
   cannotChangeOwnRole,

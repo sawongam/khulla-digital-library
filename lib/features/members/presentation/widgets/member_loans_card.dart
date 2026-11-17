@@ -7,6 +7,7 @@ import 'package:khulla/features/circulation/shared/presentation/circulation_labe
 import 'package:khulla/features/members/presentation/cubit/member_detail_cubit.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/section_card.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// The copies a member is holding, or everything they have brought back.
@@ -90,24 +91,25 @@ class MemberLoansCard extends StatelessWidget {
                         : loan.dueOn,
                   ),
                 ),
-                AppTableColumn<Loan>(
-                  id: 'fine',
-                  label: l10n.loansColumnFine,
-                  flex: 2,
-                  alignment: Alignment.centerRight,
-                  showFrom: FormFactor.expanded,
-                  cellBuilder: (context, loan) {
-                    final fine = loan.accruedFine;
-                    return Text(
-                      fine.isZero ? l10n.commonNotSet : fine.display(),
-                      style: fine.isZero
-                          ? muted
-                          : context.textTheme.bodyMedium?.copyWith(
-                              color: scheme.error,
-                            ),
-                    );
-                  },
-                ),
+                if (context.chargesFines)
+                  AppTableColumn<Loan>(
+                    id: 'fine',
+                    label: l10n.loansColumnFine,
+                    flex: 2,
+                    alignment: Alignment.centerRight,
+                    showFrom: FormFactor.expanded,
+                    cellBuilder: (context, loan) {
+                      final fine = loan.accruedFine;
+                      return Text(
+                        fine.isZero ? l10n.commonNotSet : fine.display(),
+                        style: fine.isZero
+                            ? muted
+                            : context.textTheme.bodyMedium?.copyWith(
+                                color: scheme.error,
+                              ),
+                      );
+                    },
+                  ),
                 AppTableColumn<Loan>(
                   id: 'status',
                   label: l10n.commonStatus,

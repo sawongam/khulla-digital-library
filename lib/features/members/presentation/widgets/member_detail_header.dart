@@ -5,6 +5,7 @@ import 'package:khulla/features/members/domain/models/member.dart';
 import 'package:khulla/features/members/presentation/member_labels.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/record_header.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// A borrower's identity block at the top of their detail screen.
@@ -31,13 +32,21 @@ class MemberDetailHeader extends StatelessWidget {
     return RecordHeader(
       title: member.name,
       initials: member.initials,
-      facts: [member.barcode, member.memberTypeName],
+      facts: [
+        member.barcode,
+        member.memberTypeName,
+        if (member.grade != null) member.grade!,
+      ],
       badges: [
+        if (member.isArchived)
+          AppStatusBadge(
+            label: l10n.membersArchivedBadge,
+          ),
         AppStatusBadge(
           label: member.status.label(l10n),
           tone: member.status.tone,
         ),
-        if (member.finesOwed.isPositive)
+        if (context.chargesFines && member.finesOwed.isPositive)
           AppStatusBadge(
             label: l10n.memberDetailOwes(member.finesOwed.display()),
             tone: AppStatusTone.danger,

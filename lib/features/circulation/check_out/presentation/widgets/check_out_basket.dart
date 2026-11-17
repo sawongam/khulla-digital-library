@@ -15,6 +15,7 @@ class CheckOutBasket extends StatelessWidget {
   const CheckOutBasket({
     required this.copies,
     required this.scanController,
+    required this.scanFocus,
     required this.onScanSubmitted,
     required this.onRemove,
     super.key,
@@ -25,6 +26,10 @@ class CheckOutBasket extends StatelessWidget {
   /// The scan field's controller, owned by the page so it can be cleared
   /// after every submission.
   final TextEditingController scanController;
+
+  /// The scan field's focus node, owned by the page so focus can return to
+  /// the field after every scan.
+  final FocusNode scanFocus;
 
   final ValueChanged<String> onScanSubmitted;
   final void Function(Copy copy) onRemove;
@@ -43,6 +48,7 @@ class CheckOutBasket extends StatelessWidget {
         children: [
           AppTextField(
             controller: scanController,
+            focusNode: scanFocus,
             hintText: l10n.checkOutScanHint,
             prefixIcon: AppIcon(
               AppIcons.scan,

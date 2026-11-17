@@ -54,7 +54,7 @@ void main() {
 
   group('CirculationRepositoryImpl', () {
     test(
-      'second open loan on same copy throws DuplicateRecordException',
+      'second open loan on a copy marked available names the open loan',
       () async {
         final reference = await seedReferenceData(db);
         final seeded = await seedTitleWithCopy(
@@ -85,7 +85,13 @@ void main() {
             memberId: member.memberId,
             barcode: seeded.barcode,
           ),
-          throwsA(isA<DuplicateRecordException>()),
+          throwsA(
+            isA<ConflictException>().having(
+              (error) => error.reason,
+              'reason',
+              AppErrorReason.copyHasOpenLoan,
+            ),
+          ),
         );
       },
     );

@@ -9,6 +9,7 @@ import 'package:khulla/features/users/presentation/user_labels.dart';
 import 'package:khulla/features/users/presentation/widgets/permission_matrix.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/components/section_card.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// What each role is allowed to do.
@@ -84,7 +85,12 @@ class _RoleCard extends StatelessWidget {
     final colors = context.appColors;
     // Anything the role can open counts, at either level - the card is a
     // reach-at-a-glance, and the matrix below it says how far.
-    final granted = StaffPermission.values.where(role.canView).length;
+    final permissions = [
+      for (final permission in StaffPermission.values)
+        if (context.chargesFines || permission != StaffPermission.fines)
+          permission,
+    ];
+    final granted = permissions.where(role.canView).length;
 
     return AppCard(
       child: Column(
@@ -133,7 +139,7 @@ class _RoleCard extends StatelessWidget {
                 child: Text(
                   l10n.rolesPermissionCount(
                     '$granted',
-                    '${StaffPermission.values.length}',
+                    '${permissions.length}',
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

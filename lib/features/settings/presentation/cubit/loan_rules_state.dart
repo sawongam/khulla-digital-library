@@ -3,6 +3,7 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/error/app_exception.dart';
+import 'package:khulla/features/settings/domain/models/library_profile.dart';
 import 'package:khulla/features/settings/domain/models/loan_rules.dart';
 import 'package:khulla/shared/models/load_status.dart';
 
@@ -14,6 +15,7 @@ abstract class LoanRulesState with _$LoanRulesState {
   const factory LoanRulesState({
     @Default(LoadStatus.initial) LoadStatus status,
     LoanRules? rules,
+    LibraryProfile? profile,
     AppException? error,
     @Default(false) bool isSaving,
   }) = _LoanRulesState;
