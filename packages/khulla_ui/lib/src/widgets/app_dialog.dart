@@ -283,9 +283,8 @@ class AppDialog extends StatelessWidget {
 /// width - dismiss first, confirm last and flush right.
 ///
 /// A phone footer stays a *row*: stacking two buttons costs a whole extra
-/// band of height on the screen that has the least of it. The one exception
-/// is a lone action on a narrow slot, which fills the footer on its own
-/// rather than floating a small button in a wide empty row.
+/// band of height on the screen that has the least of it. A lone action sits
+/// at the trailing edge too.
 ///
 /// Pass the children in reading order - dismiss first, confirm last.
 class AppDialogActions extends StatelessWidget {
@@ -298,36 +297,14 @@ class AppDialogActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final spacing = context.appSpacing;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // The footer is measured by its slot, not the window: a 576px panel
-        // on a wide screen still wants the compact row, and a full-screen
-        // phone page must keep it even if the reporting context above
-        // disagrees about the breakpoint.
-        final narrow =
-            context.formFactor.isCompact || constraints.maxWidth < 480;
-        // A lone action on a narrow slot fills the footer; every other row
-        // clusters its buttons at the trailing edge.
-        if (narrow && children.length == 1) {
-          return Row(
-            children: [
-              Expanded(
-                child: SizedBox(width: double.infinity, child: children.single),
-              ),
-            ],
-          );
-        }
-
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            for (final (index, child) in children.indexed) ...[
-              if (index > 0) SizedBox(width: spacing.xs),
-              child,
-            ],
-          ],
-        );
-      },
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        for (final (index, child) in children.indexed) ...[
+          if (index > 0) SizedBox(width: spacing.xs),
+          child,
+        ],
+      ],
     );
   }
 }

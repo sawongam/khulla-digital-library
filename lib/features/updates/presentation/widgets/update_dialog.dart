@@ -32,7 +32,6 @@ class UpdateDialog extends StatelessWidget {
       title: context.l10n.updateDialogTitle,
       icon: AppIcons.appUpdate,
       iconTone: AppStatusTone.brand,
-      showClose: false,
       content: BlocProvider.value(value: cubit, child: const UpdateDialog._()),
       actionsBuilder: (_) =>
           BlocProvider.value(value: cubit, child: const _UpdateActions()),
@@ -149,7 +148,8 @@ class _UpdateBody extends StatelessWidget {
   }
 }
 
-/// The footer: close, and the one step the flow is waiting on.
+/// The footer: the one step the flow is waiting on, if there is one.
+/// Closing is the corner X's job.
 class _UpdateActions extends StatelessWidget {
   const _UpdateActions();
 
@@ -158,12 +158,6 @@ class _UpdateActions extends StatelessWidget {
     final l10n = context.l10n;
     final state = context.watch<UpdateCubit>().state;
     final cubit = context.read<UpdateCubit>();
-
-    final close = AppDialog.secondaryAction(
-      context: context,
-      label: l10n.commonClose,
-      onPressed: () => Navigator.of(context).pop(),
-    );
 
     Widget primary(String label, VoidCallback onPressed) =>
         AppDialog.primaryAction(
@@ -200,6 +194,6 @@ class _UpdateActions extends StatelessWidget {
       },
     };
 
-    return AppDialogActions(children: [close, ?action]);
+    return AppDialogActions(children: [?action]);
   }
 }
