@@ -192,12 +192,38 @@ jobs:
         with:
           bootstrap: pub
 
-      # One universal APK rather than per-ABI splits, signed with debug keys
-      # (see android/app/build.gradle.kts). It is a workflow artifact for
-      # testers only - the release does not attach it. Android users get
-      # Khulla from Google Play, and an APK signed with any other key can
-      # neither update a Play install nor be updated by one: switching means
-      # uninstalling, which deletes the library's data on the phone.
+      # The APK has to be signed with the same key every release, or Android
+      # refuses to install it over the last one - and the only way past that
+      # is uninstalling, which deletes the library's data on the phone. A
+      # runner's debug key is generated fresh on every run, so it cannot be
+      # that key: this writes android/key.properties from the repository's
+      # sideload key, which build.gradle.kts then signs with.
+      #
+      # Without the secrets it falls back to the debug key and warns - a
+      # manual test build still works, but its APK cannot update anything.
+      # See "Signing the APK" in docs/contributing/releasing.md.
+      - name: Load the APK signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::No ANDROID_KEYSTORE_BASE64 secret - the APK is" \
+                 "debug-signed and cannot be installed over another release's APK."
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/sideload-keystore.jks
+          {
+            echo "storeFile=sideload-keystore.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > android/key.properties
+
+      # One universal APK rather than per-ABI splits: someone sideloading from
+      # the release page should not have to know what a CPU architecture is.
       - name: Build
         run: flutter build apk --release -t lib/main_prod.dart
 
@@ -258,9 +284,6 @@ jobs:
 
       - name: Collect and checksum
         run: |
-          # Android ships through Google Play, not this page - see the
-          # android job.
-          rm -rf artifacts/android
           mkdir -p dist
           find artifacts -type f -exec mv {} dist/ \;
           cd dist
@@ -327,11 +350,18 @@ jobs:
             | --- | --- | --- |
             | Windows | `khulla-${{ needs.version.outputs.version }}-windows-x64-setup.exe` | **Recommended.** Run the installer - adds Start Menu entry + uninstaller (no admin required). SmartScreen will warn about an unknown publisher - *More info* → *Run anyway*. |
             | Windows (portable) | `khulla-${{ needs.version.outputs.version }}-windows-x64.zip` | Unzip anywhere, run `khulla.exe`. No install needed. |
-            | Android | [Google Play](https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app) | Install from the Play Store, which keeps it up to date. |
+            | Android | [Google Play](https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app) | **Recommended.** Install from the Play Store, which keeps it up to date. |
+            | Android (APK) | `khulla-${{ needs.version.outputs.version }}-android.apk` | For phones without Play. Allow installs from your browser or file manager; install each new APK over the last. |
             | Web | `khulla-${{ needs.version.outputs.version }}-web.tar.gz` | Serve the extracted folder from any static host. |
             | Linux | `khulla-${{ needs.version.outputs.version }}-linux-x64.tar.gz` | Extract and run `./khulla`. |
 
             Verify a download against `SHA256SUMS.txt`.
+
+            **On Android, pick Play or the APK and stay with it.** They are
+            signed with different keys, so Android treats them as different
+            apps and neither can update the other. To switch, take a backup
+            (**Settings → Backup**), uninstall, install the other, and restore
+            the backup. Uninstalling without a backup deletes the catalogue.
 
             Already running Khulla? **Account menu → Check for updates.** The
             Windows installer updates itself in one click, after backing up

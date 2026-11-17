@@ -18,7 +18,7 @@ class HelpAboutDialog extends StatelessWidget {
   /// *About* above it only repeats what the menu entry just said.
   static Future<void> show(BuildContext context) => AppDialog.show<void>(
     context: context,
-    width: AppDialogWidth.xxl,
+    width: AppDialogWidth.xxxxl,
     content: const HelpAboutDialog(),
     // No footer button: about is read and dismissed, never confirmed, and a
     // lone *Close* only adds a second thing that does what the close chip

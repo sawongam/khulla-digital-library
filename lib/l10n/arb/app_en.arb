@@ -933,6 +933,10 @@
     "@updateManualBody": {
         "description": "Update dialog - portable Windows and Linux, which cannot update in place"
     },
+    "updateApkBody": "Download the new APK from the release page and install it over this one. Your catalogue stays on this phone.",
+    "@updateApkBody": {
+        "description": "Update dialog - Android installed from the release-page APK"
+    },
     "updateManualAction": "Open download page",
     "@updateManualAction": {
         "description": "Update dialog - opens the release page in the browser"

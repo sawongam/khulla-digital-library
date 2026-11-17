@@ -869,6 +869,10 @@
   "@updateManualBody": {
     "description": "Update dialog - portable Windows and Linux, which cannot update in place"
   },
+  "updateApkBody": "रिलिज पेजबाट नयाँ APK डाउनलोड गरेर यसैमाथि इन्स्टल गर्नुहोस्। तपाईंको सूची यही फोनमा रहन्छ।",
+  "@updateApkBody": {
+    "description": "Update dialog - Android installed from the release-page APK"
+  },
   "updateManualAction": "डाउनलोड पेज खोल्नुहोस्",
   "@updateManualAction": {
     "description": "Update dialog - opens the release page in the browser"

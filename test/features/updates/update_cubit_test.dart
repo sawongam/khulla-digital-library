@@ -168,6 +168,20 @@ void main() {
     });
   });
 
+  test('a release-page APK is told about the update, never installed '
+      'by the app', () async {
+    start(UpdateChannel.androidApk);
+    await cubit.checkForUpdate();
+
+    expect(cubit.state.status, UpdateStatus.available);
+
+    await cubit.installUpdate();
+    await cubit.downloadUpdate();
+
+    expect(repository.applied, isEmpty);
+    expect(cubit.state.status, isNot(UpdateStatus.readyToInstall));
+  });
+
   test('the web build installs by reloading, with no download', () async {
     start(UpdateChannel.web);
     await cubit.checkForUpdate();

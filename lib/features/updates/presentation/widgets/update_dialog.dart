@@ -32,6 +32,7 @@ class UpdateDialog extends StatelessWidget {
       title: context.l10n.updateDialogTitle,
       icon: AppIcons.appUpdate,
       iconTone: AppStatusTone.brand,
+      showClose: false,
       content: BlocProvider.value(value: cubit, child: const UpdateDialog._()),
       actionsBuilder: (_) =>
           BlocProvider.value(value: cubit, child: const _UpdateActions()),
@@ -120,6 +121,7 @@ class _UpdateBody extends StatelessWidget {
         _ => null,
       },
       UpdateChannel.web => line(l10n.updateWebBody),
+      UpdateChannel.androidApk => line(l10n.updateApkBody),
       _ => line(l10n.updateManualBody),
     };
 

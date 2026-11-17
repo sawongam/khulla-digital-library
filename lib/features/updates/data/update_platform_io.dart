@@ -8,6 +8,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:http/http.dart' as http;
 import 'package:khulla/core/config/app_config.dart';
+import 'package:khulla/core/config/app_version.dart';
 import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/database/database_platform.dart';
 import 'package:khulla/core/error/app_exception.dart';
@@ -29,13 +30,19 @@ const Duration _idleTimeout = Duration(seconds: 60);
 /// How many pre-update snapshots of each catalogue are kept.
 const int _snapshotsKept = 3;
 
+/// The package name Android records for an install from Google Play.
+const String _playStore = 'com.android.vending';
+
 /// How this install is updated, read from where it is running.
 ///
 /// The Inno Setup installer leaves `unins000.exe` beside `khulla.exe`; the
 /// portable zip does not. That file is the whole difference between an
 /// install that can run the next installer over itself and a folder that
 /// might be on a USB stick.
-UpdateChannel detectUpdateChannel() {
+///
+/// On Android, the system records which app installed this one: Play, or a
+/// browser or file manager for the APK from the release page.
+Future<UpdateChannel> detectUpdateChannel() async {
   if (Platform.isWindows) {
     final folder = p.dirname(Platform.resolvedExecutable);
     return File(p.join(folder, 'unins000.exe')).existsSync()
@@ -43,7 +50,11 @@ UpdateChannel detectUpdateChannel() {
         : UpdateChannel.windowsPortable;
   }
   if (Platform.isLinux) return UpdateChannel.linux;
-  if (Platform.isAndroid) return UpdateChannel.googlePlay;
+  if (Platform.isAndroid) {
+    return await AppVersion.installerStore() == _playStore
+        ? UpdateChannel.googlePlay
+        : UpdateChannel.androidApk;
+  }
   return UpdateChannel.unsupported;
 }
 

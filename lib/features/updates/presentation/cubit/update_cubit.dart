@@ -101,7 +101,9 @@ class UpdateCubit extends Cubit<UpdateState> {
   /// Fetches and checks the installer for the release found.
   Future<void> downloadUpdate() async {
     final release = state.release;
-    if (release == null || state.isBusy) return;
+    if (release == null || state.isBusy || !state.channel.downloadsInstaller) {
+      return;
+    }
 
     emit(
       state.copyWith(

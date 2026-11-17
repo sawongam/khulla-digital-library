@@ -26,6 +26,11 @@ enum UpdateChannel {
   /// it only opens the store listing.
   googlePlay,
 
+  /// The APK from the release page, installed by hand. Told, and pointed at
+  /// the download page. Play cannot update it: Play's copy is signed with a
+  /// different key, so Android treats the two as different apps.
+  androidApk,
+
   /// The web build. The new version is already on the server; a reload is
   /// the whole update.
   web,
@@ -35,7 +40,7 @@ enum UpdateChannel {
 
   /// Whether this install asks for the latest version at all.
   bool get checksForUpdates => switch (this) {
-    windowsInstaller || windowsPortable || linux || web => true,
+    windowsInstaller || windowsPortable || linux || androidApk || web => true,
     googlePlay || unsupported => false,
   };
 
@@ -43,7 +48,11 @@ enum UpdateChannel {
   /// operator to a download page.
   bool get installsInApp => switch (this) {
     windowsInstaller || web => true,
-    windowsPortable || linux || googlePlay || unsupported => false,
+    windowsPortable ||
+    linux ||
+    androidApk ||
+    googlePlay ||
+    unsupported => false,
   };
 
   /// Whether applying the update needs a file downloaded first.

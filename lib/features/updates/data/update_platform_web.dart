@@ -8,7 +8,7 @@ import 'package:khulla/core/lifecycle/restart_app.dart';
 import 'package:khulla/features/updates/domain/models/update_channel.dart';
 import 'package:khulla/features/updates/domain/models/update_download.dart';
 
-UpdateChannel detectUpdateChannel() => UpdateChannel.web;
+Future<UpdateChannel> detectUpdateChannel() async => UpdateChannel.web;
 
 /// The web build never downloads an installer - the server already has the
 /// new version.

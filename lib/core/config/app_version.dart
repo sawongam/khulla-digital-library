@@ -41,6 +41,17 @@ abstract final class AppVersion {
     }
   }
 
+  /// The package that installed the app - `com.android.vending` for Google
+  /// Play - or null where the platform does not say (every desktop, the
+  /// web, and an APK pushed with `adb`).
+  static Future<String?> installerStore() async {
+    try {
+      return (await _info()).installerStore;
+    } on Object {
+      return null;
+    }
+  }
+
   /// Version and build together, `1.2.3+4`. Use this where a bug report has
   /// to name an exact build; [version] is what a person reads.
   static Future<String> fullVersion() async {
