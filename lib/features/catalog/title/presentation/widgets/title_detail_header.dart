@@ -131,6 +131,7 @@ class TitleDetailHeader extends StatelessWidget {
           AppButton(
             variant: AppButtonVariant.outline,
             size: AppButtonSize.medium,
+            icon: AppIcons.archive,
             onPressed: onArchive,
             child: Text(l10n.titleDetailArchive),
           ),

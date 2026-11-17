@@ -177,13 +177,21 @@ The full guide lives in [docs/architecture](./docs/architecture/) - folder conve
 
 ## Contributing
 
-Contributions are welcome. See [docs/contributing](./docs/contributing/) for setup, conventions and the pull-request flow.
+Contributions are welcome. See [docs/contributing](./docs/contributing/) for setup, conventions and the pull-request flow. Everyone taking part is expected to follow the [Code of Conduct](./CODE_OF_CONDUCT.md).
 
 Commits follow a conventional format - `type(scope): message` with types `feat`, `fix`, `chore`, `refactor`, `sync`, `ci` - enforced by a git hook. Branch off `dev`; direct commits to `dev` and `prod` are blocked.
 
 Found a bug? Open an issue with the platform, the version from Settings → About, and steps to reproduce. For anything security-sensitive, use private vulnerability reporting instead - see [SECURITY.md](./SECURITY.md).
 
 Merging into `prod` publishes a release at the version in `pubspec.yaml` and redeploys the web demo - see [releasing](./docs/contributing/releasing.md).
+
+## Contributors
+
+Thanks to everyone who has helped build Khulla. This list is generated from GitHub, so it stays current on its own.
+
+<a href="https://github.com/sawongam/khulla-digital-library/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sawongam/khulla-digital-library" alt="Khulla contributors" />
+</a>
 
 ## License
 

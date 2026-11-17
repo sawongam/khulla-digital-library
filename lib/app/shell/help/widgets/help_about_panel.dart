@@ -7,6 +7,7 @@ import 'package:khulla/core/config/app_version.dart';
 import 'package:khulla/core/feedback/app_toast.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/widgets/app_logo.dart';
+import 'package:khulla/shared/widgets/whatsapp_mark.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -98,10 +99,6 @@ class HelpAboutPanel extends StatelessWidget {
             },
           ),
         ),
-        AppDetailRow(
-          label: l10n.helpAboutAuthorTitle,
-          child: const _AuthorLink(),
-        ),
         SizedBox(height: spacing.md),
         AppSectionHeader(title: l10n.helpAboutHelpTitle, dense: true),
         SizedBox(height: spacing.xs),
@@ -111,18 +108,12 @@ class HelpAboutPanel extends StatelessWidget {
         ),
         SizedBox(height: spacing.sm),
         _LinkRow(
-          icon: AppIcons.support,
-          label: l10n.helpAboutContactWhatsapp,
-          url: AppInfo.whatsappUrl,
-          display: AppInfo.whatsappDisplay,
-          hint: l10n.helpAboutOpenWhatsapp,
-        ),
-        _LinkRow(
           icon: AppIcons.email,
           label: l10n.helpAboutContactEmail,
           url: 'mailto:${AppInfo.email}',
           display: AppInfo.email,
           hint: l10n.helpAboutOpenMail,
+          section: const _WhatsappSection(),
         ),
         SizedBox(height: spacing.md),
         AppSectionHeader(title: l10n.helpAboutLinksTitle, dense: true),
@@ -152,28 +143,6 @@ class HelpAboutPanel extends StatelessWidget {
   }
 }
 
-/// The author's name, which is also the way to their site.
-class _AuthorLink extends StatelessWidget {
-  const _AuthorLink();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.appColors;
-
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: Tooltip(
-        message: context.l10n.helpAboutAuthorLinkHint(AppInfo.authorName),
-        child: AppLinkButton(
-          color: colors.brandStrong,
-          onPressed: () => HelpAboutPanel.openLink(context, AppInfo.authorSite),
-          child: const Text(AppInfo.authorName),
-        ),
-      ),
-    );
-  }
-}
-
 /// One link: what it is, where it points, and the button that opens it.
 class _LinkRow extends StatelessWidget {
   const _LinkRow({
@@ -182,6 +151,7 @@ class _LinkRow extends StatelessWidget {
     required this.url,
     this.display,
     this.hint,
+    this.section,
   });
 
   final AppIconSpec icon;
@@ -196,6 +166,10 @@ class _LinkRow extends StatelessWidget {
   /// The tooltip, when the row opens something other than the browser.
   final String? hint;
 
+  /// A separate tappable cell at the row's end, for a second way to reach the
+  /// same place. It has its own action, so it sits outside the row's tap area.
+  final Widget? section;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -206,47 +180,89 @@ class _LinkRow extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.only(bottom: spacing.xxs),
-      child: Tooltip(
-        message: hint ?? l10n.helpAboutOpenLink,
-        child: InkWell(
-          onTap: () => HelpAboutPanel.openLink(context, url),
-          borderRadius: radius,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: spacing.xs,
-              vertical: spacing.xs,
-            ),
-            child: Row(
-              children: [
-                AppIcon(icon, size: 18, color: colors.mutedForeground),
-                SizedBox(width: spacing.sm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        children: [
+          Expanded(
+            child: Tooltip(
+              message: hint ?? l10n.helpAboutOpenLink,
+              child: InkWell(
+                onTap: () => HelpAboutPanel.openLink(context, url),
+                borderRadius: radius,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: spacing.xs,
+                    vertical: spacing.xs,
+                  ),
+                  child: Row(
                     children: [
-                      Text(
-                        label,
-                        style: typography.label.copyWith(
-                          color: colors.textHigh,
+                      AppIcon(icon, size: 18, color: colors.mutedForeground),
+                      SizedBox(width: spacing.sm),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              label,
+                              style: typography.label.copyWith(
+                                color: colors.textHigh,
+                              ),
+                            ),
+                            Text(
+                              display ??
+                                  url.replaceFirst(RegExp('^https?://'), ''),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: typography.caption.copyWith(
+                                color: colors.mutedForeground,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Text(
-                        display ?? url.replaceFirst(RegExp('^https?://'), ''),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: typography.caption.copyWith(
-                          color: colors.mutedForeground,
-                        ),
+                      AppIcon(
+                        AppIcons.openExternal,
+                        size: 16,
+                        color: colors.mutedForeground,
                       ),
                     ],
                   ),
                 ),
-                AppIcon(
-                  AppIcons.openExternal,
-                  size: 16,
-                  color: colors.mutedForeground,
-                ),
-              ],
+              ),
+            ),
+          ),
+          if (section != null) ...[
+            SizedBox(width: spacing.xs),
+            Container(width: 1, height: 28, color: colors.hairline),
+            SizedBox(width: spacing.xs),
+            section!,
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// WhatsApp as its own cell at the end of the email row.
+class _WhatsappSection extends StatelessWidget {
+  const _WhatsappSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return Tooltip(
+      message: l10n.helpAboutOpenWhatsapp,
+      child: Semantics(
+        button: true,
+        label: l10n.helpAboutContactWhatsapp,
+        child: InkWell(
+          onTap: () => HelpAboutPanel.openLink(context, AppInfo.whatsappUrl),
+          borderRadius: BorderRadius.circular(context.appRadius.control),
+          child: Padding(
+            padding: EdgeInsets.all(context.appSpacing.sm),
+            child: WhatsappMark(
+              size: 20,
+              color: context.appColors.mutedForeground,
             ),
           ),
         ),

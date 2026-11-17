@@ -101,7 +101,7 @@ class MemberTypeRow extends StatelessWidget {
               onPressed: onEdit,
             ),
             AppIconButton(
-              icon: AppIcons.delete,
+              icon: AppIcons.archive,
               tooltip: l10n.commonArchive,
               size: AppIconButtonSize.small,
               tone: AppStatusTone.danger,

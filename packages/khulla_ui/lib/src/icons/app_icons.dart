@@ -102,6 +102,9 @@ abstract final class AppIcons {
   /// Renew a loan, or any repeat of something already done.
   static const AppIconSpec renew = AppIconSpec(SolarIcons.restart);
 
+  /// Retire a record without deleting it.
+  static const AppIconSpec archive = AppIconSpec(SolarIcons.archive);
+
   /// Put a record back the way it was.
   static const AppIconSpec restore = AppIconSpec(SolarIcons.history);
 

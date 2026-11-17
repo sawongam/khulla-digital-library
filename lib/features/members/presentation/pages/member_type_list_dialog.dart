@@ -35,23 +35,23 @@ abstract final class MemberTypeListDialog {
       builder: (_) => BlocProvider.value(
         value: cubit,
         child: MemberTypeSheetBody(
-          onAdd: () => unawaited(_addType(context)),
-          onEdit: (type) => unawaited(_saveType(context, type)),
-          onArchive: (type) => unawaited(_archiveType(context, type)),
-          onRestore: (type) => unawaited(_restoreType(context, type)),
+          onAdd: () => unawaited(_addType(context, cubit)),
+          onEdit: (type) => unawaited(_saveType(context, cubit, type)),
+          onArchive: (type) => unawaited(_archiveType(context, cubit, type)),
+          onRestore: (type) => unawaited(_restoreType(context, cubit, type)),
         ),
       ),
       actionsBuilder: (_) => BlocProvider.value(
         value: cubit,
         child: MemberTypeSheetActions(
-          onAdd: () => unawaited(_addType(context)),
+          onAdd: () => unawaited(_addType(context, cubit)),
         ),
       ),
     ).whenComplete(cubit.close);
   }
 }
 
-Future<void> _addType(BuildContext context) async {
+Future<void> _addType(BuildContext context, MemberTypeCubit cubit) async {
   final l10n = context.l10n;
   final draft = await MemberTypeFormDialog.show(
     context,
@@ -60,14 +60,18 @@ Future<void> _addType(BuildContext context) async {
   );
   if (draft == null || !context.mounted) return;
   try {
-    await context.read<MemberTypeCubit>().addType(draft);
+    await cubit.addType(draft);
   } on AppException catch (error) {
     if (!context.mounted) return;
     AppToast.error(context, message: error.localizedMessage(l10n));
   }
 }
 
-Future<void> _saveType(BuildContext context, MemberType type) async {
+Future<void> _saveType(
+  BuildContext context,
+  MemberTypeCubit cubit,
+  MemberType type,
+) async {
   final l10n = context.l10n;
   final draft = await MemberTypeFormDialog.show(
     context,
@@ -77,14 +81,18 @@ Future<void> _saveType(BuildContext context, MemberType type) async {
   );
   if (draft == null || !context.mounted) return;
   try {
-    await context.read<MemberTypeCubit>().saveType(draft);
+    await cubit.saveType(draft);
   } on AppException catch (error) {
     if (!context.mounted) return;
     AppToast.error(context, message: error.localizedMessage(l10n));
   }
 }
 
-Future<void> _archiveType(BuildContext context, MemberType type) async {
+Future<void> _archiveType(
+  BuildContext context,
+  MemberTypeCubit cubit,
+  MemberType type,
+) async {
   final l10n = context.l10n;
   final confirmed = await AppDialog.confirmDestructive(
     context: context,
@@ -95,17 +103,21 @@ Future<void> _archiveType(BuildContext context, MemberType type) async {
   );
   if (!context.mounted || !confirmed) return;
   try {
-    await context.read<MemberTypeCubit>().archiveType(type.id);
+    await cubit.archiveType(type.id);
   } on AppException catch (error) {
     if (!context.mounted) return;
     AppToast.error(context, message: error.localizedMessage(l10n));
   }
 }
 
-Future<void> _restoreType(BuildContext context, MemberType type) async {
+Future<void> _restoreType(
+  BuildContext context,
+  MemberTypeCubit cubit,
+  MemberType type,
+) async {
   final l10n = context.l10n;
   try {
-    await context.read<MemberTypeCubit>().unarchiveType(type.id);
+    await cubit.unarchiveType(type.id);
   } on AppException catch (error) {
     if (!context.mounted) return;
     AppToast.error(context, message: error.localizedMessage(l10n));
