@@ -15,6 +15,8 @@ import 'package:khulla/features/settings/presentation/cubit/library_profile_cubi
 import 'package:khulla/features/settings/presentation/cubit/library_profile_state.dart';
 import 'package:khulla/features/settings/presentation/widgets/settings_logo_crop_dialog.dart';
 import 'package:khulla/features/settings/presentation/widgets/settings_logo_field.dart';
+import 'package:khulla/features/settings/presentation/widgets/settings_section_card.dart';
+import 'package:khulla/features/settings/presentation/widgets/settings_section_columns.dart';
 import 'package:khulla/features/staff_auth/presentation/auth_labels.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/l10n/l10n.dart';
@@ -192,190 +194,207 @@ class _LibraryProfilePageState extends State<LibraryProfilePage>
                           const ViewOnlyNotice(),
                           SizedBox(height: spacing.md),
                         ],
-                        AppFormSection(
-                          title: l10n.settingsLibraryIdentity,
-                          description: l10n.settingsLibraryIdentityDescription,
-                          children: [
-                            AppTextField(
-                              label: l10n.fieldLibraryName,
-                              required: true,
-                              controller: _name,
-                              textCapitalization: TextCapitalization.words,
-                              onChanged: cubit.libraryNameChanged,
-                              errorText: state.name.messageFor(l10n),
-                            ),
-                            if (!viewOnly) ...[
-                              SizedBox(height: spacing.md),
-                              SettingsLogoField(
-                                logoBytes: state.logoBytes,
-                                isSaving: state.isSavingLogo,
-                                onUpload: () => unawaited(_uploadLogo(context)),
-                                onRemove: state.logoBytes == null
-                                    ? null
-                                    : () => unawaited(_removeLogo(context)),
-                              ),
-                            ],
-                          ],
-                        ),
-                        const AppFormDivider(),
-                        AppFormSection(
-                          title: l10n.settingsLibraryContact,
-                          description: l10n.settingsLibraryContactDescription,
-                          children: [
-                            AppFormRow(
+                        SettingsSectionColumns(
+                          leading: [
+                            SettingsSectionCard(
+                              title: l10n.settingsLibraryIdentity,
+                              description:
+                                  l10n.settingsLibraryIdentityDescription,
                               children: [
                                 AppTextField(
-                                  label: l10n.fieldEmail,
-                                  controller: _email,
-                                  keyboardType: TextInputType.emailAddress,
-                                  onChanged: cubit.emailChanged,
-                                ),
-                                AppTextField(
-                                  label: l10n.fieldPhone,
-                                  controller: _phone,
-                                  keyboardType: TextInputType.phone,
-                                  onChanged: cubit.phoneChanged,
-                                ),
-                              ],
-                            ),
-                            AppFormRow(
-                              children: [
-                                AppTextField(
-                                  label: l10n.fieldAddress,
-                                  controller: _address,
+                                  label: l10n.fieldLibraryName,
+                                  required: true,
+                                  controller: _name,
                                   textCapitalization: TextCapitalization.words,
-                                  onChanged: cubit.addressChanged,
+                                  onChanged: cubit.libraryNameChanged,
+                                  errorText: state.name.messageFor(l10n),
                                 ),
-                                AppTextField(
-                                  label: l10n.fieldOpeningHours,
-                                  controller: _openingHours,
-                                  onChanged: cubit.openingHoursChanged,
+                                if (!viewOnly) ...[
+                                  SizedBox(height: spacing.md),
+                                  SettingsLogoField(
+                                    logoBytes: state.logoBytes,
+                                    isSaving: state.isSavingLogo,
+                                    onUpload: () =>
+                                        unawaited(_uploadLogo(context)),
+                                    onRemove: state.logoBytes == null
+                                        ? null
+                                        : () => unawaited(_removeLogo(context)),
+                                  ),
+                                ],
+                              ],
+                            ),
+                            SettingsSectionCard(
+                              title: l10n.settingsLibraryContact,
+                              description:
+                                  l10n.settingsLibraryContactDescription,
+                              children: [
+                                AppFormRow(
+                                  children: [
+                                    AppTextField(
+                                      label: l10n.fieldEmail,
+                                      controller: _email,
+                                      keyboardType: TextInputType.emailAddress,
+                                      onChanged: cubit.emailChanged,
+                                    ),
+                                    AppTextField(
+                                      label: l10n.fieldPhone,
+                                      controller: _phone,
+                                      keyboardType: TextInputType.phone,
+                                      onChanged: cubit.phoneChanged,
+                                    ),
+                                  ],
+                                ),
+                                AppFormRow(
+                                  children: [
+                                    AppTextField(
+                                      label: l10n.fieldAddress,
+                                      controller: _address,
+                                      textCapitalization:
+                                          TextCapitalization.words,
+                                      onChanged: cubit.addressChanged,
+                                    ),
+                                    AppTextField(
+                                      label: l10n.fieldOpeningHours,
+                                      controller: _openingHours,
+                                      onChanged: cubit.openingHoursChanged,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ],
-                        ),
-                        const AppFormDivider(),
-                        AppFormSection(
-                          title: l10n.settingsLibraryLocale,
-                          description: l10n.settingsLibraryLocaleDescription,
-                          children: [
-                            AppDropdownField<AppCurrency>(
-                              label: l10n.fieldCurrency,
-                              required: true,
-                              value: state.currency,
-                              items: AppCurrency.values,
-                              itemLabel: (currency) => currency.label(l10n),
-                              searchHint: l10n.currencySearchHint,
-                              clearSearchTooltip: l10n.commonClearSearch,
-                              emptySearchMessage: l10n.commonNoMatchesTitle,
-                              itemMatchesSearch: (currency, query) =>
-                                  currency.name.toLowerCase().contains(query) ||
-                                  currency.code.toLowerCase().contains(query),
-                              onChanged: (currency) {
-                                if (currency != null) {
-                                  cubit.currencyChanged(currency);
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        const AppFormDivider(),
-                        AppFormSection(
-                          title: l10n.settingsLibraryBarcodes,
-                          description: l10n.settingsLibraryBarcodesDescription,
-                          children: [
-                            Text(
-                              l10n.settingsLibraryBarcodesCopies,
-                              style: context.appTextStyles.label.copyWith(
-                                color: context.appColors.mutedForeground,
-                              ),
-                            ),
-                            AppFormRow(
+                          trailing: [
+                            SettingsSectionCard(
+                              title: l10n.settingsLibraryLocale,
+                              description:
+                                  l10n.settingsLibraryLocaleDescription,
                               children: [
-                                AppTextField(
-                                  label: l10n.fieldBarcodePrefix,
+                                AppDropdownField<AppCurrency>(
+                                  label: l10n.fieldCurrency,
                                   required: true,
-                                  controller: _barcodePrefix,
-                                  onChanged: cubit.barcodePrefixChanged,
-                                  errorText: state.barcodePrefix.messageFor(
-                                    l10n,
-                                  ),
-                                ),
-                                AppTextField(
-                                  label: l10n.fieldBarcodeNextValue,
-                                  required: true,
-                                  controller: _barcodeNextValue,
-                                  keyboardType: numberInput,
-                                  onChanged: cubit.barcodeNextValueChanged,
-                                  errorText: state.barcodeNextValue.messageFor(
-                                    l10n,
-                                  ),
+                                  value: state.currency,
+                                  items: AppCurrency.values,
+                                  itemLabel: (currency) => currency.label(l10n),
+                                  searchHint: l10n.currencySearchHint,
+                                  clearSearchTooltip: l10n.commonClearSearch,
+                                  emptySearchMessage: l10n.commonNoMatchesTitle,
+                                  itemMatchesSearch: (currency, query) =>
+                                      currency.name.toLowerCase().contains(
+                                        query,
+                                      ) ||
+                                      currency.code.toLowerCase().contains(
+                                        query,
+                                      ),
+                                  onChanged: (currency) {
+                                    if (currency != null) {
+                                      cubit.currencyChanged(currency);
+                                    }
+                                  },
                                 ),
                               ],
                             ),
-                            SizedBox(height: spacing.sm),
-                            Text(
-                              l10n.settingsLibraryBarcodesMembers,
-                              style: context.appTextStyles.label.copyWith(
-                                color: context.appColors.mutedForeground,
-                              ),
-                            ),
-                            AppFormRow(
+                            SettingsSectionCard(
+                              title: l10n.settingsLibraryBarcodes,
+                              description:
+                                  l10n.settingsLibraryBarcodesDescription,
                               children: [
-                                AppTextField(
-                                  label: l10n.fieldBarcodePrefix,
-                                  required: true,
-                                  controller: _memberBarcodePrefix,
-                                  onChanged: cubit.memberBarcodePrefixChanged,
-                                  errorText: state.memberBarcodePrefix
-                                      .messageFor(
-                                        l10n,
-                                      ),
+                                Text(
+                                  l10n.settingsLibraryBarcodesCopies,
+                                  style: context.appTextStyles.label.copyWith(
+                                    color: context.appColors.mutedForeground,
+                                  ),
                                 ),
-                                AppTextField(
-                                  label: l10n.fieldBarcodeNextValue,
-                                  required: true,
-                                  controller: _memberBarcodeNextValue,
-                                  keyboardType: numberInput,
-                                  onChanged:
-                                      cubit.memberBarcodeNextValueChanged,
-                                  errorText: state.memberBarcodeNextValue
-                                      .messageFor(
+                                AppFormRow(
+                                  children: [
+                                    AppTextField(
+                                      label: l10n.fieldBarcodePrefix,
+                                      required: true,
+                                      controller: _barcodePrefix,
+                                      onChanged: cubit.barcodePrefixChanged,
+                                      errorText: state.barcodePrefix.messageFor(
                                         l10n,
                                       ),
+                                    ),
+                                    AppTextField(
+                                      label: l10n.fieldBarcodeNextValue,
+                                      required: true,
+                                      controller: _barcodeNextValue,
+                                      keyboardType: numberInput,
+                                      onChanged: cubit.barcodeNextValueChanged,
+                                      errorText: state.barcodeNextValue
+                                          .messageFor(
+                                            l10n,
+                                          ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            SizedBox(height: spacing.sm),
-                            Text(
-                              l10n.settingsLibraryBarcodesStaff,
-                              style: context.appTextStyles.label.copyWith(
-                                color: context.appColors.mutedForeground,
-                              ),
-                            ),
-                            AppFormRow(
-                              children: [
-                                AppTextField(
-                                  label: l10n.fieldBarcodePrefix,
-                                  required: true,
-                                  controller: _staffBarcodePrefix,
-                                  onChanged: cubit.staffBarcodePrefixChanged,
-                                  errorText: state.staffBarcodePrefix
-                                      .messageFor(
-                                        l10n,
-                                      ),
+                                SizedBox(height: spacing.sm),
+                                Text(
+                                  l10n.settingsLibraryBarcodesMembers,
+                                  style: context.appTextStyles.label.copyWith(
+                                    color: context.appColors.mutedForeground,
+                                  ),
                                 ),
-                                AppTextField(
-                                  label: l10n.fieldBarcodeNextValue,
-                                  required: true,
-                                  controller: _staffBarcodeNextValue,
-                                  keyboardType: numberInput,
-                                  onChanged: cubit.staffBarcodeNextValueChanged,
-                                  errorText: state.staffBarcodeNextValue
-                                      .messageFor(
-                                        l10n,
-                                      ),
+                                AppFormRow(
+                                  children: [
+                                    AppTextField(
+                                      label: l10n.fieldBarcodePrefix,
+                                      required: true,
+                                      controller: _memberBarcodePrefix,
+                                      onChanged:
+                                          cubit.memberBarcodePrefixChanged,
+                                      errorText: state.memberBarcodePrefix
+                                          .messageFor(
+                                            l10n,
+                                          ),
+                                    ),
+                                    AppTextField(
+                                      label: l10n.fieldBarcodeNextValue,
+                                      required: true,
+                                      controller: _memberBarcodeNextValue,
+                                      keyboardType: numberInput,
+                                      onChanged:
+                                          cubit.memberBarcodeNextValueChanged,
+                                      errorText: state.memberBarcodeNextValue
+                                          .messageFor(
+                                            l10n,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: spacing.sm),
+                                Text(
+                                  l10n.settingsLibraryBarcodesStaff,
+                                  style: context.appTextStyles.label.copyWith(
+                                    color: context.appColors.mutedForeground,
+                                  ),
+                                ),
+                                AppFormRow(
+                                  children: [
+                                    AppTextField(
+                                      label: l10n.fieldBarcodePrefix,
+                                      required: true,
+                                      controller: _staffBarcodePrefix,
+                                      onChanged:
+                                          cubit.staffBarcodePrefixChanged,
+                                      errorText: state.staffBarcodePrefix
+                                          .messageFor(
+                                            l10n,
+                                          ),
+                                    ),
+                                    AppTextField(
+                                      label: l10n.fieldBarcodeNextValue,
+                                      required: true,
+                                      controller: _staffBarcodeNextValue,
+                                      keyboardType: numberInput,
+                                      onChanged:
+                                          cubit.staffBarcodeNextValueChanged,
+                                      errorText: state.staffBarcodeNextValue
+                                          .messageFor(
+                                            l10n,
+                                          ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

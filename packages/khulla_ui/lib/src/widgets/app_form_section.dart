@@ -95,9 +95,14 @@ class AppFormSection extends StatelessWidget {
             SizedBox(width: headingWidth, child: header),
             SizedBox(width: spacing.xlg),
             Expanded(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: fieldsMaxWidth),
-                child: fields,
+              // Expanded hands its child *tight* constraints, which would
+              // override the cap below - Align loosens them so the cap holds.
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: fieldsMaxWidth),
+                  child: fields,
+                ),
               ),
             ),
           ],

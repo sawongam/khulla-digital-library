@@ -11,11 +11,13 @@ import 'package:khulla/core/lifecycle/dispose_bag.dart';
 import 'package:khulla/core/money/money.dart';
 import 'package:khulla/core/router/routes.dart';
 import 'package:khulla/features/members/domain/member_optional_field.dart';
-import 'package:khulla/features/members/presentation/member_labels.dart';
 import 'package:khulla/features/settings/domain/models/library_profile.dart';
 import 'package:khulla/features/settings/domain/models/loan_rules.dart';
 import 'package:khulla/features/settings/presentation/cubit/loan_rules_cubit.dart';
 import 'package:khulla/features/settings/presentation/cubit/loan_rules_state.dart';
+import 'package:khulla/features/settings/presentation/widgets/settings_member_field_grid.dart';
+import 'package:khulla/features/settings/presentation/widgets/settings_section_card.dart';
+import 'package:khulla/features/settings/presentation/widgets/settings_section_columns.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/utils/app_exception_l10n.dart';
@@ -183,126 +185,130 @@ class _LoanRulesPageState extends State<LoanRulesPage> with DisposeBag {
                           const ViewOnlyNotice(),
                           SizedBox(height: spacing.md),
                         ],
-                        AppFormSection(
-                          title: l10n.settingsLoanPeriods,
-                          description: l10n.settingsLoanPeriodsDescription,
-                          children: [
-                            AppFormRow(
+                        SettingsSectionColumns(
+                          leading: [
+                            SettingsSectionCard(
+                              title: l10n.settingsLoanPeriods,
+                              description: l10n.settingsLoanPeriodsDescription,
+                              children: [
+                                AppFormRow(
+                                  children: [
+                                    AppTextField(
+                                      label: l10n.fieldLoanPeriodDays,
+                                      required: true,
+                                      controller: _loanPeriod,
+                                      keyboardType: numberInput,
+                                      onChanged: (_) {},
+                                    ),
+                                    AppTextField(
+                                      label: l10n.fieldRenewalLimit,
+                                      controller: _renewals,
+                                      keyboardType: numberInput,
+                                      onChanged: (_) {},
+                                    ),
+                                    AppTextField(
+                                      label: l10n.fieldBorrowingLimit,
+                                      controller: _borrowingLimit,
+                                      keyboardType: numberInput,
+                                      onChanged: (_) {},
+                                    ),
+                                  ],
+                                ),
+                                AppSwitchField(
+                                  value: _autoRenew,
+                                  label: l10n.settingsLoanAutoRenew,
+                                  description:
+                                      l10n.settingsLoanAutoRenewDescription,
+                                  onChanged: (value) =>
+                                      setState(() => _autoRenew = value),
+                                ),
+                              ],
+                            ),
+                            SettingsSectionCard(
+                              title: l10n.settingsLoanHolds,
+                              description: l10n.settingsLoanHoldsDescription,
                               children: [
                                 AppTextField(
-                                  label: l10n.fieldLoanPeriodDays,
-                                  required: true,
-                                  controller: _loanPeriod,
-                                  keyboardType: numberInput,
-                                  onChanged: (_) {},
-                                ),
-                                AppTextField(
-                                  label: l10n.fieldRenewalLimit,
-                                  controller: _renewals,
+                                  label: l10n.fieldHoldShelfDays,
+                                  controller: _holdShelfDays,
                                   keyboardType: numberInput,
                                   onChanged: (_) {},
                                 ),
                               ],
                             ),
-                            AppTextField(
-                              label: l10n.fieldBorrowingLimit,
-                              controller: _borrowingLimit,
-                              keyboardType: numberInput,
-                              onChanged: (_) {},
-                            ),
-                            AppSwitchField(
-                              value: _autoRenew,
-                              label: l10n.settingsLoanAutoRenew,
-                              description:
-                                  l10n.settingsLoanAutoRenewDescription,
-                              onChanged: (value) =>
-                                  setState(() => _autoRenew = value),
-                            ),
                           ],
-                        ),
-                        const AppFormDivider(),
-                        AppFormSection(
-                          title: l10n.settingsLoanFines,
-                          description: l10n.settingsLoanFinesDescription,
-                          children: [
-                            AppSwitchField(
-                              value: _chargesFines,
-                              label: l10n.settingsFinesToggle,
-                              description: l10n.settingsFinesToggleDescription,
-                              onChanged: (value) =>
-                                  setState(() => _chargesFines = value),
-                            ),
-                            if (_chargesFines) ...[
-                              AppFormRow(
-                                children: [
-                                  AppTextField(
-                                    label: l10n.fieldFinePerDay,
-                                    controller: _finePerDay,
-                                    keyboardType:
-                                        const TextInputType.numberWithOptions(
-                                          decimal: true,
-                                        ),
-                                    onChanged: (_) {},
-                                  ),
-                                  AppTextField(
-                                    label: l10n.fieldGraceDays,
-                                    controller: _graceDays,
-                                    keyboardType: numberInput,
-                                    onChanged: (_) {},
+                          trailing: [
+                            SettingsSectionCard(
+                              title: l10n.settingsLoanFines,
+                              description: l10n.settingsLoanFinesDescription,
+                              children: [
+                                AppSwitchField(
+                                  value: _chargesFines,
+                                  label: l10n.settingsFinesToggle,
+                                  description:
+                                      l10n.settingsFinesToggleDescription,
+                                  onChanged: (value) =>
+                                      setState(() => _chargesFines = value),
+                                ),
+                                if (_chargesFines) ...[
+                                  AppFormRow(
+                                    children: [
+                                      AppTextField(
+                                        label: l10n.fieldFinePerDay,
+                                        controller: _finePerDay,
+                                        keyboardType:
+                                            const TextInputType.numberWithOptions(
+                                              decimal: true,
+                                            ),
+                                        onChanged: (_) {},
+                                      ),
+                                      AppTextField(
+                                        label: l10n.fieldMaximumFine,
+                                        controller: _maximumFine,
+                                        keyboardType:
+                                            const TextInputType.numberWithOptions(
+                                              decimal: true,
+                                            ),
+                                        onChanged: (_) {},
+                                      ),
+                                      AppTextField(
+                                        label: l10n.fieldGraceDays,
+                                        controller: _graceDays,
+                                        keyboardType: numberInput,
+                                        onChanged: (_) {},
+                                      ),
+                                    ],
                                   ),
                                 ],
-                              ),
-                              AppTextField(
-                                label: l10n.fieldMaximumFine,
-                                controller: _maximumFine,
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                      decimal: true,
-                                    ),
-                                onChanged: (_) {},
-                              ),
-                            ],
-                            AppSwitchField(
-                              value: _blockOverdue,
-                              label: l10n.settingsLoanBlockOverdue,
-                              description:
-                                  l10n.settingsLoanBlockOverdueDescription,
-                              onChanged: (value) =>
-                                  setState(() => _blockOverdue = value),
+                                AppSwitchField(
+                                  value: _blockOverdue,
+                                  label: l10n.settingsLoanBlockOverdue,
+                                  description:
+                                      l10n.settingsLoanBlockOverdueDescription,
+                                  onChanged: (value) =>
+                                      setState(() => _blockOverdue = value),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        const AppFormDivider(),
-                        AppFormSection(
-                          title: l10n.settingsLoanHolds,
-                          description: l10n.settingsLoanHoldsDescription,
-                          children: [
-                            AppTextField(
-                              label: l10n.fieldHoldShelfDays,
-                              controller: _holdShelfDays,
-                              keyboardType: numberInput,
-                              onChanged: (_) {},
+                            SettingsSectionCard(
+                              title: l10n.settingsMemberFormTitle,
+                              description: l10n.settingsMemberFormDescription,
+                              children: [
+                                AppFieldLabel(
+                                  label: l10n.settingsMemberFormShow,
+                                ),
+                                SettingsMemberFieldGrid(
+                                  hidden: _hiddenFields,
+                                  onChanged: (field, shown) => setState(() {
+                                    if (shown) {
+                                      _hiddenFields.remove(field);
+                                    } else {
+                                      _hiddenFields.add(field);
+                                    }
+                                  }),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        const AppFormDivider(),
-                        AppFormSection(
-                          title: l10n.settingsMemberFormTitle,
-                          description: l10n.settingsMemberFormDescription,
-                          children: [
-                            AppFieldLabel(label: l10n.settingsMemberFormShow),
-                            for (final field in MemberOptionalField.values)
-                              AppCheckboxField(
-                                value: !_hiddenFields.contains(field),
-                                label: field.label(l10n),
-                                onChanged: (shown) => setState(() {
-                                  if (shown ?? true) {
-                                    _hiddenFields.remove(field);
-                                  } else {
-                                    _hiddenFields.add(field);
-                                  }
-                                }),
-                              ),
                           ],
                         ),
                       ],
