@@ -116,6 +116,13 @@ class HelpAboutPanel extends StatelessWidget {
           section: const _WhatsappSection(),
         ),
         SizedBox(height: spacing.md),
+        AppSectionHeader(title: l10n.helpAboutSupportTitle, dense: true),
+        SizedBox(height: spacing.xs),
+        Text(
+          l10n.helpAboutSupportBody,
+          style: typography.body.copyWith(color: colors.textMuted),
+        ),
+        SizedBox(height: spacing.md),
         AppSectionHeader(title: l10n.helpAboutLinksTitle, dense: true),
         SizedBox(height: spacing.sm),
         _LinkRow(

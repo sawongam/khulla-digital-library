@@ -863,6 +863,8 @@
     "helpAboutVersionLabel": "Version",
     "helpAboutHelpTitle": "Need a hand?",
     "helpAboutHelpBody": "We can help you install Khulla, move your records over from a register or spreadsheet, or add a feature your library needs.",
+    "helpAboutSupportTitle": "Support the project",
+    "helpAboutSupportBody": "We are working toward an online catalogue and a public app, so a library's members can see what is available and what they have borrowed. That needs a server, which a small team cannot pay for alone. If you would like to help fund it, or contribute code, write to the address above.",
     "helpAboutContactEmail": "Send an email",
     "helpAboutLinksTitle": "Links",
     "helpAboutLinkWebsite": "Website",

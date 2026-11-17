@@ -185,6 +185,12 @@ Found a bug? Open an issue with the platform, the version from Settings → Abou
 
 Merging into `prod` publishes a release at the version in `pubspec.yaml` and redeploys the web demo - see [releasing](./docs/contributing/releasing.md).
 
+## Support the project
+
+We are working toward an online catalogue and a public app, so a library's members can see what is available and what they have borrowed. That needs a server to hold the data, which a small team cannot pay for alone.
+
+If you would like to help, with funding or with code, write to [info@khulladigitallibrary.com](mailto:info@khulladigitallibrary.com).
+
 ## Contributors
 
 Thanks to everyone who has helped build Khulla. This list is generated from GitHub, so it stays current on its own.
