@@ -84,6 +84,13 @@ class MemberDetailCubit extends Cubit<MemberDetailState> {
     await _members.archiveMember(id);
   }
 
+  /// Brings an archived member back and reloads the record. Rethrows on failure.
+  Future<void> restoreMember(String id) async {
+    await _members.restoreMember(id);
+    if (isClosed) return;
+    await loadMember(id);
+  }
+
   /// Records full payment on one fine and reloads the member. Rethrows on failure.
   Future<void> collectFine(String memberId, String fineId) async {
     await _circulation.collectFine(fineId);

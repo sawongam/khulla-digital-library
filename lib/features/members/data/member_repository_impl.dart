@@ -51,6 +51,7 @@ class MemberRepositoryImpl implements MemberRepository {
     required String memberTypeId,
     String? id,
     String? barcode,
+    String? grade,
     bool sendNotices = true,
     Gender? gender,
     DateTime? dateOfBirth,
@@ -111,6 +112,7 @@ class MemberRepositoryImpl implements MemberRepository {
       finesOwed: existing?.finesOwed ?? Money.zero,
       borrowedAllTime: existing?.borrowedAllTime ?? 0,
       sendNotices: sendNotices,
+      grade: grade?.trim().isEmpty == true ? null : grade?.trim(),
       gender: gender,
       dateOfBirth: dateOfBirth == null ? null : dateOnly(dateOfBirth),
       bloodGroup: bloodGroup,
@@ -152,6 +154,9 @@ class MemberRepositoryImpl implements MemberRepository {
   @override
   Future<void> archiveMember(String id) =>
       _dataSource.archiveMember(id, DateTime.now());
+
+  @override
+  Future<void> restoreMember(String id) => _dataSource.restoreMember(id);
 
   @override
   Future<Member> suspendMember(String id, {String? reason}) async {
@@ -222,9 +227,6 @@ class MemberRepositoryImpl implements MemberRepository {
 
   @override
   Future<void> removeMember(String id) async {
-    if (await _dataSource.hasCirculationHistory(id)) {
-      throw const ConflictException.because(AppErrorReason.memberHasHistory);
-    }
     await _dataSource.deleteMember(id);
   }
 

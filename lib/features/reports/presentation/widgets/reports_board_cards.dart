@@ -148,7 +148,7 @@ class ReportsRankedSection extends StatelessWidget {
         title: l10n.reportsTopMembersTitle,
         subtitle: l10n.reportsTopMembersSubtitle,
         child: ReportsRankedTable(
-          rows: summary.topMemberRows(),
+          rows: summary.topMemberRows(l10n),
           nameLabel: l10n.reportsColumnMember,
         ),
       ),

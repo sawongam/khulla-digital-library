@@ -38,8 +38,13 @@ class Loans extends Table {
   TextColumn get copyId =>
       text().references(Copies, #id, onDelete: KeyAction.restrict)();
 
-  TextColumn get memberId =>
-      text().references(Members, #id, onDelete: KeyAction.restrict)();
+  /// Null once the member is deleted: the record outlives the person, and
+  /// reads show it as a former member.
+  TextColumn get memberId => text().nullable().references(
+    Members,
+    #id,
+    onDelete: KeyAction.restrict,
+  )();
 
   DateTimeColumn get checkedOutAt => dateTime()();
 

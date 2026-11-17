@@ -42,7 +42,7 @@ class FineListPage extends StatelessWidget {
       title: l10n.finesCollectTitle,
       message: l10n.finesCollectBody(
         fine.outstanding.display(),
-        fine.memberName ?? l10n.commonNotSet,
+        fine.memberName ?? l10n.memberFormerMember,
       ),
       icon: AppIcons.wallet,
       actionsBuilder: (dialogContext) => Column(
@@ -95,6 +95,12 @@ class FineListPage extends StatelessWidget {
     }
   }
 
+  /// Opens the member's page; a deleted member has none, so nothing happens.
+  void _openMember(BuildContext context, String? memberId) {
+    if (memberId == null) return;
+    context.go(Routes.member(memberId));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -135,16 +141,16 @@ class FineListPage extends StatelessWidget {
             onClearFilters: cubit.clearFilters,
           ),
           items: state.fines,
-          onRowTap: (fine) => context.go(Routes.member(fine.memberId)),
+          onRowTap: (fine) => _openMember(context, fine.memberId),
           compactBuilder: (context, fine) => FineCard(
             fine: fine,
-            onTap: () => context.go(Routes.member(fine.memberId)),
+            onTap: () => _openMember(context, fine.memberId),
           ),
           columns: fineListColumns(
             context,
             onCollect: (fine) => unawaited(_collect(context, fine)),
             onWaive: (fine) => unawaited(_waive(context, fine)),
-            onViewMember: (fine) => context.go(Routes.member(fine.memberId)),
+            onViewMember: (fine) => _openMember(context, fine.memberId),
           ),
           emptyState: bootstrapping
               ? const Center(child: AppSpinner())

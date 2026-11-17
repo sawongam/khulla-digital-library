@@ -4,6 +4,7 @@
 import 'package:khulla/features/members/domain/models/member_type.dart';
 import 'package:khulla/features/members/presentation/member_labels.dart';
 import 'package:khulla/l10n/l10n.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
 /// One category row in the category list: the icon, name, system/archived
@@ -80,7 +81,10 @@ class MemberTypeRow extends StatelessWidget {
                     ],
                   ],
                 ),
-                Text(_overridesSummary(l10n), style: muted),
+                Text(
+                  _overridesSummary(l10n, context.chargesFines),
+                  style: muted,
+                ),
               ],
             ),
           ),
@@ -109,11 +113,11 @@ class MemberTypeRow extends StatelessWidget {
     );
   }
 
-  String _overridesSummary(AppLocalizations l10n) {
+  String _overridesSummary(AppLocalizations l10n, bool chargesFines) {
     final parts = <String>[
       if (type.loanPeriodDays != null) l10n.fieldLoanPeriodDays,
       if (type.borrowingLimit != null) l10n.fieldBorrowingLimit,
-      if (type.finePerDay != null) l10n.fieldFinePerDay,
+      if (chargesFines && type.finePerDay != null) l10n.fieldFinePerDay,
       if (type.membershipDurationMonths != null)
         l10n.fieldMembershipDurationMonths,
     ];

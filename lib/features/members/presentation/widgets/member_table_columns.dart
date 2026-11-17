@@ -8,6 +8,7 @@ import 'package:khulla/features/members/presentation/member_labels.dart';
 import 'package:khulla/features/members/presentation/widgets/member_row_menu.dart';
 import 'package:khulla/features/users/domain/user_role.dart';
 import 'package:khulla/l10n/l10n.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla/shared/utils/permission_context.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
@@ -24,8 +25,11 @@ List<AppTableColumn<Member>> memberTableColumns(
   required void Function(Member member) onSuspend,
   required void Function(Member member) onUnsuspend,
   required void Function(Member member) onArchive,
+  required void Function(Member member) onRestore,
+  required void Function(Member member) onDelete,
 }) {
   final l10n = context.l10n;
+  final chargesFines = context.chargesFines;
   final spacing = context.appSpacing;
   final scheme = context.colorScheme;
   final muted = context.textTheme.bodyMedium?.copyWith(
@@ -74,6 +78,13 @@ List<AppTableColumn<Member>> memberTableColumns(
       ),
     ),
     AppTableColumn<Member>(
+      id: 'grade',
+      label: l10n.fieldGrade,
+      showFrom: FormFactor.large,
+      cellBuilder: (context, member) =>
+          Text(member.grade ?? l10n.commonNotSet, style: muted),
+    ),
+    AppTableColumn<Member>(
       id: 'loans',
       label: l10n.membersColumnLoans,
       sortable: true,
@@ -88,24 +99,25 @@ List<AppTableColumn<Member>> memberTableColumns(
             : null,
       ),
     ),
-    AppTableColumn<Member>(
-      id: 'fines',
-      label: l10n.membersColumnFines,
-      flex: 2,
-      sortable: true,
-      showFrom: FormFactor.expanded,
-      cellBuilder: (context, member) => Text(
-        member.finesOwed.isZero
-            ? l10n.commonNotSet
-            : member.finesOwed.display(),
-        style: member.finesOwed.isZero
-            ? muted
-            : context.textTheme.bodyMedium?.copyWith(
-                color: scheme.error,
-                fontWeight: FontWeight.w500,
-              ),
+    if (chargesFines)
+      AppTableColumn<Member>(
+        id: 'fines',
+        label: l10n.membersColumnFines,
+        flex: 2,
+        sortable: true,
+        showFrom: FormFactor.expanded,
+        cellBuilder: (context, member) => Text(
+          member.finesOwed.isZero
+              ? l10n.commonNotSet
+              : member.finesOwed.display(),
+          style: member.finesOwed.isZero
+              ? muted
+              : context.textTheme.bodyMedium?.copyWith(
+                  color: scheme.error,
+                  fontWeight: FontWeight.w500,
+                ),
+        ),
       ),
-    ),
     AppTableColumn<Member>(
       id: 'expires',
 
@@ -121,11 +133,16 @@ List<AppTableColumn<Member>> memberTableColumns(
       id: 'status',
       label: l10n.commonStatus,
       flex: 2,
-      cellBuilder: (context, member) => AppStatusBadge(
-        dense: true,
-        label: member.status.label(l10n),
-        tone: member.status.tone,
-      ),
+      cellBuilder: (context, member) => member.isArchived
+          ? AppStatusBadge(
+              dense: true,
+              label: l10n.membersArchivedBadge,
+            )
+          : AppStatusBadge(
+              dense: true,
+              label: member.status.label(l10n),
+              tone: member.status.tone,
+            ),
     ),
     // Two permissions meet in this menu. Editing, renewing, suspending and
     // archiving a member are members work; sending the row to the checkout
@@ -154,6 +171,8 @@ List<AppTableColumn<Member>> memberTableColumns(
                 onSuspend: () => onSuspend(member),
                 onUnsuspend: () => onUnsuspend(member),
                 onArchive: () => onArchive(member),
+                onRestore: () => onRestore(member),
+                onDelete: () => onDelete(member),
               ),
           ],
         ),

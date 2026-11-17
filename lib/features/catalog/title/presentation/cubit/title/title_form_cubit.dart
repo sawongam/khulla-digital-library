@@ -5,7 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/money/money.dart';
-import 'package:khulla/features/catalog/copy/domain/copy_repository.dart';
+import 'package:khulla/features/catalog/title/domain/isbn_lookup_repository.dart';
+import 'package:khulla/features/catalog/title/domain/models/isbn_lookup_result.dart';
 import 'package:khulla/features/catalog/title/domain/models/title.dart';
 import 'package:khulla/features/catalog/title/domain/models/title_format.dart';
 import 'package:khulla/features/catalog/title/domain/title_repository.dart';
@@ -22,13 +23,13 @@ import 'package:khulla/shared/models/load_status.dart';
 class TitleFormCubit extends Cubit<TitleFormState> {
   TitleFormCubit(
     this._titles,
-    this._copies,
     this._referenceData,
+    this._isbnLookup,
   ) : super(const TitleFormState());
 
   final TitleRepository _titles;
-  final CopyRepository _copies;
   final ReferenceDataRepository _referenceData;
+  final IsbnLookupRepository _isbnLookup;
 
   /// Loads format options and, when [titleId] is set, the existing title.
   Future<void> loadTitleForm({String? titleId}) async {
@@ -65,6 +66,25 @@ class TitleFormCubit extends Cubit<TitleFormState> {
     } on AppException catch (error) {
       if (isClosed) rethrow;
       emit(state.copyWith(error: error));
+      rethrow;
+    }
+  }
+
+  /// Asks Open Library what it knows about [isbn].
+  ///
+  /// Emits [TitleFormState.isLookingUpIsbn] while the request is out and
+  /// rethrows on failure so the modal can toast. The cubit never touches the
+  /// form's fields - the page decides which of them are still empty.
+  Future<IsbnLookupResult> lookUpIsbn(String isbn) async {
+    emit(state.copyWith(isLookingUpIsbn: true, error: null));
+    try {
+      final result = await _isbnLookup.lookUpIsbn(isbn);
+      if (isClosed) return result;
+      emit(state.copyWith(isLookingUpIsbn: false));
+      return result;
+    } on AppException catch (error) {
+      if (isClosed) rethrow;
+      emit(state.copyWith(isLookingUpIsbn: false, error: error));
       rethrow;
     }
   }
@@ -106,16 +126,10 @@ class TitleFormCubit extends Cubit<TitleFormState> {
         shelf: shelf,
         lendable: lendable,
         replacementCost: replacementCostText.toMoney(),
+        // One repository transaction creates the title and its copies, so a
+        // failed copy leaves nothing behind to duplicate on retry.
+        initialCopies: state.existing == null ? initialCopies : 0,
       );
-      if (state.existing == null && initialCopies > 0) {
-        for (var i = 0; i < initialCopies; i++) {
-          await _copies.addCopy(
-            titleId: saved.id,
-            titleName: saved.title,
-            shelf: shelf,
-          );
-        }
-      }
       if (isClosed) return saved;
       emit(state.copyWith(isSaving: false, existing: saved));
       return saved;

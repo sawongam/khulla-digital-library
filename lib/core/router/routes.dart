@@ -73,6 +73,11 @@ abstract final class Routes {
   /// and links into the rest of the section.
   static const String circulationLoans = '$circulation/$loansSegment';
 
+  /// The loans list pre-filtered to one status (an enum's `name`, e.g.
+  /// `overdue`); the router reads it from the `status` query parameter.
+  static String circulationLoansWithStatus(Enum status) =>
+      '$circulationLoans?status=${status.name}';
+
   /// The checkout desk.
   static const String circulationCheckOut = '$circulation/$checkOutSegment';
 

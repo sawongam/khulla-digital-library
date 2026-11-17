@@ -9,7 +9,8 @@ part 'member_query.freezed.dart';
 /// Filters and paging for the member list.
 ///
 /// Quick filters ([withLoans], [owesFines], [suspended], [expiring]) map to
-/// SQL predicates on aggregates and expiry dates.
+/// SQL predicates on aggregates and expiry dates. [archived] swaps the list
+/// to the members who have left the register instead of hiding them.
 @freezed
 abstract class MemberQuery with _$MemberQuery {
   const factory MemberQuery({
@@ -18,6 +19,7 @@ abstract class MemberQuery with _$MemberQuery {
     @Default(false) bool owesFines,
     @Default(false) bool suspended,
     @Default(false) bool expiring,
+    @Default(false) bool archived,
     @Default('createdAt') String sortColumn,
     @Default(false) bool sortAscending,
     @Default(0) int offset,

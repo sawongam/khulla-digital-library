@@ -9,13 +9,15 @@ part 'title_query.freezed.dart';
 /// Filters and paging for the title list and OPAC-style search.
 ///
 /// [search] matches the denormalized `search_text` column; [availableOnly]
-/// hides titles with no copies on shelf.
+/// hides titles with no copies on shelf; [archived] lists archived titles
+/// instead of the live ones.
 @freezed
 abstract class TitleQuery with _$TitleQuery {
   const factory TitleQuery({
     @Default('') String search,
     String? formatId,
     @Default(false) bool availableOnly,
+    @Default(false) bool archived,
     @Default('createdAt') String sortColumn,
     @Default(false) bool sortAscending,
     @Default(0) int offset,

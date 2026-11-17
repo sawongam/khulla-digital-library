@@ -5,8 +5,13 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:khulla/core/database/app_database.dart';
 import 'package:khulla/core/database/fts_filter.dart';
+import 'package:khulla/core/error/app_exception.dart';
 import 'package:khulla/core/error/guard.dart';
 import 'package:khulla/core/money/money.dart';
+import 'package:khulla/features/catalog/copy/data/copy_local_data_source.dart';
+import 'package:khulla/features/catalog/copy/data/local_copy_data_source.dart';
+import 'package:khulla/features/catalog/copy/domain/models/copy.dart';
+import 'package:khulla/features/catalog/shared/domain/copy_status.dart';
 import 'package:khulla/features/catalog/title/data/mappers/title_row_mappers.dart';
 import 'package:khulla/features/catalog/title/data/title_local_data_source.dart';
 import 'package:khulla/features/catalog/title/domain/models/title.dart';
@@ -18,9 +23,13 @@ import 'package:khulla/features/catalog/title/domain/models/title_query.dart';
 /// arrive in one round trip. Sort column names match [TitleQuery.sortColumn].
 @LazySingleton(as: TitleLocalDataSource)
 class LocalTitleDataSource implements TitleLocalDataSource {
-  LocalTitleDataSource(this._db);
+  /// The initial-copies write reuses [LocalCopyDataSource] over the same
+  /// connection, so barcode allocation and clash checks run inside the
+  /// title's transaction.
+  LocalTitleDataSource(this._db) : _copies = LocalCopyDataSource(_db);
 
   final AppDatabase _db;
+  final CopyLocalDataSource _copies;
 
   static const String _source = 'LocalTitleDataSource';
 
@@ -56,7 +65,9 @@ EXISTS (SELECT 1 FROM copies c
   @override
   Future<TitleListResult> findTitles(TitleQuery query) => guardDatabase(
     () async {
-      final where = StringBuffer('t.archived_at IS NULL');
+      final where = StringBuffer(
+        query.archived ? 't.archived_at IS NOT NULL' : 't.archived_at IS NULL',
+      );
       final variables = <Variable<Object>>[];
 
       final search = ftsFilter(
@@ -177,6 +188,22 @@ WHERE t.id = ?
   );
 
   @override
+  Future<Title> insertTitleWithCopies(Title title, List<Copy> copies) =>
+      guardDatabase(
+        () => _db.transaction(() async {
+          await _db.into(_db.titles).insert(title.toCompanion());
+          for (final copy in copies) {
+            await _copies.insertCopy(
+              copy: copy,
+              barcodeOverride: copy.barcode,
+            );
+          }
+          return (await findTitleById(title.id))!;
+        }),
+        source: '$_source.insertTitleWithCopies',
+      );
+
+  @override
   Future<Title> updateTitle(Title title) => guardDatabase(
     () async {
       await (_db.update(
@@ -189,15 +216,89 @@ WHERE t.id = ?
 
   @override
   Future<void> archiveTitle(String id, DateTime archivedAt) => guardDatabase(
-    () async {
+    () => _db.transaction(() async {
+      // A copy out on loan or held for a member cannot leave circulation
+      // under its borrower, so the title waits until they are back.
+      final inUse = _db.copies.id.count();
+      final row =
+          await (_db.selectOnly(_db.copies)
+                ..addColumns([inUse])
+                ..where(
+                  _db.copies.titleId.equals(id) &
+                      _db.copies.archivedAt.isNull() &
+                      _db.copies.status.isIn([
+                        CopyStatus.onLoan.name,
+                        CopyStatus.reserved.name,
+                      ]),
+                ))
+              .getSingle();
+      // Status is checked first, but an open loan row is the fact that
+      // matters: a copy whose status drifted must not slip through.
+      final openLoans = await _db
+          .customSelect(
+            'SELECT COUNT(*) AS n FROM loans l JOIN copies c ON c.id = l.copy_id '
+            'WHERE c.title_id = ? AND l.returned_at IS NULL',
+            variables: [Variable<String>(id)],
+            readsFrom: {_db.loans, _db.copies},
+          )
+          .getSingle();
+      if ((row.read(inUse) ?? 0) > 0 || openLoans.read<int>('n') > 0) {
+        throw const ConflictException.because(
+          AppErrorReason.titleHasCopiesOnLoan,
+        );
+      }
+      final now = DateTime.now();
+      // The copies take the title's own stamp so a restore can tell them from
+      // copies that were withdrawn on their own earlier.
+      await (_db.update(_db.copies)..where(
+            (c) => c.titleId.equals(id) & c.archivedAt.isNull(),
+          ))
+          .write(
+            CopiesCompanion(
+              archivedAt: Value(archivedAt),
+              updatedAt: Value(now),
+            ),
+          );
       await (_db.update(_db.titles)..where((t) => t.id.equals(id))).write(
         TitlesCompanion(
           archivedAt: Value(archivedAt),
-          updatedAt: Value(DateTime.now()),
+          updatedAt: Value(now),
         ),
       );
-    },
+    }),
     source: '$_source.archiveTitle',
+  );
+
+  @override
+  Future<void> restoreTitle(String id) => guardDatabase(
+    () => _db.transaction(() async {
+      final title = await (_db.select(
+        _db.titles,
+      )..where((t) => t.id.equals(id))).getSingleOrNull();
+      if (title == null) {
+        throw const NotFoundException.because(AppErrorReason.titleNotFound);
+      }
+      final archivedAt = title.archivedAt;
+      final now = DateTime.now();
+      if (archivedAt != null) {
+        await (_db.update(_db.copies)..where(
+              (c) => c.titleId.equals(id) & c.archivedAt.equals(archivedAt),
+            ))
+            .write(
+              CopiesCompanion(
+                archivedAt: const Value(null),
+                updatedAt: Value(now),
+              ),
+            );
+      }
+      await (_db.update(_db.titles)..where((t) => t.id.equals(id))).write(
+        TitlesCompanion(
+          archivedAt: const Value(null),
+          updatedAt: Value(now),
+        ),
+      );
+    }),
+    source: '$_source.restoreTitle',
   );
 
   @override

@@ -17,6 +17,7 @@ import 'package:khulla/features/dashboard/presentation/widgets/dashboard_subject
 import 'package:khulla/features/dashboard/presentation/widgets/dashboard_usage_card.dart';
 import 'package:khulla/l10n/l10n.dart';
 import 'package:khulla/shared/models/load_status.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_context.dart';
 import 'package:khulla/shared/utils/app_exception_l10n.dart';
 import 'package:khulla_ui/khulla_ui.dart';
 
@@ -74,6 +75,7 @@ class _DashboardBoard extends StatelessWidget {
     final formFactor = context.formFactor;
     final twoPane = formFactor.usesExtendedRail;
     final sideBySide = formFactor.isAtLeast(FormFactor.expanded);
+    final chargesFines = context.chargesFines;
     final summary = state.summary!;
     final finesSeries = summary.finesSeries(l10n);
     final latestFines = summary.finesByMonth.isEmpty
@@ -86,7 +88,9 @@ class _DashboardBoard extends StatelessWidget {
       children: [
         DashboardUsageCard(series: summary.usageSeries(l10n)),
         SizedBox(height: spacing.md),
-        if (sideBySide)
+        if (!chargesFines)
+          DashboardCollectionCard(slices: summary.collectionSlices(l10n))
+        else if (sideBySide)
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -119,7 +123,9 @@ class _DashboardBoard extends StatelessWidget {
           DashboardCollectionCard(slices: summary.collectionSlices(l10n)),
         ],
         SizedBox(height: spacing.md),
-        DashboardActivitySection(entries: summary.activity(l10n)),
+        DashboardActivitySection(
+          entries: summary.activity(l10n, chargesFines: chargesFines),
+        ),
       ],
     );
 
@@ -164,7 +170,13 @@ class _DashboardBoard extends StatelessWidget {
                       context.read<DashboardCubit>().changePeriod(period),
                 ),
                 SizedBox(height: spacing.md),
-                DashboardStatsStrip(stats: summary.stats(l10n, state.period)),
+                DashboardStatsStrip(
+                  stats: summary.stats(
+                    l10n,
+                    state.period,
+                    chargesFines: chargesFines,
+                  ),
+                ),
                 SizedBox(height: spacing.lg),
                 if (twoPane)
                   Row(

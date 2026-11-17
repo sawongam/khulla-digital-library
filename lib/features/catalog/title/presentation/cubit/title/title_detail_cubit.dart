@@ -79,6 +79,22 @@ class TitleDetailCubit extends Cubit<TitleDetailState> {
     await _titles.removeTitle(id);
   }
 
+  /// Archives the title and its live copies, then reloads the detail pane.
+  /// Rethrows on failure - the confirming dialog toasts.
+  Future<void> archiveTitle(String id) async {
+    await _titles.archiveTitle(id);
+    if (isClosed) return;
+    await loadTitle(id);
+  }
+
+  /// Brings an archived title back and reloads the detail pane. Rethrows on
+  /// failure.
+  Future<void> restoreTitle(String id) async {
+    await _titles.restoreTitle(id);
+    if (isClosed) return;
+    await loadTitle(id);
+  }
+
   /// Adds [count] copies and reloads the detail pane. Rethrows on failure.
   Future<void> addCopies(
     String titleId,

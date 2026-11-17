@@ -29,9 +29,15 @@ abstract interface class TitleRepository {
     int? pages,
     String? description,
     String? shelf,
+
+    /// Copies to create with a new title, in the same transaction. Ignored
+    /// when editing.
+    int initialCopies,
   });
 
   Future<void> archiveTitle(String id);
+
+  Future<void> restoreTitle(String id);
 
   Future<void> removeTitle(String id);
 }

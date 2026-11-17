@@ -10,6 +10,9 @@ import 'package:khulla/core/feedback/app_toast.dart';
 import 'package:khulla/core/lifecycle/dispose_bag.dart';
 import 'package:khulla/core/money/money.dart';
 import 'package:khulla/core/router/routes.dart';
+import 'package:khulla/features/members/domain/member_optional_field.dart';
+import 'package:khulla/features/members/presentation/member_labels.dart';
+import 'package:khulla/features/settings/domain/models/library_profile.dart';
 import 'package:khulla/features/settings/domain/models/loan_rules.dart';
 import 'package:khulla/features/settings/presentation/cubit/loan_rules_cubit.dart';
 import 'package:khulla/features/settings/presentation/cubit/loan_rules_state.dart';
@@ -39,6 +42,8 @@ class _LoanRulesPageState extends State<LoanRulesPage> with DisposeBag {
 
   late bool _blockOverdue = true;
   late bool _autoRenew = false;
+  late bool _chargesFines = true;
+  Set<MemberOptionalField> _hiddenFields = {};
   LoanRules? _loadedRules;
 
   void _syncFromRules(LoanRules rules) {
@@ -53,6 +58,12 @@ class _LoanRulesPageState extends State<LoanRulesPage> with DisposeBag {
     _holdShelfDays.text = '${rules.holdShelfDays}';
     _blockOverdue = rules.blockOverdueBorrowers;
     _autoRenew = rules.autoRenewWhenUnreserved;
+  }
+
+  void _syncFromProfile(LibraryProfile? profile) {
+    if (profile == null) return;
+    _chargesFines = profile.chargesFines;
+    _hiddenFields = {...profile.hiddenMemberFields};
   }
 
   int? _parseInt(String text) => int.tryParse(text.trim());
@@ -90,6 +101,8 @@ class _LoanRulesPageState extends State<LoanRulesPage> with DisposeBag {
           blockOverdueBorrowers: _blockOverdue,
           autoRenewWhenUnreserved: _autoRenew,
         ),
+        chargesFines: _chargesFines,
+        hiddenMemberFields: _hiddenFields,
       );
       if (!context.mounted) return;
       AppToast.success(context, message: l10n.settingsLoanRulesSave);
@@ -114,10 +127,13 @@ class _LoanRulesPageState extends State<LoanRulesPage> with DisposeBag {
     const numberInput = TextInputType.number;
 
     return BlocConsumer<LoanRulesCubit, LoanRulesState>(
-      listenWhen: (previous, current) => current.rules != previous.rules,
+      listenWhen: (previous, current) =>
+          current.rules != previous.rules ||
+          current.profile != previous.profile,
       listener: (context, state) {
         final rules = state.rules;
         if (rules != null) _syncFromRules(rules);
+        _syncFromProfile(state.profile);
       },
       builder: (context, state) {
         if (state.isLoading) {
@@ -209,34 +225,43 @@ class _LoanRulesPageState extends State<LoanRulesPage> with DisposeBag {
                           title: l10n.settingsLoanFines,
                           description: l10n.settingsLoanFinesDescription,
                           children: [
-                            AppFormRow(
-                              children: [
-                                AppTextField(
-                                  label: l10n.fieldFinePerDay,
-                                  controller: _finePerDay,
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                        decimal: true,
-                                      ),
-                                  onChanged: (_) {},
-                                ),
-                                AppTextField(
-                                  label: l10n.fieldGraceDays,
-                                  controller: _graceDays,
-                                  keyboardType: numberInput,
-                                  onChanged: (_) {},
-                                ),
-                              ],
+                            AppSwitchField(
+                              value: _chargesFines,
+                              label: l10n.settingsFinesToggle,
+                              description: l10n.settingsFinesToggleDescription,
+                              onChanged: (value) =>
+                                  setState(() => _chargesFines = value),
                             ),
-                            AppTextField(
-                              label: l10n.fieldMaximumFine,
-                              controller: _maximumFine,
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                    decimal: true,
+                            if (_chargesFines) ...[
+                              AppFormRow(
+                                children: [
+                                  AppTextField(
+                                    label: l10n.fieldFinePerDay,
+                                    controller: _finePerDay,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                        ),
+                                    onChanged: (_) {},
                                   ),
-                              onChanged: (_) {},
-                            ),
+                                  AppTextField(
+                                    label: l10n.fieldGraceDays,
+                                    controller: _graceDays,
+                                    keyboardType: numberInput,
+                                    onChanged: (_) {},
+                                  ),
+                                ],
+                              ),
+                              AppTextField(
+                                label: l10n.fieldMaximumFine,
+                                controller: _maximumFine,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                    ),
+                                onChanged: (_) {},
+                              ),
+                            ],
                             AppSwitchField(
                               value: _blockOverdue,
                               label: l10n.settingsLoanBlockOverdue,
@@ -258,6 +283,26 @@ class _LoanRulesPageState extends State<LoanRulesPage> with DisposeBag {
                               keyboardType: numberInput,
                               onChanged: (_) {},
                             ),
+                          ],
+                        ),
+                        const AppFormDivider(),
+                        AppFormSection(
+                          title: l10n.settingsMemberFormTitle,
+                          description: l10n.settingsMemberFormDescription,
+                          children: [
+                            AppFieldLabel(label: l10n.settingsMemberFormShow),
+                            for (final field in MemberOptionalField.values)
+                              AppCheckboxField(
+                                value: !_hiddenFields.contains(field),
+                                label: field.label(l10n),
+                                onChanged: (shown) => setState(() {
+                                  if (shown ?? true) {
+                                    _hiddenFields.remove(field);
+                                  } else {
+                                    _hiddenFields.add(field);
+                                  }
+                                }),
+                              ),
                           ],
                         ),
                       ],

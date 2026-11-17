@@ -70,6 +70,7 @@ class TitleFormDialog extends StatelessWidget {
           existing: state.existing,
           formats: state.formats,
           isSaving: state.isSaving,
+          isLookingUpIsbn: state.isLookingUpIsbn,
         );
       },
     );
@@ -82,6 +83,7 @@ class _TitleFormBody extends StatefulWidget {
     required this.existing,
     required this.formats,
     required this.isSaving,
+    required this.isLookingUpIsbn,
     super.key,
   });
 
@@ -89,6 +91,7 @@ class _TitleFormBody extends StatefulWidget {
   final catalog.Title? existing;
   final List<TitleFormat> formats;
   final bool isSaving;
+  final bool isLookingUpIsbn;
 
   @override
   State<_TitleFormBody> createState() => _TitleFormBodyState();
@@ -175,6 +178,44 @@ class _TitleFormBodyState extends State<_TitleFormBody> with DisposeBag {
     }
   }
 
+  /// Fills the fields that are still empty from the lookup and says how many.
+  /// Typed data is never overwritten.
+  Future<void> _lookUpIsbn() async {
+    final l10n = context.l10n;
+    try {
+      final result = await context.read<TitleFormCubit>().lookUpIsbn(
+        _isbn.text,
+      );
+      if (!mounted) return;
+      bool fill(TextEditingController controller, String? value) {
+        if (value == null || controller.text.trim().isNotEmpty) return false;
+        controller.text = value;
+        return true;
+      }
+
+      final changes = [
+        fill(_title, result.title),
+        fill(_author, result.author),
+        fill(_publisher, result.publisher),
+        fill(_year, result.publishedYear?.toString()),
+        fill(_pages, result.pages?.toString()),
+      ];
+      final filled = changes.where((changed) => changed).length;
+      setState(() {
+        if (changes[0]) _titleError = null;
+        if (changes[1]) _authorError = null;
+      });
+      if (filled == 0) {
+        AppToast.info(context, message: l10n.isbnLookUpNothingNew);
+      } else {
+        AppToast.success(context, message: l10n.isbnLookUpFilled(filled));
+      }
+    } on AppException catch (error) {
+      if (!mounted) return;
+      AppToast.error(context, message: error.localizedMessage(l10n));
+    }
+  }
+
   Future<void> _save() async {
     final l10n = context.l10n;
     final title = _title.text.trim();
@@ -188,7 +229,7 @@ class _TitleFormBodyState extends State<_TitleFormBody> with DisposeBag {
     final copies = int.tryParse(_initialCopies.text);
     final copiesError = _isEditing
         ? null
-        : (copies == null || copies < 1 ? l10n.validationCopiesMin : null);
+        : (copies == null || copies < 0 ? l10n.validationCopiesInvalid : null);
 
     setState(() {
       _titleError = titleError;
@@ -284,6 +325,8 @@ class _TitleFormBodyState extends State<_TitleFormBody> with DisposeBag {
             _formatError = null;
           }),
           onAddFormat: () => unawaited(_addFormat()),
+          isLookingUpIsbn: widget.isLookingUpIsbn,
+          onLookUpIsbn: () => unawaited(_lookUpIsbn()),
         ),
         TitleFormShelvingSection(
           shelf: _shelf,

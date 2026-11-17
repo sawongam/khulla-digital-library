@@ -26,6 +26,7 @@ import 'package:khulla/features/circulation/reservation/presentation/cubit/reser
 import 'package:khulla/features/circulation/reservation/presentation/reservation_list_page.dart';
 import 'package:khulla/features/circulation/return_copy/presentation/cubit/return_cubit.dart';
 import 'package:khulla/features/circulation/return_copy/presentation/return_page.dart';
+import 'package:khulla/features/circulation/shared/domain/loan_status.dart';
 import 'package:khulla/features/dashboard/presentation/cubit/dashboard_cubit.dart';
 import 'package:khulla/features/dashboard/presentation/dashboard_page.dart';
 import 'package:khulla/features/guide/domain/guide_topic.dart';
@@ -146,20 +147,33 @@ StatefulShellBranch circulationBranch() => StatefulShellBranch(
       routes: [
         GoRoute(
           path: Routes.loansSegment,
-          builder: (context, _) => BlocProvider<LoanListCubit>(
-            create: (_) {
-              final cubit = getIt<LoanListCubit>();
-              unawaited(cubit.loadOpenLoans());
-              return cubit;
-            },
-            child: const LoanListPage(),
-          ),
+          builder: (context, state) {
+            final status = LoanStatus.values
+                .asNameMap()[state.uri.queryParameters['status']];
+            return BlocProvider<LoanListCubit>(
+              // A link with a status filter must not reuse a live list.
+              key: status == null ? null : ValueKey('loans-${status.name}'),
+              create: (_) {
+                final cubit = getIt<LoanListCubit>();
+                unawaited(
+                  status == null
+                      ? cubit.loadOpenLoans()
+                      : cubit.loadLoansWithStatus(status),
+                );
+                return cubit;
+              },
+              child: const LoanListPage(),
+            );
+          },
         ),
         GoRoute(
           path: Routes.checkOutSegment,
           builder: (context, state) {
             final card = state.uri.queryParameters['card'];
             return BlocProvider<CheckOutCubit>(
+              // A new card means a new member: a live desk must not reuse the
+              // old cubit. No card keeps the in-progress basket.
+              key: card == null || card.isEmpty ? null : ValueKey('card-$card'),
               create: (_) {
                 final cubit = getIt<CheckOutCubit>();
                 if (card != null && card.isNotEmpty) {

@@ -114,9 +114,13 @@ extension ReportsSummaryX on ReportsSummary {
       (name: ranking.name, detail: ranking.detail, loans: ranking.count),
   ];
 
-  List<ReportsRankedRow> topMemberRows() => [
+  List<ReportsRankedRow> topMemberRows(AppLocalizations l10n) => [
     for (final ranking in topMembers)
-      (name: ranking.name, detail: ranking.detail, loans: ranking.count),
+      (
+        name: ranking.name.isEmpty ? l10n.memberFormerMember : ranking.name,
+        detail: ranking.detail,
+        loans: ranking.count,
+      ),
   ];
 
   /// The header and rows a saved-report tile's CSV export writes.
@@ -174,7 +178,7 @@ extension ReportsSummaryX on ReportsSummary {
         for (final loan in overdueLoans)
           [
             loan.title,
-            loan.member,
+            if (loan.member.isEmpty) l10n.memberFormerMember else loan.member,
             DateFormat('d MMM y').format(loan.dueDate),
             '${loan.daysLate}',
           ],

@@ -34,6 +34,22 @@ class ReturnPage extends StatefulWidget {
 
 class _ReturnPageState extends State<ReturnPage> with DisposeBag {
   late final TextEditingController _scan = textController();
+  late final FocusNode _scanFocus = focusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    // Open the desk ready to scan: no click into the field first.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _scanFocus.requestFocus();
+    });
+  }
+
+  void _refocusScan() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _scanFocus.requestFocus();
+    });
+  }
 
   Future<void> _scanCopy(String barcode) async {
     final cubit = context.read<ReturnCubit>();
@@ -45,6 +61,8 @@ class _ReturnPageState extends State<ReturnPage> with DisposeBag {
     } on AppException catch (error) {
       if (!mounted) return;
       AppToast.error(context, message: error.localizedMessage(l10n));
+    } finally {
+      if (mounted) _refocusScan();
     }
   }
 
@@ -58,6 +76,8 @@ class _ReturnPageState extends State<ReturnPage> with DisposeBag {
     } on AppException catch (error) {
       if (!mounted) return;
       AppToast.error(context, message: error.localizedMessage(l10n));
+    } finally {
+      if (mounted) _refocusScan();
     }
   }
 
@@ -73,6 +93,7 @@ class _ReturnPageState extends State<ReturnPage> with DisposeBag {
         final basket = ReturnBasket(
           loans: state.basket,
           scanController: _scan,
+          scanFocus: _scanFocus,
           onScanSubmitted: (value) => unawaited(_scanCopy(value)),
           onRemove: cubit.removeLoan,
         );

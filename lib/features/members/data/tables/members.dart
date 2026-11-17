@@ -24,6 +24,9 @@ class Members extends Table {
 
   TextColumn get fullName => text().withLength(min: 1, max: 160)();
 
+  /// Class or grade, free text ("Grade 7B"). Not searched.
+  TextColumn get grade => text().nullable().withLength(max: 40)();
+
   TextColumn get memberTypeId =>
       text().references(MemberTypes, #id, onDelete: KeyAction.restrict)();
 

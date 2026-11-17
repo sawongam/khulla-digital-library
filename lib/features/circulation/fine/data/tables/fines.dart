@@ -22,8 +22,13 @@ import 'package:khulla/features/members/data/tables/members.dart';
 class Fines extends Table {
   TextColumn get id => text()();
 
-  TextColumn get memberId =>
-      text().references(Members, #id, onDelete: KeyAction.restrict)();
+  /// Null once the member is deleted: the record outlives the person, and
+  /// reads show it as a former member.
+  TextColumn get memberId => text().nullable().references(
+    Members,
+    #id,
+    onDelete: KeyAction.restrict,
+  )();
 
   TextColumn get loanId =>
       text().nullable().references(Loans, #id, onDelete: KeyAction.restrict)();

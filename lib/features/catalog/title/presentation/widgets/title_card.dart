@@ -68,6 +68,13 @@ class TitleCard extends StatelessWidget {
                             ? AppStatusTone.success
                             : AppStatusTone.brand,
                       ),
+                      if (title.archivedAt != null) ...[
+                        SizedBox(width: spacing.xs),
+                        AppStatusBadge(
+                          dense: true,
+                          label: l10n.catalogArchivedBadge,
+                        ),
+                      ],
                       SizedBox(width: spacing.xs),
                       Flexible(
                         child: Text(

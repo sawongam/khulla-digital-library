@@ -3,6 +3,7 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:khulla/core/money/currency.dart';
+import 'package:khulla/features/members/domain/member_optional_field.dart';
 
 part 'library_profile.freezed.dart';
 
@@ -28,5 +29,12 @@ abstract class LibraryProfile with _$LibraryProfile {
     @Default(1) int staffBarcodeNextValue,
     DateTime? updatedAt,
     String? logoRef,
+
+    /// Whether the library charges fines at all; off hides them everywhere.
+    @Default(true) bool chargesFines,
+
+    /// Member-form fields the library has switched off.
+    @Default(<MemberOptionalField>{})
+    Set<MemberOptionalField> hiddenMemberFields,
   }) = _LibraryProfile;
 }

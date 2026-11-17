@@ -20,6 +20,7 @@ import 'package:khulla/features/settings/domain/library_settings_repository.dart
 import 'package:khulla/features/staff_auth/presentation/auth/cubit/auth_cubit.dart';
 import 'package:khulla/shared/domain/reference_data_repository.dart';
 import 'package:khulla/shared/domain/reference_seed_labels.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_cubit.dart';
 
 /// Shared startup for every flavor: installs error and bloc observers, sizes
 /// the desktop window, wires up dependency injection for the given [config],
@@ -77,6 +78,7 @@ Future<void> _runApp() async {
     // amount the app draws is already in the library's own currency rather
     // than in the default it would then have to be corrected from.
     await getIt<LibrarySettingsRepository>().findProfile();
+    await getIt<LibraryFeaturesCubit>().loadFeatures();
 
     await getIt<ReferenceDataRepository>().ensureDefaults(
       formatName: seedFormatName,

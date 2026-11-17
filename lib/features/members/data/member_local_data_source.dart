@@ -18,7 +18,9 @@ abstract interface class MemberLocalDataSource {
 
   Future<void> archiveMember(String id, DateTime archivedAt);
 
-  Future<bool> hasCirculationHistory(String memberId);
+  Future<void> restoreMember(String id);
 
+  /// Deletes a member and anonymises what they leave behind, in one
+  /// transaction. Throws if they still hold a loan or owe a fine.
   Future<void> deleteMember(String id);
 }

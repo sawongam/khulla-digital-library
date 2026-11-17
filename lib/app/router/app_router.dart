@@ -22,6 +22,7 @@ import 'package:khulla/features/staff_auth/presentation/recover_password/cubit/r
 import 'package:khulla/features/staff_auth/presentation/recover_password/recover_password_page.dart';
 import 'package:khulla/features/staff_auth/presentation/sign_in/cubit/sign_in_cubit.dart';
 import 'package:khulla/features/staff_auth/presentation/sign_in/sign_in_page.dart';
+import 'package:khulla/shared/presentation/cubit/library_features_cubit.dart';
 
 /// Owns the single [GoRouter] instance.
 ///
@@ -50,7 +51,7 @@ import 'package:khulla/features/staff_auth/presentation/sign_in/sign_in_page.dar
 /// call site.
 @lazySingleton
 class AppRouter {
-  AppRouter(this._config, this._auth) {
+  AppRouter(this._config, this._auth, this._features) {
     router = GoRouter(
       navigatorKey: _rootNavigatorKey,
       initialLocation: Routes.dashboard,
@@ -112,6 +113,7 @@ class AppRouter {
 
   final AppConfig _config;
   final AuthCubit _auth;
+  final LibraryFeaturesCubit _features;
   final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
     debugLabel: 'root',
   );
@@ -155,6 +157,12 @@ class AppRouter {
   /// [accessFor] holds the whole map, and the dashboard is the floor every
   /// role keeps, so the redirect can never loop.
   String? _redirectForPermission(String location) {
+    // A library that charges no fines has no fines ledger to open; a typed
+    // URL or a bookmark lands on the loans instead.
+    if (!_features.state.chargesFines &&
+        Routes.isUnder(location, Routes.circulationFines)) {
+      return Routes.circulationLoans;
+    }
     final access = accessFor(location);
     if (access == null || access.allows(_auth.state.role)) return null;
     return Routes.dashboard;

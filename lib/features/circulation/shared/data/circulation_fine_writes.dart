@@ -36,7 +36,7 @@ class CirculationFineWrites {
           .insert(
             FinesCompanion.insert(
               id: _uuid.v4(),
-              memberId: memberId,
+              memberId: Value(memberId),
               loanId: Value(loanId),
               reason: FineReason.overdue,
               assessed: amount,
@@ -113,7 +113,7 @@ class CirculationFineWrites {
           .insert(
             FinesCompanion.insert(
               id: id,
-              memberId: memberId,
+              memberId: Value(memberId),
               reason: reason,
               assessed: amount,
               raisedAt: now,

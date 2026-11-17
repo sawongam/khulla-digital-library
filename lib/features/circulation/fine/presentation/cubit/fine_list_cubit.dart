@@ -63,7 +63,8 @@ class FineListCubit extends Cubit<FineListState> {
           ]),
           membersOwing: {
             for (final fine in unpaid.items)
-              if (fine.outstanding.isPositive) fine.memberId,
+              if (fine.outstanding.isPositive && fine.memberId != null)
+                fine.memberId!,
           }.length,
           error: null,
         ),

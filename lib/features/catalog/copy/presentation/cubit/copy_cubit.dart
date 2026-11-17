@@ -68,6 +68,15 @@ class CopyCubit extends Cubit<CopyState> {
     unawaited(loadCopies());
   }
 
+  void archivedChanged(bool value) {
+    emit(
+      state.copyWith(
+        query: state.query.copyWith(archived: value, offset: 0),
+      ),
+    );
+    unawaited(loadCopies());
+  }
+
   void sortChanged(String columnId, bool ascending) {
     emit(
       state.copyWith(
@@ -110,6 +119,13 @@ class CopyCubit extends Cubit<CopyState> {
   /// Soft-deletes a copy and reloads the list. Rethrows on failure.
   Future<void> archiveCopy(String id) async {
     await _repository.archiveCopy(id);
+    if (isClosed) return;
+    await loadCopies();
+  }
+
+  /// Brings an archived copy back and reloads the list. Rethrows on failure.
+  Future<void> restoreCopy(String id) async {
+    await _repository.restoreCopy(id);
     if (isClosed) return;
     await loadCopies();
   }

@@ -10,12 +10,14 @@ part 'copy_query.freezed.dart';
 /// Filters and paging for the copy list.
 ///
 /// [statuses] is empty for all statuses; [titleId] scopes to one work.
+/// [archived] lists withdrawn copies instead of the live ones.
 @freezed
 abstract class CopyQuery with _$CopyQuery {
   const factory CopyQuery({
     @Default('') String search,
     String? titleId,
     @Default(<CopyStatus>{}) Set<CopyStatus> statuses,
+    @Default(false) bool archived,
     @Default('createdAt') String sortColumn,
     @Default(false) bool sortAscending,
     @Default(0) int offset,

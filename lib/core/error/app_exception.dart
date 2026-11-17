@@ -20,7 +20,11 @@ export 'package:khulla/core/error/app_error_reason.dart';
 /// two together are what the librarian reads. A bare constructor is for the
 /// failures that genuinely have nothing more specific to say.
 sealed class AppException extends Equatable implements Exception {
-  const AppException(this.message, {this.reason});
+  const AppException(
+    this.message, {
+    this.reason,
+    this.args = const <String>[],
+  });
 
   /// Maps a SQLite error onto the closest domain-level failure.
   ///
@@ -84,8 +88,12 @@ sealed class AppException extends Equatable implements Exception {
   /// in preference to the type's generic copy.
   final AppErrorReason? reason;
 
+  /// Values the [reason]'s sentence names - the barcode and the title that
+  /// holds it. Empty for the reasons whose copy is fixed.
+  final List<String> args;
+
   @override
-  List<Object?> get props => [message, reason];
+  List<Object?> get props => [message, reason, args];
 }
 
 /// A write violated a uniqueness rule - a duplicate ISBN, accession number,
@@ -94,8 +102,10 @@ class DuplicateRecordException extends AppException {
   const DuplicateRecordException([String? message])
     : super(message ?? 'That record already exists.');
 
-  const DuplicateRecordException.because(AppErrorReason reason)
-    : super('That record already exists.', reason: reason);
+  const DuplicateRecordException.because(
+    AppErrorReason reason, {
+    super.args,
+  }) : super('That record already exists.', reason: reason);
 }
 
 /// The requested record does not exist, or was deleted by another window.
@@ -150,6 +160,17 @@ class StorageException extends AppException {
 
   const StorageException.because(AppErrorReason reason)
     : super('A file could not be read or written.', reason: reason);
+}
+
+/// A request to an outside service never got an answer - no connection, a
+/// timeout, or a service that is down. Only things the librarian starts by
+/// pressing a button go online, so this is always recoverable by hand.
+class NetworkException extends AppException {
+  const NetworkException([String? message])
+    : super(message ?? 'The service could not be reached.');
+
+  const NetworkException.because(AppErrorReason reason)
+    : super('The service could not be reached.', reason: reason);
 }
 
 /// Anything we could not classify.

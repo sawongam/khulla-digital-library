@@ -40,6 +40,25 @@ class BackupPage extends StatelessWidget {
     }
   }
 
+  Future<void> _checkRecords(BuildContext context) async {
+    final l10n = context.l10n;
+    final cubit = context.read<BackupCubit>();
+    try {
+      final result = await cubit.checkRecords();
+      if (!context.mounted) return;
+      AppToast.success(
+        context,
+        message: l10n.settingsBackupRepairResult(
+          result.checked,
+          result.repaired,
+        ),
+      );
+    } on AppException catch (error) {
+      if (!context.mounted) return;
+      AppToast.error(context, message: error.localizedMessage(l10n));
+    }
+  }
+
   Future<void> _keepStorage(BuildContext context) async {
     final l10n = context.l10n;
     final granted = await context
@@ -104,6 +123,7 @@ class BackupPage extends StatelessWidget {
           onKeepStorage: () => unawaited(_keepStorage(context)),
           onExport: () => unawaited(_export(context)),
           onRestore: () => unawaited(_restore(context)),
+          onCheckRecords: () => unawaited(_checkRecords(context)),
           onErase: () => unawaited(_confirmErase(context)),
         );
       },
@@ -117,6 +137,7 @@ class _BackupBody extends StatelessWidget {
     required this.onKeepStorage,
     required this.onExport,
     required this.onRestore,
+    required this.onCheckRecords,
     required this.onErase,
   });
 
@@ -124,6 +145,7 @@ class _BackupBody extends StatelessWidget {
   final VoidCallback onKeepStorage;
   final VoidCallback onExport;
   final VoidCallback onRestore;
+  final VoidCallback onCheckRecords;
   final VoidCallback onErase;
 
   @override
@@ -210,6 +232,15 @@ class _BackupBody extends StatelessWidget {
                       onAction: onRestore,
                     ),
                   ],
+                ),
+                SizedBox(height: spacing.md),
+                SettingsActionCard(
+                  title: l10n.settingsBackupRepairTitle,
+                  description: l10n.settingsBackupRepairBody,
+                  actionLabel: l10n.settingsBackupRepairAction,
+                  icon: AppIcons.check,
+                  isLoading: state.isWorking,
+                  onAction: onCheckRecords,
                 ),
                 SizedBox(height: spacing.lg),
                 SettingsEraseCard(

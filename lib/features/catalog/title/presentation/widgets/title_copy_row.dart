@@ -17,6 +17,7 @@ import 'package:khulla_ui/khulla_ui.dart';
 class TitleCopyRow extends StatelessWidget {
   const TitleCopyRow({
     required this.copy,
+    this.onEdit,
     this.onMarkLost,
     this.onMarkDamaged,
     this.onWithdraw,
@@ -28,6 +29,7 @@ class TitleCopyRow extends StatelessWidget {
   /// Per-copy maintenance. All three are null for a role that may read the
   /// catalogue but not change it, and the row then draws no menu at all -
   /// a menu whose every entry is disabled is worse than no menu.
+  final VoidCallback? onEdit;
   final VoidCallback? onMarkLost;
   final VoidCallback? onMarkDamaged;
   final VoidCallback? onWithdraw;
@@ -39,6 +41,7 @@ class TitleCopyRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final spacing = context.appSpacing;
+    final edit = onEdit;
     final markLost = onMarkLost;
     final markDamaged = onMarkDamaged;
     final withdraw = onWithdraw;
@@ -127,10 +130,19 @@ class TitleCopyRow extends StatelessWidget {
           SizedBox(width: spacing.sm),
           CopyStatusBadge(status: copy.status),
           SizedBox(width: spacing.xs),
-          if (markLost != null || markDamaged != null || withdraw != null)
+          if (edit != null ||
+              markLost != null ||
+              markDamaged != null ||
+              withdraw != null)
             AppMenuButton(
               tooltip: l10n.commonMoreActions,
               actions: [
+                if (edit != null)
+                  AppMenuAction(
+                    label: l10n.commonEdit,
+                    icon: AppIcons.edit,
+                    onSelected: edit,
+                  ),
                 if (markLost != null)
                   AppMenuAction(
                     label: l10n.copiesMarkLost,
