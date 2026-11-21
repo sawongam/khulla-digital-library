@@ -15,7 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # State management
+  # Stahttps://pub.dev/packages/country_phone_kitte management
   bloc: ^9.2.1
   equatable: ^2.1.0
   flutter_bloc: ^9.1.1
@@ -115,12 +115,41 @@ dev_dependencies:
   # Monorepo tooling (config in melos.yaml - not pub workspaces)
   melos: ^6.3.2
 
+  # Packages the Windows release as an MSIX for the Microsoft Store.
+  # Config in `msix_config` below; see "Microsoft Store" in
+  # docs/contributing/releasing.md.
+  msix: ^3.18.0
+
 # FlutterGen code generation for assets, fonts and colors.
 # Generated output lives in lib/gen/ and is regenerated via:
 #   dart run build_runner build
 # See https://pub.dev/packages/flutter_gen_runner
 flutter_gen:
   output: lib/gen/
+
+# The Microsoft Store package (`dart run msix:create`), built by release.yaml.
+#
+# The Store re-signs the package with its own certificate, which is what lets
+# it past Smart App Control. So `store: true` and no certificate here.
+#
+# Three values come from Partner Center (Product identity), not from this
+# file, and are passed on the command line: `--identity-name`, `--publisher`
+# and `--publisher-display-name`. The package version is derived from
+# `version:` above as `<major>.<minor>.<patch>.0` - the Store reserves the
+# fourth part for itself - so never set `msix_version` here.
+msix_config:
+  display_name: Khulla Digital Library
+  publisher_display_name: Khulla Digital Library
+  logo_path: assets/images/logos/submark_logo.png
+  languages: en-us, ne-np
+  # release.yaml has already built the prod flavor; packaging the same
+  # Release folder keeps the Store build identical to the installer's.
+  build_windows: false
+  store: true
+  # Not `dist/`: the Store package is uploaded to Partner Center, never
+  # attached to the GitHub release.
+  output_path: build/msix
+  output_name: khulla-windows-x64-store
 
 flutter:
   # Material Icons

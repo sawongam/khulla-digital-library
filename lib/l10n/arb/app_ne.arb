@@ -885,6 +885,14 @@
   "@updatePlayAction": {
     "description": "Update dialog - opens the Play Store listing"
   },
+  "updateStoreBody": "माइक्रोसफ्ट स्टोरबाट इन्स्टल गरिएको विन्डोजमा खुल्ला स्टोरमार्फत अपडेट हुन्छ। नयाँ संस्करण तयार छ कि छैन हेर्न स्टोर खोल्नुहोस्।",
+  "@updateStoreBody": {
+    "description": "Update dialog - Windows, where the Microsoft Store owns updates"
+  },
+  "updateStoreAction": "माइक्रोसफ्ट स्टोर खोल्नुहोस्",
+  "@updateStoreAction": {
+    "description": "Update dialog - opens the Microsoft Store's updates page"
+  },
   "updateAutoCheckLabel": "स्वतः जाँच गर्नुहोस्",
   "@updateAutoCheckLabel": {
     "description": "Update dialog - switch for the daily background check"
@@ -1736,6 +1744,8 @@
   "guideSettingsBackupStep3Body": "हरेक दिन बन्द गर्दा उत्तम। हरेक शुक्रबार व्यावहारिक। जे रोजे पनि नराम्रोमा अन्तिम ब्याकअपपछिको काम गुम्छ, त्यसैले गुमाउन सकिने अन्तराल रोज्नुहोस्।",
   "guideSettingsRestoreTitle": "पुनःस्थापनाले सबै कुरा बदल्छ",
   "guideSettingsRestoreBody": "पुनःस्थापना मिलान होइन। यसले यो कम्प्युटरको क्याटलगमाथि फाइलको सामग्री लेख्छ, र त्यो फाइल बनेपछि प्रविष्ट गरिएको सबै हराउँछ। जतिसुकै काम नलाग्ने लागे पनि पहिले हालको क्याटलग निर्यात गर्नुहोस्।",
+  "guideSettingsStoreUninstallTitle": "माइक्रोसफ्ट स्टोर संस्करण: अनइन्स्टल गर्नुअघि ब्याकअप लिनुहोस्",
+  "guideSettingsStoreUninstallBody": "खुल्ला माइक्रोसफ्ट स्टोरबाट इन्स्टल गर्नुभएको हो भने, एप अनइन्स्टल गर्दा विन्डोजले यसको डाटा मेटाउँछ - र त्यो डाटा नै क्याटलग हो। अनइन्स्टल, रिसेट वा इन्स्टलर संस्करणमा सर्नुअघि ब्याकअप निर्यात गरेर अर्को ठाउँमा राख्नुहोस्। इन्स्टलर र पोर्टेबल zip हटाउँदा क्याटलग मेटिँदैन।",
   "guideSettingsFaq1Q": "मेरो क्याटलग फाइल कहाँ छ?",
   "guideSettingsFaq1A": "यो कम्प्युटरको एप्लिकेसन डाटा फोल्डरमा, डकुमेन्ट्समा होइन। जीवित फाइल खोज्नुको साटो निर्यात गरेको ब्याकअप सार्नुहोस् - अनुप्रयोगले त्यो फाइल खोलिरहेको हुन सक्छ।",
   "guideSettingsFaq2Q": "पुस्तकालय नयाँ कम्प्युटरमा सार्न मिल्छ?",

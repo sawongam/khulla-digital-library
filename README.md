@@ -76,7 +76,7 @@ Ready-to-run builds are attached to every release: **[latest release](https://gi
 | Web                | `khulla-<version>-web.tar.gz`            | Serve the extracted folder from any static host.                                                                                                                                                 |
 | Linux              | `khulla-<version>-linux-x64.tar.gz`      | Extract and run `./khulla`.                                                                                                                                                                      |
 
-Verify a download against `SHA256SUMS.txt` attached to the same release. The installer and portable zip share the same data location, so you can switch between them.
+Verify a download against `SHA256SUMS.txt` attached to the same release. How Windows releases are signed: [Code signing policy](https://khulladigitallibrary.com/code-signing/). The installer and portable zip share the same data location, so you can switch between them.
 
 ### System requirements
 
@@ -87,7 +87,7 @@ Verify a download against `SHA256SUMS.txt` attached to the same release. The ins
 
 You can also **[try it in a browser](https://app.khulladigitallibrary.com/)** - a demo with no server behind it, where the catalogue lives in that browser's storage and clearing site data wipes it.
 
-Your catalogue is a SQLite file on your own machine, so uninstalling does not delete it and nothing is uploaded anywhere. Take a backup from **Settings → Backup** before moving between machines; on a new machine, choose Restore during setup to adopt that backup.
+Your catalogue is a SQLite file on your own machine, and nothing is uploaded anywhere. Uninstalling the installer or the portable zip does not delete it; uninstalling the Microsoft Store version does, because Windows removes a Store app's data with it - export a backup first. Take a backup from **Settings → Backup** before moving between machines; on a new machine, choose Restore during setup to adopt that backup.
 
 ## Why local-first
 
