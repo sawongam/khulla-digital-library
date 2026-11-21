@@ -1809,6 +1809,8 @@
     "guideSettingsBackupStep3Body": "Every closing time is ideal. Every Friday is realistic. Whatever you choose, the worst case is losing the work since the last one, so choose an interval you can afford to lose.",
     "guideSettingsRestoreTitle": "Restoring replaces everything",
     "guideSettingsRestoreBody": "A restore is not a merge. It overwrites the catalogue on this computer with the contents of the file, and anything entered since that file was written is gone. Export the current catalogue first, even if you believe it is worthless.",
+    "guideSettingsStoreUninstallTitle": "Microsoft Store version: back up before you uninstall",
+    "guideSettingsStoreUninstallBody": "If you installed Khulla from the Microsoft Store, Windows deletes its data when the app is uninstalled - and that data is the catalogue. Export a backup and copy it off this folder before you uninstall, reset or move to the installer version. The installer and the portable zip keep the catalogue when they are removed.",
     "guideSettingsFaq1Q": "Where is my catalogue file?",
     "guideSettingsFaq1A": "In this computer's application data folder, not in Documents. Copy the exported backup rather than hunting for the live file - the app may have it open.",
     "guideSettingsFaq2Q": "Can I move the library to a new computer?",

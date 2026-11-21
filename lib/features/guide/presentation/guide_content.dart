@@ -809,6 +809,11 @@ GuideArticle _settings(AppLocalizations l10n) => GuideArticle(
           title: l10n.guideSettingsRestoreTitle,
           body: l10n.guideSettingsRestoreBody,
         ),
+        GuideCallout(
+          tone: AppStatusTone.warning,
+          title: l10n.guideSettingsStoreUninstallTitle,
+          body: l10n.guideSettingsStoreUninstallBody,
+        ),
         GuideFaq([
           GuideFaqEntry(l10n.guideSettingsFaq1Q, l10n.guideSettingsFaq1A),
           GuideFaqEntry(l10n.guideSettingsFaq2Q, l10n.guideSettingsFaq2A),
