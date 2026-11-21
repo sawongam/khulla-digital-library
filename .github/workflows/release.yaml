@@ -138,6 +138,39 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
+      # The Microsoft Store package: the same Release folder as an MSIX, which
+      # the Store signs on certification - so Smart App Control, which blocks
+      # the unsigned installer outright, lets it run. Config in `msix_config`
+      # in pubspec.yaml; the identity comes from Partner Center (Product
+      # identity) as repository variables. Until those are set, this step
+      # skips rather than failing the release.
+      #
+      # Uploaded as its own artifact, never attached to the release: an
+      # unsigned MSIX will not install outside the Store. Submit it in
+      # Partner Center - see "Microsoft Store" in docs/contributing/releasing.md.
+      - name: Package (Microsoft Store MSIX)
+        if: vars.MSIX_IDENTITY_NAME != ''
+        shell: pwsh
+        env:
+          MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME }}
+          MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER }}
+          MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME }}
+        run: |
+          dart run msix:create `
+            --identity-name "$env:MSIX_IDENTITY_NAME" `
+            --publisher "$env:MSIX_PUBLISHER" `
+            --publisher-display-name "$env:MSIX_PUBLISHER_DISPLAY_NAME" `
+            --output-name "khulla-${{ needs.version.outputs.version }}-windows-x64-store"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Get-ChildItem build/msix | Format-List Name, Length
+
+      - uses: actions/upload-artifact@v4
+        if: vars.MSIX_IDENTITY_NAME != ''
+        with:
+          name: microsoft-store
+          path: build/msix/*.msix
+          if-no-files-found: error
+
   linux:
     name: Linux
     needs: version
@@ -285,7 +318,8 @@ jobs:
       - name: Collect and checksum
         run: |
           mkdir -p dist
-          find artifacts -type f -exec mv {} dist/ \;
+          # The Store package goes to Partner Center, not on the release page.
+          find artifacts -path artifacts/microsoft-store -prune -o -type f -exec mv {} dist/ \;
           cd dist
           sha256sum * > SHA256SUMS.txt
           ls -lh
@@ -356,6 +390,7 @@ jobs:
             | Linux | `khulla-${{ needs.version.outputs.version }}-linux-x64.tar.gz` | Extract and run `./khulla`. |
 
             Verify a download against `SHA256SUMS.txt`.
+            How Windows releases are signed: [Code signing policy](https://khulladigitallibrary.com/code-signing/).
 
             **On Android, pick Play or the APK and stay with it.** They are
             signed with different keys, so Android treats them as different

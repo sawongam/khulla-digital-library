@@ -88,7 +88,13 @@ class _UpdateBody extends StatelessWidget {
       style: typography.body.copyWith(color: color ?? colors.mutedForeground),
     );
 
-    if (!state.channel.checksForUpdates) return line(l10n.updatePlayBody);
+    if (!state.channel.checksForUpdates) {
+      return line(
+        state.channel == UpdateChannel.microsoftStore
+            ? l10n.updateStoreBody
+            : l10n.updatePlayBody,
+      );
+    }
 
     final error = state.error;
     final failure = state.status == UpdateStatus.failed && error != null
@@ -169,6 +175,11 @@ class _UpdateActions extends StatelessWidget {
 
     final release = state.release;
     final action = switch (state.status) {
+      _ when state.channel == UpdateChannel.microsoftStore => primary(
+        l10n.updateStoreAction,
+        () =>
+            HelpAboutPanel.openLink(context, AppInfo.microsoftStoreUpdatesUrl),
+      ),
       _ when !state.channel.checksForUpdates => primary(
         l10n.updatePlayAction,
         () => HelpAboutPanel.openLink(context, AppInfo.playStoreUrl),

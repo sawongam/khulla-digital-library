@@ -81,6 +81,16 @@ void main() {
     expect(cubit.state.status, UpdateStatus.idle);
   });
 
+  test('Microsoft Store installs never ask GitHub', () async {
+    start(UpdateChannel.microsoftStore);
+
+    await cubit.checkForUpdate();
+    await cubit.checkForUpdateIfDue();
+
+    expect(repository.checks, 0);
+    expect(cubit.state.status, UpdateStatus.idle);
+  });
+
   group('the automatic check', () {
     test('runs only when due', () async {
       start(UpdateChannel.windowsInstaller);

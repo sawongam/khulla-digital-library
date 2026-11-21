@@ -35,6 +35,10 @@ const String _playStore = 'com.android.vending';
 
 /// How this install is updated, read from where it is running.
 ///
+/// A Microsoft Store package runs from under `WindowsApps`, wherever that
+/// folder is - every MSIX install does, and nothing else puts `khulla.exe`
+/// there.
+///
 /// The Inno Setup installer leaves `unins000.exe` beside `khulla.exe`; the
 /// portable zip does not. That file is the whole difference between an
 /// install that can run the next installer over itself and a folder that
@@ -44,6 +48,9 @@ const String _playStore = 'com.android.vending';
 /// browser or file manager for the APK from the release page.
 Future<UpdateChannel> detectUpdateChannel() async {
   if (Platform.isWindows) {
+    if (isMicrosoftStoreInstall(Platform.resolvedExecutable)) {
+      return UpdateChannel.microsoftStore;
+    }
     final folder = p.dirname(Platform.resolvedExecutable);
     return File(p.join(folder, 'unins000.exe')).existsSync()
         ? UpdateChannel.windowsInstaller
@@ -57,6 +64,13 @@ Future<UpdateChannel> detectUpdateChannel() async {
   }
   return UpdateChannel.unsupported;
 }
+
+/// Whether [executable] - a Windows path - sits inside an MSIX package,
+/// which Windows always installs under a `WindowsApps` folder.
+@visibleForTesting
+bool isMicrosoftStoreInstall(String executable) => p.windows
+    .split(executable)
+    .any((part) => part.toLowerCase() == 'windowsapps');
 
 /// Downloads [download] into [directory] (a fresh folder under the system
 /// temp directory by default) and checks it, resolving to the file's path.

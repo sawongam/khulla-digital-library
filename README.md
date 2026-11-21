@@ -76,7 +76,7 @@ Ready-to-run builds are attached to every release: **[latest release](https://gi
 | Web                | `khulla-<version>-web.tar.gz`            | Serve the extracted folder from any static host.                                                                                                                                                 |
 | Linux              | `khulla-<version>-linux-x64.tar.gz`      | Extract and run `./khulla`.                                                                                                                                                                      |
 
-Verify a download against `SHA256SUMS.txt` attached to the same release. The installer and portable zip share the same data location, so you can switch between them.
+Verify a download against `SHA256SUMS.txt` attached to the same release. How Windows releases are signed: [Code signing policy](https://khulladigitallibrary.com/code-signing/). The installer and portable zip share the same data location, so you can switch between them.
 
 ### System requirements
 

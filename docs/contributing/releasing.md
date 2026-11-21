@@ -101,6 +101,7 @@ does not touch `prod`, the releases page, or the version.
 | ------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | Windows | `khulla-<version>-windows-x64-setup.exe` | Per-user installer (Inno Setup) - Start Menu entry + uninstaller, no admin required. Same build as the zip, just easier for normal users. |
 | Windows | `khulla-<version>-windows-x64.zip`       | Portable fallback. Unzip anywhere and run `khulla.exe`. Useful when an installer is blocked.                                              |
+| Windows | `khulla-<version>-windows-x64-store.msix` | **Not on the release page.** A workflow artifact (`microsoft-store`) to submit in Partner Center - see [Microsoft Store](#microsoft-store). |
 | Android | `khulla-<version>-android.apk`           | For phones without Google Play, which the release notes recommend first. One universal APK, signed with the sideload key - see below.     |
 | Web     | `khulla-<version>-web.tar.gz`            | Built for the site root. Serve the extracted folder from any static host.                                                                 |
 | Linux   | `khulla-<version>-linux-x64.tar.gz`      | Extract, run `./khulla`.                                                                                                                  |
@@ -127,6 +128,7 @@ off), does what fits how it was installed:
 | Installed from                | What *update* does                                                                                                                                                                                                                  |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Windows installer             | Downloads the next `setup.exe`, checks its SHA-256 and size against `latest.json`, snapshots the catalogue into `backups/` beside it, starts the installer with `/SILENT /UPDATE=1` and exits. The installer reopens the app. |
+| Microsoft Store               | Never asks GitHub, for the same reason as Play. Opens the Store's *Downloads and updates* page; the Store installs the update itself. Told apart by running from under `WindowsApps`.                                            |
 | Windows portable zip, Linux   | Says a newer version exists and opens the release page. Replacing files wherever the folder happens to live is not safe.                                                                                                           |
 | Web                           | Compares the server's `version.json` (written by `flutter build web`) with the running build, and offers a reload.                                                                                                                  |
 | Android (Google Play)         | Never asks GitHub - Play reviews a build after the release lands, so GitHub would announce an update Play cannot deliver yet. Opens the store listing.                                                                              |
@@ -190,6 +192,54 @@ Treat it as a demo, not a service. The catalogue lives in the browser's own
 storage, so every visitor gets a fresh empty library and clearing site data
 wipes it.
 
+## Microsoft Store
+
+The Store build exists because **Smart App Control** blocks the unsigned
+installer outright. Unlike SmartScreen, it has no *Run anyway*. The Store
+signs the package on certification, so a Store install runs wherever Smart
+App Control is on.
+
+**One-time setup**
+
+1. Open a Partner Center developer account (free for individuals) and
+   reserve the app name.
+2. In the product, open **Product management → Product identity**. Copy three
+   values into **repository variables** (Settings → Secrets and variables →
+   Actions → *Variables*). They are public, so they are not secrets:
+
+   | Variable                      | Product identity field          |
+   | ----------------------------- | ------------------------------- |
+   | `MSIX_IDENTITY_NAME`          | `Package/Identity/Name`         |
+   | `MSIX_PUBLISHER`              | `Package/Identity/Publisher` (`CN=…`) |
+   | `MSIX_PUBLISHER_DISPLAY_NAME` | `Package/Properties/PublisherDisplayName` |
+
+Until `MSIX_IDENTITY_NAME` is set, the release skips the Store package and
+builds everything else.
+
+**Each release**
+
+The `windows` job packages the same `Release/` folder with
+`dart run msix:create`. The config is `msix_config` in `pubspec.yaml`. The job
+uploads the result as the `microsoft-store` artifact. Download it from the
+run and submit it in Partner Center as a new package. The package version is
+`<major>.<minor>.<patch>.0` from `version:`, so a release that bumps only
+`+build` cannot go to the Store: the Store refuses a version it has seen.
+
+To build one locally on Windows:
+
+```sh
+flutter build windows --release -t lib/main_prod.dart
+dart run msix:create --identity-name <…> --publisher "CN=…" --publisher-display-name "<…>"
+```
+
+**Data and uninstall.** A packaged app's writes under `%AppData%` are
+redirected into the package's own folder. Windows deletes that folder when
+the app is uninstalled, so uninstalling the Store app takes the catalogue
+with it. This is unlike the installer and the zip. The Store listing and the
+guide must tell libraries to export a backup first. The same redirection
+means a Store install and an installer install on the same machine may not
+see the same catalogue. Move between them with Settings → Backup.
+
 ## Signing, when it matters
 
 The Windows build ships unsigned today, which is honest for a pre-1.0
@@ -197,10 +247,16 @@ open-source tool a librarian installs deliberately. It costs the user one
 "unknown publisher" dialog. Android is signed: the release APK with the
 sideload key (above), the Play build with the upload key kept off GitHub.
 
-Signing Windows becomes worth the cost when the SmartScreen warning starts
-costing installs: sign `build/windows/x64/runner/Release/khulla.exe` with
-`signtool` before the packaging step, using an EV or OV code-signing
-certificate held in repository secrets. (The in-app updater is not affected
+That stopped being true with **Smart App Control**, on by default on many
+fresh Windows 11 installs. It blocks an unsigned `khulla.exe` with no way
+past, so the installer and the zip cannot run there at all. The
+[Microsoft Store](#microsoft-store) build is the route around it until the
+releases are signed. The plan is the SignPath Foundation's free open-source
+certificate; the publisher would then read *SignPath Foundation*.
+
+To sign: sign `build/windows/x64/runner/Release/khulla.exe` before the
+packaging step, so the zip and the installer both carry the signed exe. Then
+sign the installer itself. (The in-app updater is not affected
 either way - a file the app downloads itself carries no mark-of-the-web.)
 
 Do not commit a keystore, a certificate, or a password. If a key does get

@@ -24,6 +24,35 @@ void main() {
   setUp(() => temp = Directory.systemTemp.createTempSync('khulla-update-'));
   tearDown(() => temp.deleteSync(recursive: true));
 
+  group('isMicrosoftStoreInstall', () {
+    test('is true for a package under WindowsApps', () {
+      expect(
+        isMicrosoftStoreInstall(
+          r'C:\Program Files\WindowsApps\Khulla_1.2.0.0_x64__ab\khulla.exe',
+        ),
+        isTrue,
+      );
+      expect(
+        isMicrosoftStoreInstall(r'D:\windowsapps\Khulla_1.2.0.0\khulla.exe'),
+        isTrue,
+      );
+    });
+
+    test('is false for the installer and the portable zip', () {
+      expect(
+        isMicrosoftStoreInstall(
+          r'C:\Users\librarian\AppData\Local\Programs\Khulla\khulla.exe',
+        ),
+        isFalse,
+      );
+      expect(isMicrosoftStoreInstall(r'E:\khulla\khulla.exe'), isFalse);
+      expect(
+        isMicrosoftStoreInstall(r'C:\Tools\MyWindowsAppsBackup\khulla.exe'),
+        isFalse,
+      );
+    });
+  });
+
   group('downloadInstaller', () {
     final bytes = List<int>.generate(200000, (i) => i % 251);
 

@@ -949,6 +949,14 @@
     "@updatePlayAction": {
         "description": "Update dialog - opens the Play Store listing"
     },
+    "updateStoreBody": "Installed from the Microsoft Store, Khulla updates through the Store. Open it to see whether a newer version is ready.",
+    "@updateStoreBody": {
+        "description": "Update dialog - Windows, where the Microsoft Store owns updates"
+    },
+    "updateStoreAction": "Open Microsoft Store",
+    "@updateStoreAction": {
+        "description": "Update dialog - opens the Microsoft Store's updates page"
+    },
     "updateAutoCheckLabel": "Check automatically",
     "@updateAutoCheckLabel": {
         "description": "Update dialog - switch for the daily background check"

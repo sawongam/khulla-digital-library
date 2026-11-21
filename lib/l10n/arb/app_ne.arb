@@ -885,6 +885,14 @@
   "@updatePlayAction": {
     "description": "Update dialog - opens the Play Store listing"
   },
+  "updateStoreBody": "माइक्रोसफ्ट स्टोरबाट इन्स्टल गरिएको विन्डोजमा खुल्ला स्टोरमार्फत अपडेट हुन्छ। नयाँ संस्करण तयार छ कि छैन हेर्न स्टोर खोल्नुहोस्।",
+  "@updateStoreBody": {
+    "description": "Update dialog - Windows, where the Microsoft Store owns updates"
+  },
+  "updateStoreAction": "माइक्रोसफ्ट स्टोर खोल्नुहोस्",
+  "@updateStoreAction": {
+    "description": "Update dialog - opens the Microsoft Store's updates page"
+  },
   "updateAutoCheckLabel": "स्वतः जाँच गर्नुहोस्",
   "@updateAutoCheckLabel": {
     "description": "Update dialog - switch for the daily background check"
