@@ -2,9 +2,14 @@
 
 An open-source library management system, built as a **local-first Flutter app**. Your catalogue lives in a SQLite database on your own machine - no server to run, no account to create, no data leaving the building.
 
-**[Website](https://khulladigitallibrary.com)** · **[Try it in a browser](https://app.khulladigitallibrary.com/)**
+<p>
+  <a href="https://apps.microsoft.com/detail/9NPZBD22X2L7"><img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Get it from Microsoft" height="48"></a>
+  <a href="https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="48"></a>
+</p>
 
-<a href="https://apps.microsoft.com/detail/9NPZBD22X2L7"><img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Get it from Microsoft" height="48"></a> <a href="https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="71"></a>
+<p>
+  <a href="https://khulladigitallibrary.com"><img src="web/icons/icon-192.png" alt="" height="20" align="top"></a> <b><a href="https://khulladigitallibrary.com">Website</a></b> &nbsp;·&nbsp; 🌐 <b><a href="https://app.khulladigitallibrary.com/">Try it in a browser</a></b>
+</p>
 
 ## What it does
 
