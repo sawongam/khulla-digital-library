@@ -2,7 +2,9 @@
 
 An open-source library management system, built as a **local-first Flutter app**. Your catalogue lives in a SQLite database on your own machine - no server to run, no account to create, no data leaving the building.
 
-**[Website](https://khulladigitallibrary.com)** · **[Microsoft Store](https://apps.microsoft.com/detail/9NPZBD22X2L7)** · **[Google Play](https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app)** · **[Try it in a browser](https://app.khulladigitallibrary.com/)**
+**[Website](https://khulladigitallibrary.com)** · **[Try it in a browser](https://app.khulladigitallibrary.com/)**
+
+<a href="https://apps.microsoft.com/detail/9NPZBD22X2L7"><img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Get it from Microsoft" height="48"></a> <a href="https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="71"></a>
 
 ## What it does
 
