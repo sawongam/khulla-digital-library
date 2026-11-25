@@ -2,16 +2,17 @@
 
 How a change on `dev` becomes something a librarian can download and run.
 
-Everything here is GitHub Actions. There are no secrets to configure, no
-signing certificates, and no deployment target to provision - Khulla is a
-local-first app, so a release is four builds and a page to put them on.
+Everything here is GitHub Actions. Khulla is a local-first app, so a release
+is four builds, a page to put them on, and an upload to each store. The only
+secrets are signing keys and store credentials, listed under
+[Store uploads](#store-uploads) and [Signing the APK](#signing-the-apk).
 
 ## The workflows
 
 | Workflow                                                     | Runs when                            | Does                                                                                                                       |
 | ------------------------------------------------------------ | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| [`ci.yaml`](../../.github/workflows/ci.yaml)                 | Push to `dev`/`prod`, PR into either | `make ci` (format, copyright, analyze, test) and a web build; on a PR into `prod`, also checks the version has been bumped |
-| [`release.yaml`](../../.github/workflows/release.yaml)       | Push to `prod`, or run by hand       | Builds Windows, Linux, Android and web; publishes a GitHub Release                                                         |
+| [`ci.yaml`](../../.github/workflows/ci.yaml)                 | Push to `dev`/`prod`, PR into either | `make ci` (format, copyright, analyze, test) and a web build; on a PR into `prod`, also checks the version and build number were bumped and `CHANGELOG.md` has notes for it |
+| [`release.yaml`](../../.github/workflows/release.yaml)       | Push to `prod`, or run by hand       | Builds Windows, Linux, Android and web; publishes a GitHub Release; uploads to Google Play and the Microsoft Store         |
 | [`deploy-web.yaml`](../../.github/workflows/deploy-web.yaml) | Push to `prod`, or run by hand       | Publishes the web build to GitHub Pages                                                                                    |
 
 All three share [`.github/actions/setup-flutter`](../../.github/actions/setup-flutter/action.yml),
@@ -29,19 +30,41 @@ nobody will commit from.
 press afterwards:
 
 ```
-PR into prod (with the version bumped)  →  merge  →  release.yaml builds all
-four targets  →  GitHub Release published, tagged v<version>
+PR into prod (version bumped, notes written)  →  merge  →  release.yaml builds
+all four targets  →  GitHub Release, tagged v<version>  →  Google Play and
+Microsoft Store submissions
 ```
 
-So the whole of releasing is one thing: **bump `version:` in `pubspec.yaml` in
-the pull request that goes into `prod`.**
+So the whole of releasing is two things in the pull request that goes into
+`prod`:
 
-```yaml
-version: 1.0.0+2 # <major>.<minor>.<patch>+<build>
-```
+1. **Bump `version:` in `pubspec.yaml`** - both halves.
 
-Bump the build number as well as the version. Android refuses to install an APK
-whose `versionCode` did not increase, and `+<build>` is where that comes from.
+   ```yaml
+   version: 1.0.0+2 # <major>.<minor>.<patch>+<build>
+   ```
+
+   The Store reads only `<major>.<minor>.<patch>`, and Play and Android only
+   `+<build>` (the `versionCode`). Each refuses a number it has seen, so both
+   have to climb. CI checks both.
+
+2. **Add the version's notes to `CHANGELOG.md`**, at the top:
+
+   ```md
+   ## 1.3.0
+
+   What's new:
+   - Renew a loan from the member page
+   - Fixed fines showing twice
+   ```
+
+   Written by hand, for librarians, not a commit log. The same text is the
+   GitHub release page, Play's *What's new* and the Store's *What's new in
+   this version*, so keep it short. Play allows 500 characters and CI fails
+   the PR above that. Read it back with `tools/release_notes.sh <version>`.
+
+Keep upcoming notes under `## Unreleased` while you work, and rename the
+heading to the version when you bump it.
 
 ### One version, three readers
 
@@ -62,7 +85,8 @@ because the Flutter tool carries it into the build.
 The workflow reads that version, builds all four targets in parallel, checksums
 them into `SHA256SUMS.txt`, writes the update manifest `latest.json` (see
 [How installed copies update](#how-installed-copies-update)), and publishes a
-GitHub Release tagged `v1.0.0` with generated notes and a download table. Roughly 15–25 minutes end to end. Nobody
+GitHub Release tagged `v1.0.0` whose body is the `CHANGELOG.md` notes and a
+short list of where to get each build. Roughly 15–25 minutes end to end. Nobody
 creates the tag by hand - the release job does, and that tag is the record of
 what shipped.
 
@@ -101,7 +125,8 @@ does not touch `prod`, the releases page, or the version.
 | ------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | Windows | `khulla-<version>-windows-x64-setup.exe` | Per-user installer (Inno Setup) - Start Menu entry + uninstaller, no admin required. Same build as the zip, just easier for normal users. |
 | Windows | `khulla-<version>-windows-x64.zip`       | Portable fallback. Unzip anywhere and run `khulla.exe`. Useful when an installer is blocked.                                              |
-| Windows | `khulla-<version>-windows-x64-store.msix` | **Not on the release page.** A workflow artifact (`microsoft-store`) to submit in Partner Center - see [Microsoft Store](#microsoft-store). |
+| Windows | `khulla-<version>-windows-x64-store.msix` | **Not on the release page.** A workflow artifact (`microsoft-store`) the release submits to Partner Center - see [Store uploads](#store-uploads). |
+| Android | `khulla-<version>-android.aab` | **Not on the release page.** A workflow artifact (`google-play`), signed with the upload key, the release uploads to Play - see [Store uploads](#store-uploads). |
 | Android | `khulla-<version>-android.apk`           | For phones without Google Play, which the release notes recommend first. One universal APK, signed with the sideload key - see below.     |
 | Web     | `khulla-<version>-web.tar.gz`            | Built for the site root. Serve the extracted folder from any static host.                                                                 |
 | Linux   | `khulla-<version>-linux-x64.tar.gz`      | Extract, run `./khulla`.                                                                                                                  |
@@ -142,9 +167,8 @@ old readers ignore. The installer is told apart from the portable zip by
 **The updater only helps from the release that contains it.** An install
 older than that has to be updated by hand once.
 
-Google Play publishing is still manual: build an app bundle signed with the
-upload key and upload it in the Play Console. Bump `+build` as for any release
-- Play refuses a `versionCode` it has seen.
+Google Play and the Microsoft Store are uploaded to by the release itself -
+see [Store uploads](#store-uploads).
 
 ## Signing the APK
 
@@ -156,8 +180,9 @@ phone. The release APK is therefore signed with one **sideload key**, kept in
 repository secrets and never changed.
 
 Use a key of its own, not the Play upload key: the APK and the Play build
-cannot update each other anyway (Play re-signs with its app signing key), and
-keeping the upload key off GitHub keeps a leak here from touching Play.
+cannot update each other anyway (Play re-signs with its app signing key). The
+upload key is a separate set of secrets - see [Store uploads](#store-uploads).
+If it ever leaks, Play can reset it; the sideload key cannot be replaced.
 
 Once:
 
@@ -192,6 +217,61 @@ Treat it as a demo, not a service. The catalogue lives in the browser's own
 storage, so every visitor gets a fresh empty library and clearing site data
 wipes it.
 
+## Store uploads
+
+After the GitHub release is published, two jobs submit the same version to the
+stores. They run after the release on purpose: a store outage or a refused
+submission never holds back the downloads, and either job can be re-run on
+its own from the run page.
+
+| Job               | Uploads                                     | Notes from                    | Then                                    |
+| ----------------- | ------------------------------------------- | ----------------------------- | --------------------------------------- |
+| `google-play`     | the app bundle, signed with the upload key  | `CHANGELOG.md` → *What's new* | Play reviews it, then rolls it out      |
+| `microsoft-store` | the MSIX                                    | `CHANGELOG.md` → every listing language's *What's new in this version* | Certification, usually 1-3 days |
+
+Each is skipped until it is set up, and the rest of the release ships
+regardless.
+
+### Google Play, once
+
+1. **Upload key.** Base64 the `.jks` you already upload to Play with
+   (`base64 -w0 khulla-upload-keystore.jks`) and add four secrets:
+   `ANDROID_UPLOAD_KEYSTORE_BASE64`, `ANDROID_UPLOAD_KEYSTORE_PASSWORD`,
+   `ANDROID_UPLOAD_KEY_ALIAS`, `ANDROID_UPLOAD_KEY_PASSWORD`. Without them the
+   `android` job builds no app bundle.
+2. **Service account.** In Google Cloud, create a project (or reuse one),
+   enable the **Google Play Android Developer API**, create a service account
+   and download a JSON key for it.
+3. In the **Play Console → Users and permissions**, invite the service
+   account's email and give it the app with *Release to production, exclude
+   devices, and use Play App Signing* (and *Release apps to testing tracks*).
+4. Add the JSON file's whole contents as the secret
+   `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON`.
+5. Add the variable `GOOGLE_PLAY_TRACK`: `production`, or `internal` /
+   `beta` to try the pipeline first. Setting it is what switches the job on.
+
+### Microsoft Store, once
+
+1. In the **Microsoft Entra admin center**, register an app (single tenant)
+   and create a client secret under *Certificates & secrets*. Note its expiry:
+   when it expires, the job fails until the secret is replaced.
+2. In **Partner Center → Account settings → User management → Microsoft
+   Entra applications**, add that app and give it the **Manager** role. (The
+   Partner Center account has to be associated with the Entra tenant first,
+   under *Tenants*.)
+3. Add four secrets: `MS_STORE_TENANT_ID` (the Entra tenant ID),
+   `MS_STORE_SELLER_ID` (Partner Center → Account settings → *Legal info* →
+   Seller ID), `MS_STORE_CLIENT_ID` (the app's client ID) and
+   `MS_STORE_CLIENT_SECRET`.
+4. Add the variable `MS_STORE_PRODUCT_ID`: `9NPZBD22X2L7`, the ID in the
+   Store link. Setting it is what switches the job on, and the release page's
+   Store link reads it too.
+
+The job uploads the package as a draft with `msstore publish`, writes the
+notes into the submission with `msstore submission update`, and submits it
+with `msstore submission publish`. A submission already pending in Partner
+Center is replaced.
+
 ## Microsoft Store
 
 The Store build exists because **Smart App Control** blocks the unsigned
@@ -220,10 +300,9 @@ builds everything else.
 
 The `windows` job packages the same `Release/` folder with
 `dart run msix:create`. The config is `msix_config` in `pubspec.yaml`. The job
-uploads the result as the `microsoft-store` artifact. Download it from the
-run and submit it in Partner Center as a new package. The package version is
-`<major>.<minor>.<patch>.0` from `version:`, so a release that bumps only
-`+build` cannot go to the Store: the Store refuses a version it has seen.
+uploads the result as the `microsoft-store` artifact, and the
+`microsoft-store` job submits it - see [Store uploads](#store-uploads). The
+package version is `<major>.<minor>.<patch>.0` from `version:`.
 
 To build one locally on Windows:
 
@@ -245,7 +324,7 @@ see the same catalogue. Move between them with Settings → Backup.
 The Windows build ships unsigned today, which is honest for a pre-1.0
 open-source tool a librarian installs deliberately. It costs the user one
 "unknown publisher" dialog. Android is signed: the release APK with the
-sideload key (above), the Play build with the upload key kept off GitHub.
+sideload key (above), the Play build with the upload key.
 
 That stopped being true with **Smart App Control**, on by default on many
 fresh Windows 11 installs. It blocks an unsigned `khulla.exe` with no way

@@ -6,13 +6,11 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-// Signing: debug key today, upload key when Play publishing arrives.
-// `key.properties` is gitignored and optional - when present (see Signing in
-// docs/contributing/releasing.md) the release build uses
-// it, otherwise it falls back to the debug key so `flutter run --release`
-// keeps working. CI (see release.yaml) does not provision it; the APK is
-// intentionally debug-signed for sideloading, not for Play (which refuses
-// debug keys outright).
+// Signing: `key.properties` is gitignored and optional - when present the
+// release build signs with the key it names, otherwise it falls back to the
+// debug key so `flutter run --release` keeps working. CI (release.yaml)
+// writes it twice: the sideload key for the APK, then the Play upload key
+// for the app bundle. See docs/contributing/releasing.md.
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 val hasReleaseSigning = keystorePropertiesFile.exists()
