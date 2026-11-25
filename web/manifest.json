@@ -8,6 +8,18 @@
     "description": "An open-source library management system.",
     "orientation": "any",
     "prefer_related_applications": false,
+    "related_applications": [
+        {
+            "platform": "play",
+            "url": "https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app",
+            "id": "com.khulladigitallibrary.app"
+        },
+        {
+            "platform": "windows",
+            "url": "https://apps.microsoft.com/detail/9NPZBD22X2L7",
+            "id": "9NPZBD22X2L7"
+        }
+    ],
     "icons": [
         {
             "src": "icons/icon-192.png",

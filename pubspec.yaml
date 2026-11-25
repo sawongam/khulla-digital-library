@@ -116,8 +116,7 @@ dev_dependencies:
   melos: ^6.3.2
 
   # Packages the Windows release as an MSIX for the Microsoft Store.
-  # Config in `msix_config` below; see "Microsoft Store" in
-  # docs/contributing/releasing.md.
+  # Config in `msix_config` below; release.yaml builds and submits it.
   msix: ^3.18.0
 
 # FlutterGen code generation for assets, fonts and colors.

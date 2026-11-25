@@ -2,6 +2,8 @@
 
 An open-source library management system, built as a **local-first Flutter app**. Your catalogue lives in a SQLite database on your own machine - no server to run, no account to create, no data leaving the building.
 
+**[Website](https://khulladigitallibrary.com)** · **[Microsoft Store](https://apps.microsoft.com/detail/9NPZBD22X2L7)** · **[Google Play](https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app)** · **[Try it in a browser](https://app.khulladigitallibrary.com/)**
+
 ## What it does
 
 - **Dashboard** - overdue, due today and inventory at a glance.
@@ -66,7 +68,12 @@ An open-source library management system, built as a **local-first Flutter app**
 
 ## Download
 
-Ready-to-run builds are attached to every release: **[latest release](https://github.com/sawongam/khulla-digital-library/releases/latest)**.
+The easiest way to install Khulla is from a store, which keeps it updated:
+
+- **Windows:** [Microsoft Store](https://apps.microsoft.com/detail/9NPZBD22X2L7), with no SmartScreen warning.
+- **Android:** [Google Play](https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app).
+
+Prefer a file? Ready-to-run builds are attached to every release: **[latest release](https://github.com/sawongam/khulla-digital-library/releases/latest)**. More on every option at [khulladigitallibrary.com](https://khulladigitallibrary.com/#download).
 
 | Platform           | File                                     | How to run it                                                                                                                                                                                    |
 | ------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -76,13 +83,13 @@ Ready-to-run builds are attached to every release: **[latest release](https://gi
 | Web                | `khulla-<version>-web.tar.gz`            | Serve the extracted folder from any static host.                                                                                                                                                 |
 | Linux              | `khulla-<version>-linux-x64.tar.gz`      | Extract and run `./khulla`.                                                                                                                                                                      |
 
-Verify a download against `SHA256SUMS.txt` attached to the same release. How Windows releases are signed: [Code signing policy](https://khulladigitallibrary.com/code-signing/). The installer and portable zip share the same data location, so you can switch between them.
+Verify a download against `SHA256SUMS.txt` attached to the same release. The installer and portable zip share the same data location, so you can switch between them.
 
 ### System requirements
 
 - **Windows:** 10 or 11, 64-bit.
 - **Linux:** a distribution with the GTK 3 runtime installed.
-- **Android:** sideloading with installs from unknown sources allowed.
+- **Android:** Google Play, or sideloading the APK with installs from unknown sources allowed.
 - **Web:** a current Chromium, Firefox or Safari.
 
 You can also **[try it in a browser](https://app.khulladigitallibrary.com/)** - a demo with no server behind it, where the catalogue lives in that browser's storage and clearing site data wipes it.
@@ -105,7 +112,7 @@ The same codebase compiles to a Windows executable and to a web app, so a librar
 | Linux      | Released             | drift on a background isolate                      |
 | macOS, iOS | Builds, not released | drift on a background isolate                      |
 
-Releases are built by CI for the four released targets. macOS and iOS compile from the same source but are not published - both need an Apple Developer account to produce anything a user can open. See [docs/contributing/releasing.md](./docs/contributing/releasing.md).
+Releases are built by CI for the four released targets. macOS and iOS compile from the same source but are not published - both need an Apple Developer account to produce anything a user can open.
 
 ## Getting started
 
@@ -183,7 +190,7 @@ Commits follow a conventional format - `type(scope): message` with types `feat`,
 
 Found a bug? Open an issue with the platform, the version from Settings → About, and steps to reproduce. For anything security-sensitive, use private vulnerability reporting instead - see [SECURITY.md](./SECURITY.md).
 
-Merging into `prod` publishes a release at the version in `pubspec.yaml` and redeploys the web demo - see [releasing](./docs/contributing/releasing.md).
+Merging into `prod` publishes a release at the version in `pubspec.yaml` and redeploys the web demo.
 
 ## Support the project
 

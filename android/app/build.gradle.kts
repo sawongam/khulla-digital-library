@@ -10,7 +10,7 @@ plugins {
 // release build signs with the key it names, otherwise it falls back to the
 // debug key so `flutter run --release` keeps working. CI (release.yaml)
 // writes it twice: the sideload key for the APK, then the Play upload key
-// for the app bundle. See docs/contributing/releasing.md.
+// for the app bundle.
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 val hasReleaseSigning = keystorePropertiesFile.exists()

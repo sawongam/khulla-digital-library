@@ -155,8 +155,7 @@ jobs:
       #
       # Uploaded as its own artifact, never attached to the release: an
       # unsigned MSIX will not install outside the Store. The
-      # `microsoft-store` job below submits it to Partner Center - see
-      # "Microsoft Store" in docs/contributing/releasing.md.
+      # `microsoft-store` job below submits it to Partner Center.
       - name: Package (Microsoft Store MSIX)
         if: vars.MSIX_IDENTITY_NAME != ''
         shell: pwsh
@@ -243,7 +242,6 @@ jobs:
       #
       # Without the secrets it falls back to the debug key and warns - a
       # manual test build still works, but its APK cannot update anything.
-      # See "Signing the APK" in docs/contributing/releasing.md.
       - name: Load the APK signing key
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -430,16 +428,27 @@ jobs:
         env:
           VERSION: ${{ needs.version.outputs.version }}
           MS_STORE_PRODUCT_ID: ${{ vars.MS_STORE_PRODUCT_ID }}
+        # The stores come first, as the official badges - they keep the app
+        # updated, and the Store build is the one Smart App Control lets run.
+        # Google's PNG has transparent padding (168 of its 250px are badge),
+        # so 71px tall there matches Microsoft's 48px.
         run: |
+          store="https://apps.microsoft.com/detail/${MS_STORE_PRODUCT_ID:-9NPZBD22X2L7}"
+          play="https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app"
           {
             tools/release_notes.sh "$VERSION"
-            echo
-            echo "### Get it"
-            echo
-            echo "- **Windows:** [Microsoft Store](https://apps.microsoft.com/detail/${MS_STORE_PRODUCT_ID:-9NPZBD22X2L7}) (recommended), or \`khulla-$VERSION-windows-x64-setup.exe\` below"
-            echo "- **Android:** [Google Play](https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app) (recommended), or \`khulla-$VERSION-android.apk\` below"
-            echo "- **Linux:** \`khulla-$VERSION-linux-x64.tar.gz\` below"
-            echo "- **Web:** [app.khulladigitallibrary.com](https://app.khulladigitallibrary.com)"
+            cat <<EOF
+
+          ### Get it
+
+          <a href="$store"><img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Get it from Microsoft" height="48"></a> <a href="$play"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="71"></a>
+
+          Or download a file below:
+          - **Windows:** \`khulla-$VERSION-windows-x64-setup.exe\`
+          - **Android:** \`khulla-$VERSION-android.apk\`
+          - **Linux:** \`khulla-$VERSION-linux-x64.tar.gz\`
+          - **Web:** [app.khulladigitallibrary.com](https://app.khulladigitallibrary.com)
+          EOF
           } > release-notes.md
           cat release-notes.md
 
@@ -455,8 +464,11 @@ jobs:
 
   # The stores run after the GitHub release, so a store outage or a refused
   # submission never holds up the downloads. Each is switched on by setting
-  # its variables and secrets - see "Store uploads" in
-  # docs/contributing/releasing.md - and skipped until then.
+  # its variables and secrets, and skipped until then:
+  #   google-play      GOOGLE_PLAY_TRACK (variable), GOOGLE_PLAY_SERVICE_ACCOUNT_JSON
+  #                    and the four ANDROID_UPLOAD_* secrets
+  #   microsoft-store  MS_STORE_PRODUCT_ID (variable), MS_STORE_TENANT_ID,
+  #                    MS_STORE_SELLER_ID, MS_STORE_CLIENT_ID, MS_STORE_CLIENT_SECRET
   google-play:
     name: Google Play
     if: needs.version.outputs.release == 'true' && vars.GOOGLE_PLAY_TRACK != ''
