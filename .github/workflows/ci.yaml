@@ -41,10 +41,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The tags, to read the last release's build number.
+          fetch-depth: 0
 
       - name: Check this version has not already been released
         run: |
           version="$(grep -E '^version:' pubspec.yaml | sed -E 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')"
+          build="$(grep -E '^version:' pubspec.yaml | sed -E 's/^version:[^+]*\+([0-9]+).*/\1/')"
           tag="v$version"
 
           if git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1; then
@@ -53,7 +57,44 @@ jobs:
             exit 1
           fi
 
-          echo "Merging this releases **$tag**." >> "$GITHUB_STEP_SUMMARY"
+          # Play refuses a versionCode it has seen, so the +build half has to
+          # climb too - a new x.y.z alone is not enough.
+          last="$(git tag --list 'v*' --sort=-v:refname | head -n 1)"
+          if [ -n "$last" ]; then
+            last_build="$(git show "$last:pubspec.yaml" | grep -E '^version:' | sed -E 's/^version:[^+]*\+([0-9]+).*/\1/')"
+            if [ "$build" -le "$last_build" ]; then
+              echo "::error file=pubspec.yaml::+$build is not above $last's +$last_build." \
+                   "Bump the +build in version: - Google Play refuses a build number it has seen."
+              exit 1
+            fi
+          fi
+
+          echo "Merging this releases **$tag** (build $build)." >> "$GITHUB_STEP_SUMMARY"
+
+      # The release notes are written by hand, once, and shown on the GitHub
+      # release, Google Play and the Microsoft Store. Play caps them at 500
+      # characters, so the check is here rather than mid-release.
+      - name: Check CHANGELOG.md has this version's notes
+        run: |
+          version="$(grep -E '^version:' pubspec.yaml | sed -E 's/^version:[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')"
+
+          if ! tools/release_notes.sh "$version" >/dev/null; then
+            echo "::error file=CHANGELOG.md::No notes for $version." \
+                 "Add a \"## $version\" section with a \"What's new:\" list."
+            exit 1
+          fi
+
+          length="$(tools/release_notes.sh "$version" --store | wc -m)"
+          if [ "$length" -gt 500 ]; then
+            echo "::error file=CHANGELOG.md::The $version notes are $length characters." \
+                 "Google Play allows 500 - shorten them."
+            exit 1
+          fi
+
+          {
+            echo
+            tools/release_notes.sh "$version"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   build-web:
     name: Build web

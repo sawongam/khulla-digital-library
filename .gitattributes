@@ -1,0 +1,4 @@
+# Read by bash on every runner, Windows included - a CRLF checkout breaks
+# the script and stops CHANGELOG.md headings matching.
+*.sh text eol=lf
+CHANGELOG.md text eol=lf

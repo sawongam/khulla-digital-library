@@ -16,6 +16,13 @@ enum UpdateChannel {
   /// version exists and opens the download page.
   windowsPortable,
 
+  /// Installed from the Microsoft Store, which owns updating it. Like
+  /// [googlePlay], it never asks GitHub - the Store certifies a build after
+  /// the release lands - and only opens the Store's updates page. Running
+  /// an installer over a Store package is not possible anyway: the package
+  /// folder is read-only to the app.
+  microsoftStore,
+
   /// Extracted from the Linux tarball. Same as [windowsPortable]: told, and
   /// pointed at the download page.
   linux,
@@ -41,7 +48,7 @@ enum UpdateChannel {
   /// Whether this install asks for the latest version at all.
   bool get checksForUpdates => switch (this) {
     windowsInstaller || windowsPortable || linux || androidApk || web => true,
-    googlePlay || unsupported => false,
+    microsoftStore || googlePlay || unsupported => false,
   };
 
   /// Whether the app applies the update itself rather than sending the
@@ -49,6 +56,7 @@ enum UpdateChannel {
   bool get installsInApp => switch (this) {
     windowsInstaller || web => true,
     windowsPortable ||
+    microsoftStore ||
     linux ||
     androidApk ||
     googlePlay ||

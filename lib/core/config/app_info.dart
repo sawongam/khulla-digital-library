@@ -48,6 +48,12 @@ abstract final class AppInfo {
   static const String playStoreUrl =
       'https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app';
 
+  /// The Microsoft Store's own *Downloads and updates* page - where a Store
+  /// install of Khulla gets its next version. It needs no product ID, so it
+  /// works before and after the listing exists.
+  static const String microsoftStoreUpdatesUrl =
+      'ms-windows-store://downloadsandupdates';
+
   /// The licence the source is released under.
   static const String license = 'AGPL-3.0-only';
 }
