@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.1
 
 What's new:
 - Khulla is on the Microsoft Store, which keeps it up to date
