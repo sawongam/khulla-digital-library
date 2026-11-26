@@ -36,6 +36,38 @@
     />
     <meta name="twitter:card" content="summary" />
 
+    <!--
+    The web demo, the website and the store listings are one product: this is
+    what tells a search engine so. Keep the URLs in step with AppInfo and the
+    website's src/data/links.ts.
+  -->
+    <link rel="author" href="https://khulladigitallibrary.com/" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Khulla Digital Library",
+        "alternateName": "Khulla",
+        "url": "https://app.khulladigitallibrary.com/",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "sameAs": [
+          "https://khulladigitallibrary.com/",
+          "https://apps.microsoft.com/detail/9NPZBD22X2L7",
+          "https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app",
+          "https://github.com/sawongam/khulla-digital-library"
+        ],
+        "publisher": {
+          "@type": "Organization",
+          "@id": "https://khulladigitallibrary.com/#organization",
+          "name": "Khulla Digital Library",
+          "url": "https://khulladigitallibrary.com/"
+        }
+      }
+    </script>
+
     <!-- iOS meta tags & icons -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -166,8 +198,11 @@
   </head>
   <body>
     <noscript>
-      Khulla needs JavaScript to run in the browser. To download it for Windows,
-      Linux or Android, visit
+      Khulla needs JavaScript to run in the browser. Get it from the
+      <a href="https://apps.microsoft.com/detail/9NPZBD22X2L7">Microsoft Store</a>
+      or
+      <a href="https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app">Google Play</a>,
+      or download it for Windows, Linux or Android at
       <a href="https://khulladigitallibrary.com/">khulladigitallibrary.com</a>.
     </noscript>
     <div id="loading" role="status" aria-label="Loading Khulla">

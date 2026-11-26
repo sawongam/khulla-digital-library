@@ -83,6 +83,14 @@ jobs:
             exit 0
           fi
 
+          # The notes are the release page, Play's "What's new" and the
+          # Store's - stop before an hour of builds rather than ship none.
+          if ! tools/release_notes.sh "$version" >/dev/null; then
+            echo "::error file=CHANGELOG.md::No notes for $version." \
+                 "Add a \"## $version\" section and push again."
+            exit 1
+          fi
+
           {
             echo "version=$version"
             echo "tag=$tag"
@@ -146,8 +154,8 @@ jobs:
       # skips rather than failing the release.
       #
       # Uploaded as its own artifact, never attached to the release: an
-      # unsigned MSIX will not install outside the Store. Submit it in
-      # Partner Center - see "Microsoft Store" in docs/contributing/releasing.md.
+      # unsigned MSIX will not install outside the Store. The
+      # `microsoft-store` job below submits it to Partner Center.
       - name: Package (Microsoft Store MSIX)
         if: vars.MSIX_IDENTITY_NAME != ''
         shell: pwsh
@@ -234,7 +242,6 @@ jobs:
       #
       # Without the secrets it falls back to the debug key and warns - a
       # manual test build still works, but its APK cannot update anything.
-      # See "Signing the APK" in docs/contributing/releasing.md.
       - name: Load the APK signing key
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -270,6 +277,49 @@ jobs:
         with:
           name: android
           path: dist/*
+          if-no-files-found: error
+
+      # The Google Play build: an app bundle signed with the upload key, not
+      # the sideload key - Play only accepts uploads signed with the key it
+      # was registered with, then re-signs them with its own app signing key.
+      # The same build.gradle.kts reads key.properties, so this swaps it and
+      # builds again. Without the secrets, Play is skipped and the rest ships.
+      - name: Load the Play upload key
+        id: upload-key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::notice::No ANDROID_UPLOAD_KEYSTORE_BASE64 secret - no Google Play build."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          {
+            echo "storeFile=upload-keystore.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > android/key.properties
+          echo "present=true" >> "$GITHUB_OUTPUT"
+
+      - name: Build (Google Play app bundle)
+        if: steps.upload-key.outputs.present == 'true'
+        run: |
+          flutter build appbundle --release -t lib/main_prod.dart
+          mkdir -p play
+          cp build/app/outputs/bundle/release/app-release.aab \
+            "play/khulla-${{ needs.version.outputs.version }}-android.aab"
+
+      # Its own artifact, never on the release page: the bundle is for Play.
+      - uses: actions/upload-artifact@v4
+        if: steps.upload-key.outputs.present == 'true'
+        with:
+          name: google-play
+          path: play/*.aab
           if-no-files-found: error
 
   web:
@@ -311,6 +361,9 @@ jobs:
     permissions:
       contents: write
     steps:
+      # For CHANGELOG.md and tools/release_notes.sh.
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
@@ -318,8 +371,9 @@ jobs:
       - name: Collect and checksum
         run: |
           mkdir -p dist
-          # The Store package goes to Partner Center, not on the release page.
-          find artifacts -path artifacts/microsoft-store -prune -o -type f -exec mv {} dist/ \;
+          # The store packages go to the stores, not on the release page.
+          find artifacts \( -path artifacts/microsoft-store -o -path artifacts/google-play \) -prune \
+            -o -type f -exec mv {} dist/ \;
           cd dist
           sha256sum * > SHA256SUMS.txt
           ls -lh
@@ -368,6 +422,36 @@ jobs:
             }' > latest.json
           cat latest.json
 
+      # The page is the hand-written notes and where to get the app - nothing
+      # else. Everything that needs explaining lives in the guide.
+      - name: Write the release notes
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
+          MS_STORE_PRODUCT_ID: ${{ vars.MS_STORE_PRODUCT_ID }}
+        # The stores come first, as the official badges - they keep the app
+        # updated, and the Store build is the one Smart App Control lets run.
+        # Google's PNG has transparent padding (168 of its 250px are badge),
+        # so 71px tall there matches Microsoft's 48px.
+        run: |
+          store="https://apps.microsoft.com/detail/${MS_STORE_PRODUCT_ID:-9NPZBD22X2L7}"
+          play="https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app"
+          {
+            tools/release_notes.sh "$VERSION"
+            cat <<EOF
+
+          ### Get it
+
+          <a href="$store"><img src="https://get.microsoft.com/images/en-us%20dark.svg" alt="Get it from Microsoft" height="48"></a> <a href="$play"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="71"></a>
+
+          Or download a file below:
+          - **Windows:** \`khulla-$VERSION-windows-x64-setup.exe\`
+          - **Android:** \`khulla-$VERSION-android.apk\`
+          - **Linux:** \`khulla-$VERSION-linux-x64.tar.gz\`
+          - **Web:** [app.khulladigitallibrary.com](https://app.khulladigitallibrary.com)
+          EOF
+          } > release-notes.md
+          cat release-notes.md
+
       # Creates the tag as well as the release - nobody tags by hand, and the
       # tag is what tells the next push to prod that this version has shipped.
       - uses: softprops/action-gh-release@v2
@@ -375,37 +459,99 @@ jobs:
           name: Khulla ${{ needs.version.outputs.version }}
           tag_name: ${{ needs.version.outputs.tag }}
           target_commitish: ${{ github.sha }}
-          generate_release_notes: true
+          body_path: release-notes.md
           files: dist/*
-          body: |
-            ## Downloads
 
-            | Platform | File | How to run it |
-            | --- | --- | --- |
-            | Windows | `khulla-${{ needs.version.outputs.version }}-windows-x64-setup.exe` | **Recommended.** Run the installer - adds Start Menu entry + uninstaller (no admin required). SmartScreen will warn about an unknown publisher - *More info* → *Run anyway*. |
-            | Windows (portable) | `khulla-${{ needs.version.outputs.version }}-windows-x64.zip` | Unzip anywhere, run `khulla.exe`. No install needed. |
-            | Android | [Google Play](https://play.google.com/store/apps/details?id=com.khulladigitallibrary.app) | **Recommended.** Install from the Play Store, which keeps it up to date. |
-            | Android (APK) | `khulla-${{ needs.version.outputs.version }}-android.apk` | For phones without Play. Allow installs from your browser or file manager; install each new APK over the last. |
-            | Web | `khulla-${{ needs.version.outputs.version }}-web.tar.gz` | Serve the extracted folder from any static host. |
-            | Linux | `khulla-${{ needs.version.outputs.version }}-linux-x64.tar.gz` | Extract and run `./khulla`. |
+  # The stores run after the GitHub release, so a store outage or a refused
+  # submission never holds up the downloads. Each is switched on by setting
+  # its variables and secrets, and skipped until then:
+  #   google-play      GOOGLE_PLAY_TRACK (variable), GOOGLE_PLAY_SERVICE_ACCOUNT_JSON
+  #                    and the four ANDROID_UPLOAD_* secrets
+  #   microsoft-store  MS_STORE_PRODUCT_ID (variable), MS_STORE_TENANT_ID,
+  #                    MS_STORE_SELLER_ID, MS_STORE_CLIENT_ID, MS_STORE_CLIENT_SECRET
+  google-play:
+    name: Google Play
+    if: needs.version.outputs.release == 'true' && vars.GOOGLE_PLAY_TRACK != ''
+    needs: [version, publish]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-            Verify a download against `SHA256SUMS.txt`.
-            How Windows releases are signed: [Code signing policy](https://khulladigitallibrary.com/code-signing/).
+      - uses: actions/download-artifact@v4
+        with:
+          name: google-play
+          path: play
 
-            **On Android, pick Play or the APK and stay with it.** They are
-            signed with different keys, so Android treats them as different
-            apps and neither can update the other. To switch, take a backup
-            (**Settings → Backup**), uninstall, install the other, and restore
-            the backup. Uninstalling without a backup deletes the catalogue.
+      # Play reads "What's new" from one file per language.
+      - name: Write "What's new"
+        run: |
+          mkdir -p whatsnew
+          tools/release_notes.sh "${{ needs.version.outputs.version }}" --store > whatsnew/whatsnew-en-US
 
-            Already running Khulla? **Account menu → Check for updates.** The
-            Windows installer updates itself in one click, after backing up
-            the catalogue; the portable zip and Linux point you here.
+      - uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.khulladigitallibrary.app
+          releaseFiles: play/*.aab
+          releaseName: ${{ needs.version.outputs.version }}
+          tracks: ${{ vars.GOOGLE_PLAY_TRACK }}
+          status: completed
+          whatsNewDirectory: whatsnew
 
-            Khulla is local-first: your catalogue is a SQLite file on your own
-            machine and never leaves it. The only thing the app asks the
-            internet is whether a newer version exists - once a day, and it
-            can be switched off in the same dialog. Uninstalling the app does not
-            delete it - take a backup from **Settings → Backup** before moving
-            between machines. The installer and the portable zip share the same
-            data location, so you can switch between them.
+  microsoft-store:
+    name: Microsoft Store
+    if: needs.version.outputs.release == 'true' && vars.MS_STORE_PRODUCT_ID != ''
+    needs: [version, publish]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: microsoft-store
+          path: store
+
+      - uses: microsoft/microsoft-store-apppublisher@v1.1
+
+      - name: Sign in to Partner Center
+        shell: pwsh
+        env:
+          TENANT_ID: ${{ secrets.MS_STORE_TENANT_ID }}
+          SELLER_ID: ${{ secrets.MS_STORE_SELLER_ID }}
+          CLIENT_ID: ${{ secrets.MS_STORE_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.MS_STORE_CLIENT_SECRET }}
+        run: |
+          msstore reconfigure --tenantId $env:TENANT_ID --sellerId $env:SELLER_ID `
+            --clientId $env:CLIENT_ID --clientSecret $env:CLIENT_SECRET
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      # Git Bash, not `bash` from PowerShell - on a Windows runner that can
+      # resolve to WSL.
+      - name: Write "What's new"
+        shell: bash
+        run: tools/release_notes.sh "${{ needs.version.outputs.version }}" --store > whatsnew.txt
+
+      # Upload the package as a draft, put the notes on every listing
+      # language, then submit for certification. `publish` replaces any
+      # draft already pending, so it has to come first.
+      - name: Submit
+        shell: pwsh
+        env:
+          PRODUCT_ID: ${{ vars.MS_STORE_PRODUCT_ID }}
+        run: |
+          $msix = (Get-ChildItem store -Filter *.msix | Select-Object -First 1).FullName
+          msstore publish $msix -id $env:PRODUCT_ID --noCommit
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $notes = (Get-Content whatsnew.txt -Raw).Trim()
+
+          $submission = msstore submission get $env:PRODUCT_ID | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          foreach ($listing in $submission.Listings.PSObject.Properties) {
+            $listing.Value.BaseListing.ReleaseNotes = $notes
+          }
+          msstore submission update $env:PRODUCT_ID ($submission | ConvertTo-Json -Depth 100 -Compress)
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          msstore submission publish $env:PRODUCT_ID
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

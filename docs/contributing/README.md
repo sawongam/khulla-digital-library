@@ -70,8 +70,6 @@ Open pull requests against `dev`. `make pr` pushes and opens one for you.
 
 That makes bumping `version:` in `pubspec.yaml` part of any pull request into `prod`. CI fails the PR if that version has already been released, because merging it as it stands would publish nothing.
 
-See [releasing.md](./releasing.md), which also covers how to hand someone a test build without releasing.
-
 ## Reporting bugs
 
 Open an issue with the platform you hit it on (Windows, web, …), the Flutter version from `fvm flutter --version`, and the steps to reproduce. If it involves the database, say whether it happened on a fresh install or an existing catalogue - migration bugs and query bugs look identical from the outside.
