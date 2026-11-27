@@ -21,13 +21,13 @@ care about without exporting a backup first.
 
 ## Accounts
 
-All passwords are `demo1234`.
+All passwords are `khulla@123`.
 
 | Email | Role |
 | --- | --- |
-| `admin@demo.khulla` | Administrator |
-| `librarian@demo.khulla` | Librarian |
-| `assistant@demo.khulla` | Assistant |
+| `admin@khulladigitallibrary.com` | Administrator |
+| `librarian@khulladigitallibrary.com` | Librarian |
+| `assistant@khulladigitallibrary.com` | Assistant |
 
 ## What's inside
 
