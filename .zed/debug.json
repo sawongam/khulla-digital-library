@@ -1,0 +1,38 @@
+[
+  {
+    "label": "Flutter: Khulla Digital Library (dev)",
+    "adapter": "FlutterRun",
+    "request": "launch",
+    "type": "flutter",
+    "program": "lib/main_dev.dart",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "reloadOnSave": "changed",
+    "reloadOnSaveGlobs": [
+      "packages/khulla_ui/lib/**.dart"
+    ]
+  },
+  {
+    "label": "Flutter: Khulla Digital Library (prod)",
+    "adapter": "FlutterRun",
+    "request": "launch",
+    "type": "flutter",
+    "program": "lib/main_prod.dart",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "reloadOnSave": "changed",
+    "reloadOnSaveGlobs": [
+      "packages/khulla_ui/lib/**.dart"
+    ]
+  },
+  {
+    "label": "Flutter: Attach",
+    "adapter": "FlutterRun",
+    "request": "attach",
+    "type": "flutter",
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "vmServiceUri": "ws://127.0.0.1:PORT/TOKEN=/ws",
+    "reloadOnSave": "changed",
+    "reloadOnSaveGlobs": [
+      "packages/khulla_ui/lib/**.dart"
+    ]
+  }
+]
