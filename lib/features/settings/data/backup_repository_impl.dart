@@ -73,7 +73,17 @@ class BackupRepositoryImpl implements BackupRepository {
     () async {
       final picked = await openFile(
         acceptedTypeGroups: const [
-          XTypeGroup(label: 'Khulla backup', extensions: ['sqlite']),
+          // Android filters by MIME type, and a `.sqlite` file is often
+          // indexed as octet-stream, so the extension alone hides it.
+          XTypeGroup(
+            label: 'Khulla backup',
+            extensions: ['sqlite'],
+            mimeTypes: [
+              'application/vnd.sqlite3',
+              'application/x-sqlite3',
+              'application/octet-stream',
+            ],
+          ),
         ],
       );
       if (picked == null) return false;
