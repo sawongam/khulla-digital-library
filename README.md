@@ -101,6 +101,8 @@ Verify a download against `SHA256SUMS.txt` attached to the same release. The ins
 
 You can also **[try it in a browser](https://app.khulladigitallibrary.com/)** - a demo with no server behind it, where the catalogue lives in that browser's storage and clearing site data wipes it.
 
+Want it populated? [`demo-data/`](demo-data/) has a sample library (123 titles, 120 members, about 3,500 loans) to restore from **Settings → Backup and restore**. Sign in with `admin@khulladigitallibrary.com`, `librarian@khulladigitallibrary.com` or `assistant@khulladigitallibrary.com`, password `khulla@123`. All of it is fake.
+
 Your catalogue is a SQLite file on your own machine, and nothing is uploaded anywhere. Uninstalling the installer or the portable zip does not delete it; uninstalling the Microsoft Store version does, because Windows removes a Store app's data with it - export a backup first. Take a backup from **Settings → Backup** before moving between machines; on a new machine, choose Restore during setup to adopt that backup.
 
 ## Why local-first
